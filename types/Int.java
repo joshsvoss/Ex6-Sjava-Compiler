@@ -1,5 +1,5 @@
 package types;
 
-public class Int {
+public class Int extends Type {
 
 }
