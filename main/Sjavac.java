@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class Sjavac {
 	
@@ -27,6 +28,16 @@ public class Sjavac {
 			return;
 		}
 		
+		
+		// Now we want to pass on the file to the parser
+		try {
+			Parser parser = new Parser(srcFile);
+			parser.readCode();
+		}
+		catch (FileNotFoundException e) {
+			System.out.println(IO_FAILURE_NUM);
+			System.err.println("ERROR: file not found.");
+		}
 	}
 
 }
