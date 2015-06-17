@@ -1,0 +1,15 @@
+SYNTAX:
+
+
+LOGIC:
+1) Can't have two same scope variables of same name
+2) can't assign one type variable with a literal value of a another (String a = 1;)
+3) A final variable can't receive a second value.
+4) if an undecalred (in that line) variable is assigned a new value, it must have been previously declared.
+5) If variable a is assigned with the value of variable b, b must be of the same type as a.
+6) A local variable can't be referenced BEFORE it has been initialized or declared, but a global variable CAN
+as long as that that reference comes inside method.  
+7) If a global variable is not initialized globally, any method that references it must first 
+intialize it.  
+
+  
