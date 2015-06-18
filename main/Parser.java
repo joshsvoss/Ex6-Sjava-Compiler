@@ -19,13 +19,12 @@ public class Parser extends Sjavac {
 	// A line counter.
 	private int lineCtr = 0;
 	
-	// The regex for the start of a variable declaration.
-	// TODO didn't deal with variable assignment.
-	public static final String varDec = "([final]++\\s)*+[int|boolean|char|double|String]++\\s[a-zA-Z]{1}+[\\w]*+.*";
+	// The regex for the start of a variable declaration. (Deals with cases with/out final, and with/out assignment.)
+	public static final String varDec = "\\s*+([f][i][n][a][l]++\\s+)?+[int|boolean|char|double|String]++\\s[a-zA-Z_]{1}+\\w*+\\s*+([=]++\\s*+\\S+)?\\s*+[;]++\\s*";
 	
 	// The regex for method declaration.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
-	public static final String methDec = "[void]++\\s[a-zA-Z]{1}+[\\w]*+\\s[(]{1}+[\\w|\\s]*+([)][;]){1}+\\s*";
+	public static final String methDec = "[v][o][i][d]++\\s[a-zA-Z]{1}+[\\w]*+\\s[(]{1}+[\\w|\\s]*+([)][;]){1}+\\s*";
 	
 	// The regex for a method call.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
