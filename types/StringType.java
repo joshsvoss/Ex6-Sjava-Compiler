@@ -1,8 +1,8 @@
 package types;
 
-public class String extends Type {
+public class StringType extends Type {
 
-	public String() {
+	public StringType() {
 		// TODO Auto-generated constructor stub
 	}
 
