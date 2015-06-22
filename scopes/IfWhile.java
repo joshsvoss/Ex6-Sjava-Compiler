@@ -1,28 +1,24 @@
 package scopes;
 
+import types.InvalidValueException;
+
 public class IfWhile extends Scope{
 
-	public IfWhile(String currLn, int depth) {
-		super(currLn, depth);
+	public IfWhile(String name, String params, int depth) {
+		super(name, params, depth);
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+	// TODO is this necessary?
 	public void updateLogic() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean checkParamSyntax(String params) {
+	public boolean checkParamLogic(String params) throws InvalidValueException {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

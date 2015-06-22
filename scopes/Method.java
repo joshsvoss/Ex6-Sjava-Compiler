@@ -1,37 +1,50 @@
 package scopes;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import types.InvalidTypeException;
+import types.InvalidValueException;
 import types.Type;
 import types.TypeFactory;
 
 public class Method extends Scope{
-	private Type[] argArray;
+	private Type[] paramTypes;
 	private String name;
-	
+	private String[] params;
+
 	// The regex for a comma seperator.
-	// TODO prob to delete, dealt with elsewhere.
-	private String commaSep = "\\s*[,]*\\s*";
+	private String commaSeparater = "\\s*[,]{1}\\s*";
 	
 	// The regex for the method parameters.
-	// TODO prob to delete, dealt with elsewhere.
-	public static final String methParam = "(\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*";
+	Pattern methParam = Pattern.compile("\\s*+((final{1})+\\s{1})?+((int|boolean|char|double|String){1})+"
+			+ "\\s*+[a-zA-Z_]{1}+\\w*+\\s*");
+	
+	// A type factory.
+	TypeFactory typeFactory = new TypeFactory();
 
-
-	public Method(String line, int depth) {
-		super(line, depth);
-		checkSyntax(line);
-		
-		updateLogic();
-		
+	public Method(String name, String params, int depth) throws InvalidTypeException {
+		super(name, params, depth);
+		this.params = separateParams(params);
+		this.paramTypes = new Type[this.params.length];
+		// Create the method param types;
+		for(int i = 0; i < this.params.length; i++){
+			Matcher methParamMatch = this.methParam.matcher(this.params[i]);
+			String finalStr = methParamMatch.group(2);
+			String type = methParamMatch.group(3);
+			Type paramType = typeFactory.generateMethodParamType(finalStr, type);
+			this.paramTypes[i] = paramType;
+		}
 	}
 	
+	//TODO is this necessary?
 	public void updateLogic() {
 		
 	}
 
-
-
+	private String[] separateParams(String params){
+		return params.split(commaSeparater);
+	}
 
 	private void checkSyntax(String line) {
 		// TODO Auto-generated method stub
@@ -41,21 +54,8 @@ public class Method extends Scope{
 
 
 	// Separates a string of the arguments into an array of types.
-	public Type[] getArgs() {
-		if(checkParamSyntax(this.params)){
-			String[] sepParams = this.params.split(commaSep);
-			Type[] argArray = new Type[sepParams.length];
-			for(int i = 0; i < sepParams.length; i++){
-				TypeFactory typeFactory = new TypeFactory();
-				Type paramType = typeFactory.generateType(sepParams[i], this.depth);
-				argArray[i] = paramType;
-				}
-			return argArray;
-		}else{
-			// Throw syntax error
-			return null;
-		}
-				
+	public Type[] getParamTypes() {
+		return this.paramTypes;
 	}
 	
 	
@@ -67,8 +67,12 @@ public class Method extends Scope{
 	}
 
 	@Override
-	public boolean checkParamSyntax(String params) {
-		return Pattern.matches(methParam, params);
+	public boolean checkParamLogic(String params) throws InvalidValueException {
+		String[] paramsPassedThrough = params.split(commaSeparater);
+		for(int i = 0; i < paramsPassedThrough.length; i++){
+			this.paramTypes[i].doesValueMatchType(paramsPassedThrough[i]);
+		}
+		return true;
 	}
 
 }

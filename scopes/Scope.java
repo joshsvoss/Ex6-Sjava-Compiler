@@ -1,9 +1,11 @@
 package scopes;
 
+import types.InvalidValueException;
+
 public abstract class Scope {
 	
-	// The data for the current scope.
-	protected String scopeInit;
+	// The scope name (a method name, if, or while).
+	protected String name;
 	
 	// The depth of the current scope.
 	protected int depth;
@@ -11,25 +13,30 @@ public abstract class Scope {
 	// The current scope's params.
 	protected String params;
 	
-	// The 
+//	// Regex to single out the scope params.
+//	//TODO remove dealt with elsewhere.
+//	protected static final String findParams = ".*[(]{1}\\s*|\\s*[)]{1}.*"; 
 	
-	// Regex to single out the scope params.
-	protected static final String findParams = ".*[(]{1}\\s*|\\s*[)]{1}.*"; 
-	
-	public Scope(String currLn, int depth){
-		this.scopeInit = currLn;
+	public Scope(String name, String params, int depth){
+		this.name = name;
 		this.depth = depth;
-		String[] tempParams = currLn.split(findParams);
-		this.params = tempParams[1];
+		this.params = params;
 		
 	}
 	
-	public abstract void updateLogic();
+	// TODO may want to try catch in method..
+	public abstract boolean checkParamLogic(String params) throws InvalidValueException;
 	
-	public abstract boolean checkParamSyntax(String params);
+	/**
+	 * @return the scope name.
+	 */
+	public String getName(){
+		return this.name;
+	}
 	
-	public abstract String getName();
-	
+	/**
+	 * @return the scope depth.
+	 */
 	public int getdepth(){
 		return this.depth;
 	}
