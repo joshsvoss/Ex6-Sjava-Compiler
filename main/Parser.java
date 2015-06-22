@@ -168,8 +168,8 @@ public class Parser {
 				// Send currLn and depth to type factory.
 				String finalStr = varDecMatch.group(2);
 				String type = varDecMatch.group(3);
-				String name = varAssignmentMatch.group(5);
-				String value = varAssignmentMatch.group(7);
+				String name = varDecMatch.group(5);
+				String value = varDecMatch.group(7);
 				//Type var = tFactory.generateType(currLn, this.depth);
 				// TODO the above line shouldn't be a comment. Remove printLns.
 				System.out.println("variable declaratio: " + currLn);
