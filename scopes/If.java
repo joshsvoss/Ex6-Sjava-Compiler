@@ -4,8 +4,7 @@ import java.util.regex.Pattern;
 
 public class If extends Scope{
 	
-	// The regex for the loop parameters.
-	public static final String loopParam = "\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*";
+	
 
 	public If(String currLn, int depth) {
 		super(currLn, depth);

@@ -25,12 +25,15 @@ public class Parser {
 	
 	// A line counter.
 	private int lineCtr = 0;
-	
+	//TODO Should we make all of these regex fields private?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
-	public static final String varDec = "\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?\\s*+[;]{1}+\\s*";
+	
+	public static Pattern varDec = Pattern.compile("\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|"
+			+ "String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?\\s*+[;]{1}+\\s*");
 	
 	// The regex for variable (re)assignment.
-	public static final String varAss = "\\s*+[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?\\s*+[;]{1}+\\s*";
+	public static Pattern varAss = Pattern.compile("\\s*+[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?"
+			+ "\\s*+[;]{1}+\\s*");
 	
 	// The regex for method declaration.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
@@ -38,7 +41,10 @@ public class Parser {
 	
 	// The regex for a method call.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
-	public static final String methCall = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";	
+	public static final String methCall = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";
+	
+	// The regex for the loop parameters.
+	public static final String loopParam = "\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*";
 	
 	// The regex for if/while loop.
 	// TODO didn't deal with loop parameters, just that they exist.
@@ -64,6 +70,8 @@ public class Parser {
 	
 	// A loop factory.
 	private LoopFactory lFactory = new LoopFactory();
+	
+	// Scope list 
 	
 	/**
 	 * Construct a parser for the given file.
