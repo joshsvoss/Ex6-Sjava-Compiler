@@ -49,15 +49,15 @@ public class Parser {
 	
 	// The regex for a method call.
 	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
-	public static Pattern methCallA = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}.*\\){1}+\\s*+"
-			+ "\\{{1}+\\s*$");
+//	public static Pattern methCallA = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}.*\\){1}+\\s*+"
+//			+ "\\{{1}+\\s*$");
 	
 
 	// The regex for the loop parameters.
 	// TODO prob to delete since dealt with in loop regex.
-	public static Pattern loopParam = Pattern.compile("^\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++"
-			+ "(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?"
-			+ "+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*$");
+//	public static Pattern loopParam = Pattern.compile("^\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++"
+//			+ "(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?"
+//			+ "+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*$");
 	
 	// The regex for a method call, with params.
 	public static Pattern methCall = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}\\s*\\S*\\s*+"
@@ -66,11 +66,11 @@ public class Parser {
 	
 	// The regex for if/while loop.
 	// TODO prob to delete, doesn't deal with loop parameters, just that they exist.
-	public static Pattern loopA = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+"
-			+ "[{]{1}+\\s*");
+//	public static Pattern loopA = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+"
+//			+ "[{]{1}+\\s*");
 	
-	// The regex for if/while loop, with params.
-	public static Pattern loop = Pattern.compile("^\\s*+(if|while){1}+\\s*+\\({1}\\s*+(true|false|([a-zA-Z_]"
+	// The regex for if/while scope, with params.
+	public static Pattern ifWhile = Pattern.compile("^\\s*+(if|while){1}+\\s*+\\({1}\\s*+(true|false|([a-zA-Z_]"
 			+ "{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|"
 			+ "([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*\\){1}+\\s*+\\{{1}+\\s*$");
 	
@@ -148,7 +148,7 @@ public class Parser {
 			Matcher methDecMatch = methDec.matcher(currLn);
 			
 			// Loop matcher against the current line.
-			Matcher loopMatch = loop.matcher(currLn);
+			Matcher ifWhileMatch = ifWhile.matcher(currLn);
 			
 			//  Scope closer matcher against the current line.
 			Matcher scopeCloseMatch = scopeClose.matcher(currLn);
@@ -175,12 +175,12 @@ public class Parser {
 				//Method method = new Method(currLn, this.depth);
 				// TODO the above line shouldn't be a comment. Remove printLn.
 				System.out.println("method declaration: " + currLn);
-			}else if(loopMatch.matches()){
+			}else if(ifWhileMatch.matches()){
 				this.depth++;
 				// Send currLn and depth to loop Factory.
 				//Scope loop = lFactory.generateLoop(currLn, this.depth);
 				// TODO the above line shouldn't be a comment. Remove printLn.
-				System.out.println("loop: " + currLn);
+				System.out.println("if/while: " + currLn);
 			}else if(scopeCloseMatch.matches()){
 				this.depth--;
 				//continue;
