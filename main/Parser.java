@@ -2,7 +2,7 @@ package main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,6 +95,14 @@ public class Parser {
 	// A loop factory.
 	private LoopFactory lFactory = new LoopFactory();
 	
+	// A list of symbol tables:
+	private Vector<HashMap<String, Type>> symbolTableList;
+	
+	// List of methods:
+	private HashMap<String, Method> methodMap;
+	
+	HashMap<String, String> map;
+	
 	// Scope list 
 	
 	/**
@@ -108,6 +116,10 @@ public class Parser {
 		// So we can assume it is readable and exists.  
 		this.srcFile = file;
 		this.scanner = new Scanner(this.srcFile);
+		
+		// Initilize the data structures to hold the symbol and method tables.
+		this.symbolTableList = new Vector<HashMap<String, Type>>();
+		this.methodMap = new HashMap<String, Method>();
 	}
 	
 	
