@@ -25,9 +25,10 @@ public class Parser {
 	
 	// A line counter.
 	private int lineCtr = 0;
-	//TODO Should we make all of these regex fields private?
-	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
 	
+	//TODO Should we make all of these regex fields private?
+	//TODO should we anchor front and back with whitespace in between and how does this help?
+	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
 	public static Pattern varDec = Pattern.compile("\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|"
 			+ "String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?\\s*+[;]{1}+\\s*");
 	
@@ -37,14 +38,14 @@ public class Parser {
 	
 	// The regex for method declaration.
 	// TODO probably to delete, doesn't deal with method parameters, just that they may or may not exist.
-	public static Pattern methDecA = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+"
-			+ "\\s*+[{]{1}+\\s*");
+//	public static Pattern methDecA = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+"
+//			+ "\\s*+[{]{1}+\\s*");
 	
 	// The regex for method declaration, with parameters.
-	public static Pattern methDec = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+"
-			+ "(final{1}+\\s{1})?+"
-			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
-			+ "?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*[)]{1}+\\s*+[{]{1}+\\s*");
+	public static Pattern methDec = Pattern.compile("^\\s*void{1}+\\s*+[a-zA-Z]{1}+[\\w]*+\\s*\\({1}(\\s*+"
+			+ "(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+(,{1}+"
+			+ "\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)"
+			+ "*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a method call.
 	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
