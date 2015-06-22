@@ -54,7 +54,7 @@ public class Parser {
 //			+ "\\s*+[{]{1}+\\s*");
 	
 	// The regex for method declaration, with parameters.
-	public static Pattern methDec = Pattern.compile("^\\s*(void{1})+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*\\({1}"
+	public static Pattern methDec = Pattern.compile("^\\s*void{1}+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*\\({1}"
 			+ "(\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+"
 			+ "(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+"
 			+ "\\s*)*)*\\){1}+\\s*+\\{{1}+\\s*$");
@@ -187,8 +187,7 @@ public class Parser {
 			}else if(methDecMatch.matches()){
 				this.depth++;
 				// Create new method.
-				String voidStr = methDecMatch.group(FIRST_GROUP_INDEX);
-				String name = methDecMatch.group(SECOND_GROUPD_INDEX);
+				String name = methDecMatch.group(FIRST_GROUP_INDEX);
 				String params = methDecMatch.group(THIRD_GROUP_INDEX);
 				//Method method = new Method(currLn, this.depth);
 				// TODO the above line shouldn't be a comment.
