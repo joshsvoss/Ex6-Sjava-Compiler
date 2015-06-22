@@ -36,9 +36,17 @@ public class Parser {
 	// TODO didn't deal with method parameters, just that they may or may not exist.
 	public static final String methDec = "void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";
 	
+	public static final String methDecA = "void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+(final{1}+\\s{1})?+"
+			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
+			+ "?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*[)]{1}+\\s*+[{]{1}+\\s*";
+	
 	// The regex for a method call.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
-	public static final String methCall = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";	
+	public static final String methCall = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";
+	
+	public static final String methCallA = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+(final{1}+\\s{1})?+"
+			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
+			+ "?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*[)]{1}+\\s*+[{]{1}+\\s*";
 	
 	// The regex for if/while loop.
 	// TODO didn't deal with loop parameters, just that they exist.
@@ -88,7 +96,7 @@ public class Parser {
 			lineCtr++;
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
-			if(Pattern.matches(doc, currLn)||Pattern.matches(whiteSpace, currLn)||Pattern.matches(methCall, currLn)||Pattern.matches(methEnd, currLn)){
+			if(Pattern.matches(doc, currLn)||Pattern.matches(whiteSpace, currLn)||Pattern.matches(methEnd, currLn)){
 				continue;
 			}else if(Pattern.matches(varDec, currLn)){
 				// Send currLn and depth to type factory.
@@ -106,6 +114,9 @@ public class Parser {
 				continue;
 			}else if(Pattern.matches(varAss, currLn)){
 				// Update the variable value. If variable doesn't exist throw error.
+			}else if(Pattern.matches(methCallA, currLn)){
+				
+				//
 			}else{
 				// Throw syntax error.
 			}
