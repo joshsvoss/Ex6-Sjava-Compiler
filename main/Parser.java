@@ -125,8 +125,9 @@ public class Parser {
 	
 	/**
 	 * Read the file line by line, sending each line to the line factory.
+	 * @throws unmatchedSyntaxException 
 	 */
-	public void readCode() {
+	public void readCode() throws unmatchedSyntaxException {
 		while(scanner.hasNext()){
 			currLn = scanner.nextLine();
 			lineCtr++;
