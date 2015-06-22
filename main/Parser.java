@@ -36,19 +36,19 @@ public class Parser {
 			+ "\\s*+[;]{1}+\\s*");
 	
 	// The regex for method declaration.
-	// TODO didn't deal with method parameters, just that they may or may not exist.
-
-	public static Pattern methDec = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+"
+	// TODO probably to delete, doesn't deal with method parameters, just that they may or may not exist.
+	public static Pattern methDecA = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+"
 			+ "\\s*+[{]{1}+\\s*");
-
-	public static Pattern methDecA = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+"
+	
+	// The regex for method declaration, with parameters.
+	public static Pattern methDec = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+"
 			+ "(final{1}+\\s{1})?+"
 			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
 			+ "?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*[)]{1}+\\s*+[{]{1}+\\s*");
 	
 	// The regex for a method call.
-	// TODO didn't deal with method parameters, just that they may or may not exist.
-	public static Pattern methCall = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+"
+	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
+	public static Pattern methCallA = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+"
 			+ "[{]{1}+\\s*");
 	
 
@@ -58,7 +58,7 @@ public class Parser {
 			+ "+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*");
 	
 	// method call regex with params.
-	public static Pattern methCallA = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+(final{1}+"
+	public static Pattern methCall = Pattern.compile("\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*[(]{1}(\\s*+(final{1}+"
 			+ "\\s{1})?+"
 			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
 			+ "?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*[)]{1}+\\s*+[{]{1}+\\s*");
@@ -132,7 +132,7 @@ public class Parser {
 			Matcher varDecMatch = varDec.matcher(currLn);
 			
 			// Method declaration matcher against the current line.
-			Matcher methDecMatch = methDecA.matcher(currLn);
+			Matcher methDecMatch = methDec.matcher(currLn);
 			
 			// Loop matcher against the current line.
 			Matcher loopMatch = loopA.matcher(currLn);
@@ -144,7 +144,7 @@ public class Parser {
 			Matcher varAssignmentMatch = varAss.matcher(currLn);
 			
 			// Method call matcher against the current line.
-			Matcher methCallMatch = methCallA.matcher(currLn);
+			Matcher methCallMatch = methCall.matcher(currLn);
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
 			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
@@ -166,7 +166,7 @@ public class Parser {
 			}else if(varAssignmentMatch.matches()){
 				// Update the variable value. If variable doesn't exist throw error.
 			}else if(methCallMatch.matches()){
-				
+				String methodParams = methCallMatch.group(1);
 				// Check the method params.
 			}else{
 				// Throw syntax error.
