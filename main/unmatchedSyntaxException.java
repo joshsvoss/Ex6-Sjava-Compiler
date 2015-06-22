@@ -5,7 +5,7 @@ package main;
  * @author Joshua Voss
  *
  */
-public class unmatchedSyntaxException extends Exception {
+public class unmatchedSyntaxException extends SJavacException {
 	
 	private static final long serialVersionUID = 1L;
 

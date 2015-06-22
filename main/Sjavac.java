@@ -37,6 +37,9 @@ public class Sjavac {
 		catch (FileNotFoundException e) {
 			System.out.println(IO_FAILURE_NUM);
 			System.err.println("ERROR: file not found.");
+		} catch (SJavacException e){
+			System.out.println(ILLEGAL_CODE_NUM);
+			System.err.println(e.getMessage());
 		}
 	}
 
