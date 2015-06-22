@@ -182,6 +182,10 @@ public class Parser {
 				// Check the method params.
 			}else{
 				// Throw syntax error.
+				// TODO how could we have a more specific exception
+				throw new unmatchedSyntaxException("Current line doesn't match any possible correct"
+						+ "syntax.");
+				
 			}
 			
 		}
