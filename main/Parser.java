@@ -57,6 +57,7 @@ public class Parser {
 			+ "([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?"
 			+ "+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*");
 	
+	// method call regex with params.
 	public static Pattern methCallA = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}(\\s*+(final{1}+"
 			+ "\\s{1})?+"
 			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
@@ -67,6 +68,11 @@ public class Parser {
 	// TODO didn't deal with loop parameters, just that they exist.
 	public static Pattern loop = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+"
 			+ "[{]{1}+\\s*");
+	
+	// If/while regex with params.
+	public static Pattern loopA = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*+(true|false|([a-zA-Z_]"
+			+ "{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|"
+			+ "([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*[)]{1}+\\s*+[{]{1}+\\s*");
 	
 	// The regex for a comment.
 	public static Pattern doc = Pattern.compile("//{1}+.*");
@@ -138,7 +144,19 @@ public class Parser {
 			Matcher varDecMatch = varDec.matcher(currLn);
 			
 			// Method declaration matcher against the current line.
-			Matcher methDecMatch = methDec.matcher(currLn);
+			Matcher methDecMatch = methDecA.matcher(currLn);
+			
+			// Loop matcher against the current line.
+			Matcher loopMatch = loopA.matcher(currLn);
+			
+			//  Scope closer matcher against the current line.
+			Matcher scopeCloseMatch = scopeClose.matcher(currLn);
+			
+			// Variable assignment matcher against the current line.
+			Matcher varAssignmentMatch = varAss.matcher(currLn);
+			
+			// Method call matcher against the current line.
+			Matcher methCallMatch = methCallA.matcher(currLn);
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
 			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
@@ -146,22 +164,22 @@ public class Parser {
 			}else if(varDecMatch.matches()){
 				// Send currLn and depth to type factory.
 				Type var = tFactory.generateType(currLn, this.depth);
-			}else if(Pattern.matches(methDec, currLn)){
+			}else if(methDecMatch.matches()){
 				this.depth++;
 				// Create new method.
 				Method method = new Method(currLn, this.depth);
-			}else if(Pattern.matches(loop, currLn)){
+			}else if(loopMatch.matches()){
 				this.depth++;
 				// Send currLn and depth to loop Factory.
 				Scope loop = lFactory.generateLoop(currLn, this.depth);
-			}else if(Pattern.matches(scopeClose, currLn)){
+			}else if(scopeCloseMatch.matches()){
 				this.depth--;
 				continue;
-			}else if(Pattern.matches(varAss, currLn)){
+			}else if(varAssignmentMatch.matches()){
 				// Update the variable value. If variable doesn't exist throw error.
-			}else if(Pattern.matches(methCallA, currLn)){
+			}else if(methCallMatch.matches()){
 				
-				//
+				// Check the method params.
 			}else{
 				// Throw syntax error.
 			}
