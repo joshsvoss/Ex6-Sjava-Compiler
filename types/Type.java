@@ -31,7 +31,7 @@ public abstract class Type {
 		return this.value;
 	}
 	
-	public void setValue(String value) throws FinalVariableException{
+	public void setValue(String value) throws FinalVariableException, InvalidValueException{
 		if(isFinal){
 			if(doesValueMatchType(value)){
 				this.value = value;
@@ -41,7 +41,7 @@ public abstract class Type {
 		}
 	}
 	
-	public abstract boolean doesValueMatchType(String value);
+	public abstract boolean doesValueMatchType(String value) throws InvalidValueException;
 	
 	public boolean isInitialized(){
 		return !this.name.equals(null);
