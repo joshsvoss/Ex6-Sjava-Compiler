@@ -29,8 +29,8 @@ public class Parser {
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
-	public static Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char|double|"
-			+ "String){1})+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+(\\S+))?\\s*+;{1}+\\s*$");
+	public static Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char|"
+			+ "double|String){1})+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+(\\S+))?\\s*+;{1}+\\s*$");
 	
 	// The regex for variable (re)assignment.
 	public static Pattern varAss = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+(={1}+\\s*+(\\S+))?"
@@ -42,10 +42,10 @@ public class Parser {
 //			+ "\\s*+[{]{1}+\\s*");
 	
 	// The regex for method declaration, with parameters.
-	public static Pattern methDec = Pattern.compile("^\\s*void{1}+\\s*+[a-zA-Z]{1}+[\\w]*+\\s*\\({1}(\\s*+"
-			+ "(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+(,{1}+"
-			+ "\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)"
-			+ "*\\){1}+\\s*+\\{{1}+\\s*$");
+	public static Pattern methDec = Pattern.compile("^\\s*(void{1})+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*\\({1}"
+			+ "(\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+"
+			+ "(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+"
+			+ "\\s*)*)*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a method call.
 	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
@@ -60,8 +60,8 @@ public class Parser {
 //			+ "+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*$");
 	
 	// The regex for a method call, with params.
-	public static Pattern methCall = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}\\s*\\S*\\s*+"
-			+ "(,{1}+\\s*\\S*\\s*)*\\){1}+\\s*+;{1}+\\s*$");
+	public static Pattern methCall = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}(\\s*\\S*\\s*+"
+			+ "(,{1}+\\s*\\S*\\s*)*)\\){1}+\\s*+;{1}+\\s*$");
 
 	
 	// The regex for if/while loop.
@@ -70,9 +70,10 @@ public class Parser {
 //			+ "[{]{1}+\\s*");
 	
 	// The regex for if/while scope, with params.
-	public static Pattern ifWhile = Pattern.compile("^\\s*+(if|while){1}+\\s*+\\({1}\\s*+(true|false|([a-zA-Z_]"
-			+ "{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|"
-			+ "([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*\\){1}+\\s*+\\{{1}+\\s*$");
+	public static Pattern ifWhile = Pattern.compile("^\\s*+((if|while){1})+\\s*+\\({1}\\s*+((true|false|"
+			+ "([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|"
+			+ "false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*)\\s*\\){1}+\\s*+\\{{1}+"
+			+ "\\s*$");
 	
 	// The regex for a comment.
 	public static Pattern doc = Pattern.compile("^/s*//{1}+.*$");
@@ -173,24 +174,32 @@ public class Parser {
 				//Type var = tFactory.generateType(currLn, this.depth);
 				// TODO the above line shouldn't be a comment. Remove printLns.
 				System.out.println("variable declaratio: " + currLn);
-				if(finalStr != null){
-					System.out.println("final: " + finalStr);
-				}
+				System.out.println("final: " + finalStr);
 				System.out.println("type: " + type);
 				System.out.println("name: " + name);
 				System.out.println("value: " + value);
 			}else if(methDecMatch.matches()){
 				this.depth++;
 				// Create new method.
+				String voidStr = methDecMatch.group(1);
+				String name = methDecMatch.group(2);
+				String params = methDecMatch.group(3);
 				//Method method = new Method(currLn, this.depth);
 				// TODO the above line shouldn't be a comment. Remove printLn.
 				System.out.println("method declaration: " + currLn);
+				System.out.println("void: " + voidStr);
+				System.out.println("name: " + name);
+				System.out.println("params: " + params);
 			}else if(ifWhileMatch.matches()){
 				this.depth++;
 				// Send currLn and depth to loop Factory.
+				String name = ifWhileMatch.group(1);
+				String params = ifWhileMatch.group(3);
 				//Scope loop = lFactory.generateLoop(currLn, this.depth);
 				// TODO the above line shouldn't be a comment. Remove printLn.
 				System.out.println("if/while: " + currLn);
+				System.out.println("name: " + name);
+				System.out.println("params: " + params);
 			}else if(scopeCloseMatch.matches()){
 				this.depth--;
 				//continue;
@@ -205,9 +214,13 @@ public class Parser {
 				System.out.println("name: " + name);
 				System.out.println("value: " + value);
 			}else if(methCallMatch.matches()){
+				String name = methCallMatch.group(1);
+				String params = methCallMatch.group(2);
 				//String methodParams = methCallMatch.group(1);
 				// TODO the above line shouldn't be a comment. Remove printLn.
 				System.out.println("method call: " + currLn);
+				System.out.println("name: " + name);
+				System.out.println("params: " + params);
 				// Check the method params.
 			}else{
 				// TODO Remove printLn.
