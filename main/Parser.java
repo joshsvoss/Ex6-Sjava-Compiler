@@ -6,6 +6,12 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import scopes.LoopFactory;
+import scopes.Method;
+import scopes.Scope;
+import types.Type;
+import types.TypeFactory;
+
 public class Parser {
 	
 	// The source file.
@@ -28,21 +34,15 @@ public class Parser {
 	
 	// The regex for method declaration.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
-	public static final String methDec = "void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s[(]{1}+(\\w|\\s)*+([)][;]){1}+\\s*";
+	public static final String methDec = "void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";
 	
 	// The regex for a method call.
 	// TODO didn't deal with method parameters, just that they may or may not exist.
-	public static final String methCall = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s[(]{1}+(\\w|\\s)*+([)][;]){1}+\\s*";
-	
-	// The regex for the method parameters.
-	public static final String methParam = "(\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*";
+	public static final String methCall = "\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+[{]{1}+\\s*";	
 	
 	// The regex for if/while loop.
 	// TODO didn't deal with loop parameters, just that they exist.
-	public static final String loop = "\\s*+(if|while){1}+\\s*+[(]{1}+\\s*+(\\w|\\s)++\\s*+([)]+\\s*+[{]+){1}+\\s*";
-	
-	// The regex for the loop parameters.
-	public static final String loopParam = "\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*";
+	public static final String loop = "\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+[{]{1}+\\s*";
 	
 	// The regex for a comment.
 	public static final String doc = "//{1}+.*";
@@ -58,6 +58,12 @@ public class Parser {
 	
 	// Scope depth counter.
 	private int depth = 0;
+	
+	// A type factory.
+	private TypeFactory tFactory = new TypeFactory();
+	
+	// A loop factory.
+	private LoopFactory lFactory = new LoopFactory();
 	
 	/**
 	 * Construct a parser for the given file.
@@ -82,21 +88,24 @@ public class Parser {
 			lineCtr++;
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
-			if(Pattern.matches(currLn, doc)||Pattern.matches(currLn, whiteSpace)||Pattern.matches(currLn, methCall)||Pattern.matches(currLn, methEnd)){
+			if(Pattern.matches(doc, currLn)||Pattern.matches(whiteSpace, currLn)||Pattern.matches(methCall, currLn)||Pattern.matches(methEnd, currLn)){
 				continue;
-			}else if(Pattern.matches(currLn, varDec)){
-				// Send currLn to type factory.	
-			}else if(Pattern.matches(currLn, methDec)){
+			}else if(Pattern.matches(varDec, currLn)){
+				// Send currLn and depth to type factory.
+				Type var = tFactory.generateType(currLn, this.depth);
+			}else if(Pattern.matches(methDec, currLn)){
 				this.depth++;
-				// Send currLn and depth to scope Factory.
-			}else if(Pattern.matches(currLn, loop)){
+				// Create new method.
+				Method method = new Method(currLn, this.depth);
+			}else if(Pattern.matches(loop, currLn)){
 				this.depth++;
-				// Send currLn and depth to scope Factory.
-			}else if(Pattern.matches(currLn, scopeClose)){
+				// Send currLn and depth to loop Factory.
+				Scope loop = lFactory.generateLoop(currLn, this.depth);
+			}else if(Pattern.matches(scopeClose, currLn)){
 				this.depth--;
 				continue;
-			}else if(Pattern.matches(currLn, varAss)){
-				// Update the variable value.
+			}else if(Pattern.matches(varAss, currLn)){
+				// Update the variable value. If variable doesn't exist throw error.
 			}else{
 				// Throw syntax error.
 			}

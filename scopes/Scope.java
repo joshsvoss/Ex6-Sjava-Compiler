@@ -9,20 +9,24 @@ public abstract class Scope {
 	protected int depth;
 	
 	// The current scope's params.
-	protected String[] params;
+	protected String params;
+	
+	// The 
 	
 	// Regex to single out the scope params.
-	protected static final String findParams = "(\\s*.*[(]{1}\\s*)|(\\s*[)]{1}.*\\s*)"; 
+	protected static final String findParams = ".*[(]{1}\\s*|\\s*[)]{1}.*"; 
 	
 	public Scope(String currLn, int depth){
 		this.scopeInit = currLn;
 		this.depth = depth;
-		this.params = currLn.split(findParams);
+		String[] tempParams = currLn.split(findParams);
+		this.params = tempParams[1];
+		
 	}
 	
 	public abstract void updateLogic();
 	
-	public abstract boolean checkParamLogic(String params);
+	public abstract boolean checkParamSyntax(String params);
 	
 	public abstract String getName();
 	
