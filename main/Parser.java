@@ -29,12 +29,12 @@ public class Parser {
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
-	public static Pattern varDec = Pattern.compile("\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|"
-			+ "String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?\\s*+[;]{1}+\\s*");
+	public static Pattern varDec = Pattern.compile("^\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|"
+			+ "String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+(={1}+\\s*+\\S+)?\\s*+;{1}+\\s*$");
 	
 	// The regex for variable (re)assignment.
-	public static Pattern varAss = Pattern.compile("\\s*+[a-zA-Z_]{1}+\\w*+\\s*+([=]{1}+\\s*+\\S+)?"
-			+ "\\s*+[;]{1}+\\s*");
+	public static Pattern varAss = Pattern.compile("^\\s*+[a-zA-Z_]{1}+\\w*+\\s*+(={1}+\\s*+\\S+)?"
+			+ "\\s*+;{1}+\\s*$");
 	
 	// The regex for method declaration.
 	// TODO probably to delete, doesn't deal with method parameters, just that they may or may not exist.
@@ -43,25 +43,25 @@ public class Parser {
 	
 	// The regex for method declaration, with parameters.
 	public static Pattern methDec = Pattern.compile("^\\s*void{1}+\\s*+[a-zA-Z]{1}+[\\w]*+\\s*\\({1}(\\s*+"
-			+ "(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+(,{1}+"
-			+ "\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)"
+			+ "(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+(,{1}+"
+			+ "\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)"
 			+ "*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a method call.
 	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
-	public static Pattern methCallA = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+\\s*+"
-			+ "[{]{1}+\\s*");
+	public static Pattern methCallA = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}.*\\){1}+\\s*+"
+			+ "\\{{1}+\\s*$");
 	
 
 	// The regex for the loop parameters.
 	// TODO prob to delete since dealt with in loop regex.
-	public static Pattern loopParam = Pattern.compile("\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++"
-			+ "([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?"
-			+ "+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*");
+	public static Pattern loopParam = Pattern.compile("^\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++"
+			+ "(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?"
+			+ "+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*$");
 	
 	// The regex for a method call, with params.
-	public static Pattern methCall = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}\\s*\\S*\\s*+"
-			+ "([,]{1}+\\s*\\S*\\s*)*[)]{1}+\\s*+[;]{1}+\\s*");
+	public static Pattern methCall = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}\\s*\\S*\\s*+"
+			+ "(,{1}+\\s*\\S*\\s*)*\\){1}+\\s*+;{1}+\\s*$");
 
 	
 	// The regex for if/while loop.
@@ -70,21 +70,21 @@ public class Parser {
 			+ "[{]{1}+\\s*");
 	
 	// The regex for if/while loop, with params.
-	public static Pattern loop = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*+(true|false|([a-zA-Z_]"
-			+ "{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|"
-			+ "([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*[)]{1}+\\s*+[{]{1}+\\s*");
+	public static Pattern loop = Pattern.compile("^\\s*+(if|while){1}+\\s*+\\({1}\\s*+(true|false|([a-zA-Z_]"
+			+ "{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|"
+			+ "([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a comment.
-	public static Pattern doc = Pattern.compile("//{1}+.*");
+	public static Pattern doc = Pattern.compile("^//{1}+.*$");
 	
 	// The regex for white space.
-	public static Pattern whiteSpace = Pattern.compile("\\s*");
+	public static Pattern whiteSpace = Pattern.compile("^\\s*$");
 	
 	// The regex for a method return.
-	public static Pattern methEnd = Pattern.compile("\\s*+return{1}+\\s*+[;]{1}+\\s*");
+	public static Pattern methEnd = Pattern.compile("^\\s*+return{1}+\\s*+;{1}+\\s*$");
 	
 	// The regex for closing a scope.
-	public static Pattern scopeClose = Pattern.compile("\\s*+[}]{1}+\\s*");
+	public static Pattern scopeClose = Pattern.compile("^\\s*+\\}{1}+\\s*$");
 	
 	// Scope depth counter.
 	private int depth = 0;
