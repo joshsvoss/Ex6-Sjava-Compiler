@@ -10,9 +10,11 @@ public class Method extends Scope{
 	private String name;
 	
 	// The regex for a comma seperator.
+	// TODO prob to delete, dealt with elsewhere.
 	private String commaSep = "\\s*[,]*\\s*";
 	
 	// The regex for the method parameters.
+	// TODO prob to delete, dealt with elsewhere.
 	public static final String methParam = "(\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*";
 
 
