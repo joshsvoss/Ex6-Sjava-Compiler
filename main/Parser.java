@@ -209,13 +209,11 @@ public class Parser {
 			}else if(methCallMatch.matches()){
 				String name = methCallMatch.group(FIRST_GROUP_INDEX);
 				String params = methCallMatch.group(SECOND_GROUPD_INDEX);
-				//String methodParams = methCallMatch.group(1);
-				// TODO the above line shouldn't be a comment.
 				// Check the method params.
 			}else{
 				// Throw syntax error.
 				// TODO how could we have a more specific exception
-				throw new unmatchedSyntaxException("Current line doesn't match any possible correct"
+				throw new unmatchedSyntaxException("Current line doesn't match any possible correct "
 						+ "syntax.");
 				
 			}
