@@ -8,7 +8,11 @@ public class Int extends Type {
 	
 	private Pattern intRegex = Pattern.compile("\\-?[0-9]+");
 	
-	public Int(String name, String value, int depth, boolean isFinal) {
+	public Int(boolean isFinal){
+		super(isFinal);
+	}
+	
+	public Int(String name, String value, int depth, boolean isFinal) throws InvalidValueException {
 		super(name, value, depth, isFinal);
 		// TODO Auto-generated constructor stub
 	}

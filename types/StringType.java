@@ -7,7 +7,11 @@ public class StringType extends Type {
 
 	private Pattern stringRegex = Pattern.compile("\"{1}.*\"{1}");
 	
-	public StringType(String name, String value, int depth, boolean isFinal) {
+	public StringType(boolean isFinal){
+		super(isFinal);
+	}
+	
+	public StringType(String name, String value, int depth, boolean isFinal) throws InvalidValueException {
 		super(name, value, depth, isFinal);
 		// TODO Auto-generated constructor stub
 	}

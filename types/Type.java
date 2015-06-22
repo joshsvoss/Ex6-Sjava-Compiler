@@ -12,6 +12,18 @@ public abstract class Type {
 	//private boolean isInitialized; //TODO change this to method?
 	//private boolean isLocallyInitialized; //TODO remember what this is for?
 	
+	
+	/**
+	 * Method parameter type initialization.
+	 * 
+	 * @param isFinal
+	 */
+	public Type(boolean isFinal){
+		this.isFinal = isFinal;
+		this.name = null;
+		this.value = null;
+	}
+	
 	public Type(String name, String value, int depth, boolean isFinal) throws InvalidValueException { //TODO should isLocallyInitialized be a method too?
 		
 		this.declarationDepth = depth;
