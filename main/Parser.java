@@ -175,68 +175,45 @@ public class Parser {
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
 			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
 				//continue;
-				// TODO the above line shouldn't be a comment. Remove printLn.
-				System.out.println("documentation, whitespace, or method end: " + currLn);
+				// TODO the above line shouldn't be a comment.
 			}else if(varDecMatch.matches()){
 				// Send currLn and depth to type factory.
-				String finalStr = varDecMatch.group(2);
-				String type = varDecMatch.group(3);
-				String name = varDecMatch.group(5);
-				String value = varDecMatch.group(7);
+				String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
+				String type = varDecMatch.group(THIRD_GROUP_INDEX);
+				String name = varDecMatch.group(FIFTH_GROUP_INDEX);
+				String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
 				//Type var = tFactory.generateType(currLn, this.depth);
-				// TODO the above line shouldn't be a comment. Remove printLns.
-				System.out.println("variable declaratio: " + currLn);
-				System.out.println("final: " + finalStr);
-				System.out.println("type: " + type);
-				System.out.println("name: " + name);
-				System.out.println("value: " + value);
+				// TODO the above line shouldn't be a comment.
 			}else if(methDecMatch.matches()){
 				this.depth++;
 				// Create new method.
-				String voidStr = methDecMatch.group(1);
-				String name = methDecMatch.group(2);
-				String params = methDecMatch.group(3);
+				String voidStr = methDecMatch.group(FIRST_GROUP_INDEX);
+				String name = methDecMatch.group(SECOND_GROUPD_INDEX);
+				String params = methDecMatch.group(THIRD_GROUP_INDEX);
 				//Method method = new Method(currLn, this.depth);
-				// TODO the above line shouldn't be a comment. Remove printLn.
-				System.out.println("method declaration: " + currLn);
-				System.out.println("void: " + voidStr);
-				System.out.println("name: " + name);
-				System.out.println("params: " + params);
+				// TODO the above line shouldn't be a comment.
 			}else if(ifWhileMatch.matches()){
 				this.depth++;
 				// Send currLn and depth to loop Factory.
-				String name = ifWhileMatch.group(1);
-				String params = ifWhileMatch.group(3);
+				String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
+				String params = ifWhileMatch.group(THIRD_GROUP_INDEX);
 				//Scope loop = lFactory.generateLoop(currLn, this.depth);
-				// TODO the above line shouldn't be a comment. Remove printLn.
-				System.out.println("if/while: " + currLn);
-				System.out.println("name: " + name);
-				System.out.println("params: " + params);
+				// TODO the above line shouldn't be a comment.
 			}else if(scopeCloseMatch.matches()){
 				this.depth--;
 				//continue;
-				// TODO the above line shouldn't be a comment. Remove printLn.
-				System.out.println("close scope: " + currLn);
+				// TODO the above line shouldn't be a comment.
 			}else if(varAssignmentMatch.matches()){
 				// Update the variable value. If variable doesn't exist throw error.
-				String name = varAssignmentMatch.group(1);
-				String value = varAssignmentMatch.group(3);
-				// TODO Remove printLns.
-				System.out.println("variable assignment: " + currLn);
-				System.out.println("name: " + name);
-				System.out.println("value: " + value);
+				String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
+				String value = varAssignmentMatch.group(THIRD_GROUP_INDEX);
 			}else if(methCallMatch.matches()){
-				String name = methCallMatch.group(1);
-				String params = methCallMatch.group(2);
+				String name = methCallMatch.group(FIRST_GROUP_INDEX);
+				String params = methCallMatch.group(SECOND_GROUPD_INDEX);
 				//String methodParams = methCallMatch.group(1);
-				// TODO the above line shouldn't be a comment. Remove printLn.
-				System.out.println("method call: " + currLn);
-				System.out.println("name: " + name);
-				System.out.println("params: " + params);
+				// TODO the above line shouldn't be a comment.
 				// Check the method params.
 			}else{
-				// TODO Remove printLn.
-				System.out.println("ERROR");
 				// Throw syntax error.
 				// TODO how could we have a more specific exception
 				throw new unmatchedSyntaxException("Current line doesn't match any possible correct"
