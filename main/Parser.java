@@ -29,11 +29,11 @@ public class Parser {
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
-	public static Pattern varDec = Pattern.compile("^\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|"
-			+ "String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+(={1}+\\s*+\\S+)?\\s*+;{1}+\\s*$");
+	public static Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char|double|"
+			+ "String){1})+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+(\\S+))?\\s*+;{1}+\\s*$");
 	
 	// The regex for variable (re)assignment.
-	public static Pattern varAss = Pattern.compile("^\\s*+[a-zA-Z_]{1}+\\w*+\\s*+(={1}+\\s*+\\S+)?"
+	public static Pattern varAss = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+(={1}+\\s*+(\\S+))?"
 			+ "\\s*+;{1}+\\s*$");
 	
 	// The regex for method declaration.
@@ -166,9 +166,19 @@ public class Parser {
 				System.out.println("documentation, whitespace, or method end: " + currLn);
 			}else if(varDecMatch.matches()){
 				// Send currLn and depth to type factory.
+				String finalStr = varDecMatch.group(2);
+				String type = varDecMatch.group(3);
+				String name = varAssignmentMatch.group(5);
+				String value = varAssignmentMatch.group(7);
 				//Type var = tFactory.generateType(currLn, this.depth);
-				// TODO the above line shouldn't be a comment. Remove printLn.
+				// TODO the above line shouldn't be a comment. Remove printLns.
 				System.out.println("variable declaratio: " + currLn);
+				if(finalStr != null){
+					System.out.println("final: " + finalStr);
+				}
+				System.out.println("type: " + type);
+				System.out.println("name: " + name);
+				System.out.println("value: " + value);
 			}else if(methDecMatch.matches()){
 				this.depth++;
 				// Create new method.
@@ -188,8 +198,12 @@ public class Parser {
 				System.out.println("close scope: " + currLn);
 			}else if(varAssignmentMatch.matches()){
 				// Update the variable value. If variable doesn't exist throw error.
-				// TODO Remove printLn.
+				String name = varAssignmentMatch.group(1);
+				String value = varAssignmentMatch.group(3);
+				// TODO Remove printLns.
 				System.out.println("variable assignment: " + currLn);
+				System.out.println("name: " + name);
+				System.out.println("value: " + value);
 			}else if(methCallMatch.matches()){
 				//String methodParams = methCallMatch.group(1);
 				// TODO the above line shouldn't be a comment. Remove printLn.
