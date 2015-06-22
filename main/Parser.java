@@ -53,24 +53,23 @@ public class Parser {
 	
 
 	// The regex for the loop parameters.
+	// TODO prob to delete since dealt with in loop regex.
 	public static Pattern loopParam = Pattern.compile("\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++"
 			+ "([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|([-]?"
 			+ "+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*");
 	
-	// method call regex with params.
-	public static Pattern methCall = Pattern.compile("\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*[(]{1}(\\s*+(final{1}+"
-			+ "\\s{1})?+"
-			+ "(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+([,]{1}+\\s*+(final{1}+\\s{1})"
-			+ "?+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*)*)*[)]{1}+\\s*+[{]{1}+\\s*");
+	// The regex for a method call, with params.
+	public static Pattern methCall = Pattern.compile("\\s*+[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}\\s*\\S*\\s*+"
+			+ "([,]{1}+\\s*\\S*\\s*)*[)]{1}+\\s*+[;]{1}+\\s*");
 
 	
 	// The regex for if/while loop.
-	// TODO didn't deal with loop parameters, just that they exist.
-	public static Pattern loop = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+"
+	// TODO prob to delete, doesn't deal with loop parameters, just that they exist.
+	public static Pattern loopA = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+"
 			+ "[{]{1}+\\s*");
 	
-	// If/while regex with params.
-	public static Pattern loopA = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*+(true|false|([a-zA-Z_]"
+	// The regex for if/while loop, with params.
+	public static Pattern loop = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*+(true|false|([a-zA-Z_]"
 			+ "{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|"
 			+ "([a-zA-Z_]{1}+\\w*)|([-]?+[0-9]++([.]{1}+[0-9]+)?)){1}+\\s*)*\\s*[)]{1}+\\s*+[{]{1}+\\s*");
 	
@@ -147,7 +146,7 @@ public class Parser {
 			Matcher methDecMatch = methDec.matcher(currLn);
 			
 			// Loop matcher against the current line.
-			Matcher loopMatch = loopA.matcher(currLn);
+			Matcher loopMatch = loop.matcher(currLn);
 			
 			//  Scope closer matcher against the current line.
 			Matcher scopeCloseMatch = scopeClose.matcher(currLn);
@@ -160,27 +159,43 @@ public class Parser {
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
 			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
-				continue;
+				//continue;
+				// TODO the above line shouldn't be a comment. Remove printLn.
+				System.out.println("documentation, whitespace, or method end: " + currLn);
 			}else if(varDecMatch.matches()){
 				// Send currLn and depth to type factory.
-				Type var = tFactory.generateType(currLn, this.depth);
+				//Type var = tFactory.generateType(currLn, this.depth);
+				// TODO the above line shouldn't be a comment. Remove printLn.
+				System.out.println("variable declaratio: " + currLn);
 			}else if(methDecMatch.matches()){
 				this.depth++;
 				// Create new method.
-				Method method = new Method(currLn, this.depth);
+				//Method method = new Method(currLn, this.depth);
+				// TODO the above line shouldn't be a comment. Remove printLn.
+				System.out.println("method declaration: " + currLn);
 			}else if(loopMatch.matches()){
 				this.depth++;
 				// Send currLn and depth to loop Factory.
-				Scope loop = lFactory.generateLoop(currLn, this.depth);
+				//Scope loop = lFactory.generateLoop(currLn, this.depth);
+				// TODO the above line shouldn't be a comment. Remove printLn.
+				System.out.println("loop: " + currLn);
 			}else if(scopeCloseMatch.matches()){
 				this.depth--;
-				continue;
+				//continue;
+				// TODO the above line shouldn't be a comment. Remove printLn.
+				System.out.println("close scope: " + currLn);
 			}else if(varAssignmentMatch.matches()){
 				// Update the variable value. If variable doesn't exist throw error.
+				// TODO Remove printLn.
+				System.out.println("variable assignment: " + currLn);
 			}else if(methCallMatch.matches()){
-				String methodParams = methCallMatch.group(1);
+				//String methodParams = methCallMatch.group(1);
+				// TODO the above line shouldn't be a comment. Remove printLn.
+				System.out.println("method call: " + currLn);
 				// Check the method params.
 			}else{
+				// TODO Remove printLn.
+				System.out.println("ERROR");
 				// Throw syntax error.
 			}
 			
