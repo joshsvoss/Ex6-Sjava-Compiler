@@ -8,7 +8,13 @@ public abstract class Type {
 	private boolean isInitialized;
 	private boolean isLocallyInitialized; //TODO remember what this is for?
 	
-	public Type(String line, int depth) {
+	public Type(String codeLine, int depth, boolean isFinal, boolean isInitialized,
+			boolean isLocallyInitialized) {
+		
+		this.depth = depth;
+		this.isFinal = isFinal;
+		this.isInitialized = isInitialized;
+		this.isLocallyInitialized = isLocallyInitialized;
 		
 	}
 
