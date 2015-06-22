@@ -105,10 +105,25 @@ public class Parser {
 			currLn = scanner.nextLine();
 			lineCtr++;
 			
+			// Documentation matcher against the current line.
+			Matcher docMatch = doc.matcher(currLn);
+			
+			// White space matcher against the current line.
+			Matcher whiteSpaceMatch = whiteSpace.matcher(currLn);
+			
+			// Method end matcher against the current line.
+			Matcher methEndMatch = methEnd.matcher(currLn);
+			
+			// Variable declaration matcher against the current line.
+			Matcher varDecMatch = varDec.matcher(currLn);
+			
+			// Method declaration matcher against the current line.
+			Matcher methDecMatch = methDec.matcher(currLn);
+			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
-			if(Pattern.matches(doc, currLn)||Pattern.matches(whiteSpace, currLn)||Pattern.matches(methEnd, currLn)){
+			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
 				continue;
-			}else if(Pattern.matches(varDec, currLn)){
+			}else if(varDecMatch.matches()){
 				// Send currLn and depth to type factory.
 				Type var = tFactory.generateType(currLn, this.depth);
 			}else if(Pattern.matches(methDec, currLn)){
