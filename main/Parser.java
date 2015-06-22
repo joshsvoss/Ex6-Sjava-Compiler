@@ -14,6 +14,18 @@ import types.TypeFactory;
 
 public class Parser {
 	
+	private static final int FIRST_GROUP_INDEX = 1;
+	private static final int SECOND_GROUPD_INDEX = 2;
+	private static final int THIRD_GROUP_INDEX = 3;
+	private static final int FOURTH_GROUP_INDEX = 4;
+	private static final int FIFTH_GROUP_INDEX = 5;
+	private static final int SIXTH_GROUP_INDEX = 6;
+	private static final int SEVENTH_GROUP_INDEX = 7;
+	private static final int EIGHTH_GROUP_INDEX = 8;
+	private static final int NINTH_GROUP_INDEX = 9;
+	private static final int TENTH_GROUP_INDEX = 10;
+	
+	
 	// The source file.
 	private File srcFile;
 	
