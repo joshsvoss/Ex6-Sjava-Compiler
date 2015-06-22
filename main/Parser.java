@@ -75,7 +75,7 @@ public class Parser {
 			+ "([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a comment.
-	public static Pattern doc = Pattern.compile("^//{1}+.*$");
+	public static Pattern doc = Pattern.compile("^/s*//{1}+.*$");
 	
 	// The regex for white space.
 	public static Pattern whiteSpace = Pattern.compile("^\\s*$");
