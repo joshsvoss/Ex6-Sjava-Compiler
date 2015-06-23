@@ -25,6 +25,8 @@ public class Parser {
 	private static final int NINTH_GROUP_INDEX = 9;
 	private static final int TENTH_GROUP_INDEX = 10;
 	
+	private static final int NUM_READ_ITERATIONS = 2;
+	
 	// The possible line types.
 	private static final int DOC_OR_BLANK = 0;
 	private static final int VAR_DECLARATION = 1;
@@ -157,99 +159,154 @@ public class Parser {
 	 * @throws unmatchedSyntaxException 
 	 */
 	public void readCode() throws SJavacException {
-		while(scanner.hasNext()){
-			currLn = scanner.nextLine();
-			lineCtr++;
+		
+		
+		for (int i = 0; i < NUM_READ_ITERATIONS; i++) {
 			
-			// Documentation matcher against the current line.
-			Matcher docMatch = doc.matcher(currLn);
-			
-			// White space matcher against the current line.
-			Matcher whiteSpaceMatch = whiteSpace.matcher(currLn);
-			
-			// Method end matcher against the current line.
-			Matcher methEndMatch = methEnd.matcher(currLn);
-			
-			// Variable declaration matcher against the current line.
-			Matcher varDecMatch = varDec.matcher(currLn);
-			
-			// Method declaration matcher against the current line.
-			Matcher methDecMatch = methDec.matcher(currLn);
-			
-			// Loop matcher against the current line.
-			Matcher ifWhileMatch = ifWhile.matcher(currLn);
-			
-			//  Scope closer matcher against the current line.
-			Matcher scopeCloseMatch = scopeClose.matcher(currLn);
-			
-			// Variable assignment matcher against the current line.
-			Matcher varAssignmentMatch = varAss.matcher(currLn);
-			
-			// Method call matcher against the current line.
-			Matcher methCallMatch = methCall.matcher(currLn);
-			
-			// If the currLn is documentation, a blank line, method call, or method return, continue.
-			// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
-			if(docMatch.matches()||whiteSpaceMatch.matches()){
-				this.previousLnType = DOC_OR_BLANK;
-				//continue;
-				// TODO the above line shouldn't be a comment.
-			}else if(varDecMatch.matches()){
-				// Send currLn and depth to type factory.
-				String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
-				String type = varDecMatch.group(THIRD_GROUP_INDEX);
-				String name = varDecMatch.group(FIFTH_GROUP_INDEX);
-				String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
-				//Type var = typeFactory.generateType(finalStr, type, name, value, this.depth);
-				this.previousLnType = VAR_DECLARATION;
-				// TODO the above line shouldn't be a comment.
-			}else if(methDecMatch.matches()){
-				this.depth++;
-				// Create new method.
-				String name = methDecMatch.group(FIRST_GROUP_INDEX);
-				String params = methDecMatch.group(THIRD_GROUP_INDEX);
-				//Method method = new Method(currLn, this.depth);
-				// TODO the above line shouldn't be a comment.
-				this.previousLnType = METHOD_DECLARATION;
-			}else if((ifWhileMatch.matches())&&(this.depth >= METHOD_DEPTH)){
-				this.depth++;
-				// Create new if/while block
-				String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
-				String conditions = ifWhileMatch.group(THIRD_GROUP_INDEX);
-				this.previousLnType = IF_WHILE;
-			}else if(methEndMatch.matches()){
-				if((this.depth == METHOD_DEPTH)&&(scanner.hasNext("\\s*\\}{1}\\s*"))){
-					// The a method is being closed
-				}
-				this.previousLnType = METHOD_RETURN;
-				continue;
+			while (scanner.hasNext()) {
+				currLn = scanner.nextLine();
+				lineCtr++;
+
+				// Documentation matcher against the current line.
+				Matcher docMatch = doc.matcher(currLn);
+
+				// White space matcher against the current line.
+				Matcher whiteSpaceMatch = whiteSpace.matcher(currLn);
+
+				// Method end matcher against the current line.
+				Matcher methEndMatch = methEnd.matcher(currLn);
+
+				// Variable declaration matcher against the current line.
+				Matcher varDecMatch = varDec.matcher(currLn);
+
+				// Method declaration matcher against the current line.
+				Matcher methDecMatch = methDec.matcher(currLn);
+
+				// Loop matcher against the current line.
+				Matcher ifWhileMatch = ifWhile.matcher(currLn);
+
+				//  Scope closer matcher against the current line.
+				Matcher scopeCloseMatch = scopeClose.matcher(currLn);
+
+				// Variable assignment matcher against the current line.
+				Matcher varAssignmentMatch = varAss.matcher(currLn);
+
+				// Method call matcher against the current line.
+				Matcher methCallMatch = methCall.matcher(currLn);
+
+				// If the currLn is documentation, a blank line, method call, or method return, continue.
+				// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
+				if (docMatch.matches() || whiteSpaceMatch.matches()) {
+					this.previousLnType = DOC_OR_BLANK;
+					continue;
+
+				} 
 				
-			// TODO A though - if the depth is 1 and it is not preceded by a return, throw error incorrect method close.
-			}else if((scopeCloseMatch.matches())&&(this.depth >= METHOD_DEPTH)){
-				if((this.depth == METHOD_DEPTH)&&(this.previousLnType != METHOD_RETURN)){
-					throw new MissingMethodReturnException("Missing the method return statement.");
+				else if (varDecMatch.matches()) {
+					this.previousLnType = VAR_DECLARATION;
+					if (shouldCreateLine(i) ) {
+						// Send currLn and depth to type factory.
+						String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
+						String type = varDecMatch.group(THIRD_GROUP_INDEX);
+						String name = varDecMatch.group(FIFTH_GROUP_INDEX);
+						String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
+						Type var = typeFactory.generateType(finalStr, type,
+								name, value, this.depth);
+						
+						// Now put it into the correct symbol table
+						symbolTableList.elementAt(this.depth).put(name, var);
+					}
+					// Otherwise, even though we're not building the variable we found a syntax match
+					// So it's kosher, continue to next line.
+					else {
+						continue;
+					}
+
+				} 
+				
+				else if (methDecMatch.matches() && this.depth == 0) {
+					
+					this.previousLnType = METHOD_DECLARATION;
+					
+					if (i == 0) {
+						// Create new method.
+						String name = methDecMatch.group(FIRST_GROUP_INDEX);
+						String params = methDecMatch.group(THIRD_GROUP_INDEX);
+						Method method = new Method(name, params, this.depth);
+						// Add the created method to list:
+						Method previousValue = methodMap.put(name, method);
+						if (previousValue != null) {
+							// This means that we tried to declare something with the same name
+							// Twice in same scope, throw exception
+							throw new DoubleDeclarationInScopeException();
+						}
+						
+					}
+					this.depth++;
+					
+				} 
+				
+				else if ((ifWhileMatch.matches())
+						&& (this.depth >= METHOD_DEPTH)) {
+					this.depth++;
+					// Create new if/while block
+					String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
+					String conditions = ifWhileMatch.group(THIRD_GROUP_INDEX);
+					this.previousLnType = IF_WHILE;
+				} else if (methEndMatch.matches()) {
+					if ((this.depth == METHOD_DEPTH)
+							&& (scanner.hasNext("\\s*\\}{1}\\s*"))) {
+						// The a method is being closed
+					}
+					this.previousLnType = METHOD_RETURN;
+					continue;
+
+					// TODO A though - if the depth is 1 and it is not preceded by a return, throw error incorrect method close.
+				} else if ((scopeCloseMatch.matches())
+						&& (this.depth >= METHOD_DEPTH)) {
+					if ((this.depth == METHOD_DEPTH)
+							&& (this.previousLnType != METHOD_RETURN)) {
+						throw new MissingMethodReturnException(
+								"Missing the method return statement.");
+					}
+					this.depth--;
+					//continue;
+					// TODO the above line shouldn't be a comment.
+				} else if (varAssignmentMatch.matches()) {
+					// Update the variable value. If variable doesn't exist throw error.
+					String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
+					String value = varAssignmentMatch
+							.group(SECOND_GROUPD_INDEX);
+					this.previousLnType = VAR_ASSIGNMENT;
+				} else if ((methCallMatch.matches())
+						&& (this.depth >= METHOD_DEPTH)) {
+					String name = methCallMatch.group(FIRST_GROUP_INDEX);
+					String params = methCallMatch.group(SECOND_GROUPD_INDEX);
+					// Check the method params.
+					this.previousLnType = METHOD_CALL;
+				} else {
+					// Throw syntax error.
+					// TODO how could we have a more specific exception
+					throw new unmatchedSyntaxException(
+							"Current line doesn't match any possible correct "
+									+ "syntax.");
 				}
-				this.depth--;
-				//continue;
-				// TODO the above line shouldn't be a comment.
-			}else if(varAssignmentMatch.matches()){
-				// Update the variable value. If variable doesn't exist throw error.
-				String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
-				String value = varAssignmentMatch.group(SECOND_GROUPD_INDEX);
-				this.previousLnType = VAR_ASSIGNMENT;
-			}else if((methCallMatch.matches())&&(this.depth >= METHOD_DEPTH)){
-				String name = methCallMatch.group(FIRST_GROUP_INDEX);
-				String params = methCallMatch.group(SECOND_GROUPD_INDEX);
-				// Check the method params.
-				this.previousLnType = METHOD_CALL;
-			}else{
-				// Throw syntax error.
-				// TODO how could we have a more specific exception
-				throw new unmatchedSyntaxException("Current line doesn't match any possible correct "
-						+ "syntax.");
+
 			}
 			
+			// At the end of for loop, reset scanner to beginign
+			try {
+				scanner = new Scanner(this.srcFile);
+			} catch (FileNotFoundException e) {
+				// Do nothing, since we would have caught this exception the first time 
+				// we create the scanner.
+			}
 		}
+	}
+
+
+	private boolean shouldCreateLine(int i) {
+		return (i == 0 && this.depth == 0) || (i != 0 && this.depth != 0);
 	}
 
 }
