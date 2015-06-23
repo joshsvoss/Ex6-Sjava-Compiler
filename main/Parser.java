@@ -55,11 +55,12 @@ public class Parser {
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
 	public static Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char|"
-			+ "double|String){1})+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+(\\S+))?\\s*+;{1}+\\s*$");
+			+ "double|String){1})+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+(\\S+(\\s*+\\S+)*))?\\s*+;{1}+"
+			+ "\\s*$");
 	
 	// The regex for variable (re)assignment.
-	public static Pattern varAss = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+(={1}+\\s*+(\\S+))?"
-			+ "\\s*+;{1}+\\s*$");
+	public static Pattern varAss = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+={1}+\\s*+"
+			+ "(\\S+(\\s*+\\S+)*)\\s*+;{1}+\\s*$");
 	
 	// The regex for method declaration.
 	// TODO probably to delete, doesn't deal with method parameters, just that they may or may not exist.
@@ -234,7 +235,7 @@ public class Parser {
 			}else if(varAssignmentMatch.matches()){
 				// Update the variable value. If variable doesn't exist throw error.
 				String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
-				String value = varAssignmentMatch.group(THIRD_GROUP_INDEX);
+				String value = varAssignmentMatch.group(SECOND_GROUPD_INDEX);
 				this.previousLnType = VAR_ASSIGNMENT;
 			}else if((methCallMatch.matches())&&(this.depth >= METHOD_DEPTH)){
 				String name = methCallMatch.group(FIRST_GROUP_INDEX);

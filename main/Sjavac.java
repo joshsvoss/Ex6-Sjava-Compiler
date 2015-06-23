@@ -37,10 +37,14 @@ public class Sjavac {
 		catch (FileNotFoundException e) {
 			System.out.println(IO_FAILURE_NUM);
 			System.err.println("ERROR: file not found.");
+			return;
 		} catch (SJavacException e){
+			// TODO error sometimes prints weirdly for some tests ie.062.
 			System.out.println(ILLEGAL_CODE_NUM);
 			System.err.println(e.getMessage());
+			return;
 		}
+		System.out.println(KOSHER_CODE_NUM);
 	}
 
 }
