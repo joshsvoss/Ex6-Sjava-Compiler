@@ -25,6 +25,37 @@ public class Parser {
 	private static final int NINTH_GROUP_INDEX = 9;
 	private static final int TENTH_GROUP_INDEX = 10;
 	
+	// The documentation or whitespace line type.
+	private static final int DOC_OR_BLANK = 0;
+	
+	// The variable declaration line type.
+	private static final int VAR_DECLARATION = 1;
+	
+	// The variable assignment line type.
+	private static final int VAR_ASSIGNMENT = 2;
+	
+	// The method declaration line type.
+	private static final int METHOD_DECLARATION = 3;
+	
+	// The method call line type.
+	private static final int METHOD_CALL = 4;
+
+	// The method return line type.
+	private static final int METHOD_RETURN = 5;
+	
+	// The if/while line type.
+	private static final int IF_WHILE = 6;
+
+	// The scope close line type.
+	private static final int SCOPE_CLOSE = 7;
+	
+	
+
+	// The method scope basic depth.
+	private static final int METHOD_DEPTH = 1;
+	
+	// The line type of the previous line.
+	private int previousLnType;
 	
 	// The source file.
 	private File srcFile;
@@ -175,7 +206,8 @@ public class Parser {
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
 			// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
-			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
+			if(docMatch.matches()||whiteSpaceMatch.matches()){
+				this.previousLnType = DOC_OR_BLANK;
 				//continue;
 				// TODO the above line shouldn't be a comment.
 			}else if(varDecMatch.matches()){
@@ -185,6 +217,7 @@ public class Parser {
 				String name = varDecMatch.group(FIFTH_GROUP_INDEX);
 				String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
 				//Type var = tFactory.generateType(currLn, this.depth);
+				this.previousLnType = VAR_DECLARATION;
 				// TODO the above line shouldn't be a comment.
 			}else if(methDecMatch.matches()){
 				this.depth++;
@@ -193,13 +226,25 @@ public class Parser {
 				String params = methDecMatch.group(THIRD_GROUP_INDEX);
 				//Method method = new Method(currLn, this.depth);
 				// TODO the above line shouldn't be a comment.
+				this.previousLnType = METHOD_DECLARATION;
 			}else if(ifWhileMatch.matches()){
 				this.depth++;
 				// Create new if/while block
 				String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
 				String conditions = ifWhileMatch.group(THIRD_GROUP_INDEX);
+				this.previousLnType = IF_WHILE;
+			}else if(methEndMatch.matches()){
+				if((this.depth == METHOD_DEPTH)&&(scanner.hasNext("\\s*\\}{1}\\s*"))){
+					// The a method is being closed
+				}
+				this.previousLnType = METHOD_RETURN;
+				continue;
+				
 			// TODO A though - if the depth is 1 and it is not preceded by a return, throw error incorrect method close.
 			}else if(scopeCloseMatch.matches()){
+				if((this.depth == METHOD_DEPTH)&&(this.previousLnType != METHOD_RETURN)){
+					throw new MissingMethodReturnException("Missing the method return statement.");
+				}
 				this.depth--;
 				//continue;
 				// TODO the above line shouldn't be a comment.
@@ -207,10 +252,12 @@ public class Parser {
 				// Update the variable value. If variable doesn't exist throw error.
 				String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 				String value = varAssignmentMatch.group(THIRD_GROUP_INDEX);
-			}else if(methCallMatch.matches()){
+				this.previousLnType = VAR_ASSIGNMENT;
+			}else if((methCallMatch.matches())&& (this.depth >= METHOD_DEPTH)){
 				String name = methCallMatch.group(FIRST_GROUP_INDEX);
 				String params = methCallMatch.group(SECOND_GROUPD_INDEX);
 				// Check the method params.
+				this.previousLnType = METHOD_CALL;
 			}else{
 				// Throw syntax error.
 				// TODO how could we have a more specific exception

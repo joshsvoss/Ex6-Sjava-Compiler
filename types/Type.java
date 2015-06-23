@@ -1,5 +1,7 @@
 package types;
 
+import main.SJavacException;
+
 public abstract class Type {
 	
 	// Common fields to all of the types
@@ -47,7 +49,7 @@ public abstract class Type {
 		return this.value;
 	}
 	
-	public void setValue(String value, int depth) throws FinalVariableException, InvalidValueException{
+	public void setValue(String value, int depth) throws SJavacException {
 		if(!isFinal){
 			if(doesValueMatchType(value)){
 				this.value = value;
