@@ -14,15 +14,34 @@ import types.TypeFactory;
 
 public class Parser {
 	
+	// The index for the first capture group.
 	private static final int FIRST_GROUP_INDEX = 1;
+	
+	// The index for the second capture group.
 	private static final int SECOND_GROUPD_INDEX = 2;
+	
+	// The index for the third capture group.
 	private static final int THIRD_GROUP_INDEX = 3;
+	
+	// The index for the fourth capture group.
 	private static final int FOURTH_GROUP_INDEX = 4;
+	
+	// The index for the fifth capture group.
 	private static final int FIFTH_GROUP_INDEX = 5;
+	
+	// The index for the sixth capture group.
 	private static final int SIXTH_GROUP_INDEX = 6;
+	
+	// The index for the seventh capture group.
 	private static final int SEVENTH_GROUP_INDEX = 7;
+	
+	// The index for the eighth capture group.
 	private static final int EIGHTH_GROUP_INDEX = 8;
+	
+	// The index for the ninth capture group.
 	private static final int NINTH_GROUP_INDEX = 9;
+	
+	// The index for the tenth capture group.
 	private static final int TENTH_GROUP_INDEX = 10;
 	
 	// The documentation or whitespace line type.
@@ -49,8 +68,6 @@ public class Parser {
 	// The scope close line type.
 	private static final int SCOPE_CLOSE = 7;
 	
-	
-
 	// The method scope basic depth.
 	private static final int METHOD_DEPTH = 1;
 	
@@ -134,11 +151,11 @@ public class Parser {
 	private int depth = 0;
 	
 	// A type factory.
-	private TypeFactory tFactory = new TypeFactory();
+	private TypeFactory typeFactory = new TypeFactory();
 	
 	// A loop factory.
 	// TODO delete.
-	private LoopFactory lFactory = new LoopFactory();
+//	private LoopFactory lFactory = new LoopFactory();
 	
 	// A list of symbol tables:
 	private Vector<HashMap<String, Type>> symbolTableList;
@@ -216,7 +233,7 @@ public class Parser {
 				String type = varDecMatch.group(THIRD_GROUP_INDEX);
 				String name = varDecMatch.group(FIFTH_GROUP_INDEX);
 				String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
-				//Type var = tFactory.generateType(currLn, this.depth);
+				//Type var = typeFactory.generateType(finalStr, type, name, value, this.depth);
 				this.previousLnType = VAR_DECLARATION;
 				// TODO the above line shouldn't be a comment.
 			}else if(methDecMatch.matches()){
@@ -227,7 +244,7 @@ public class Parser {
 				//Method method = new Method(currLn, this.depth);
 				// TODO the above line shouldn't be a comment.
 				this.previousLnType = METHOD_DECLARATION;
-			}else if(ifWhileMatch.matches()){
+			}else if((ifWhileMatch.matches())&&(this.depth >= METHOD_DEPTH)){
 				this.depth++;
 				// Create new if/while block
 				String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
@@ -241,7 +258,7 @@ public class Parser {
 				continue;
 				
 			// TODO A though - if the depth is 1 and it is not preceded by a return, throw error incorrect method close.
-			}else if(scopeCloseMatch.matches()){
+			}else if((scopeCloseMatch.matches())&&(this.depth >= METHOD_DEPTH)){
 				if((this.depth == METHOD_DEPTH)&&(this.previousLnType != METHOD_RETURN)){
 					throw new MissingMethodReturnException("Missing the method return statement.");
 				}
@@ -253,7 +270,7 @@ public class Parser {
 				String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 				String value = varAssignmentMatch.group(THIRD_GROUP_INDEX);
 				this.previousLnType = VAR_ASSIGNMENT;
-			}else if((methCallMatch.matches())&& (this.depth >= METHOD_DEPTH)){
+			}else if((methCallMatch.matches())&&(this.depth >= METHOD_DEPTH)){
 				String name = methCallMatch.group(FIRST_GROUP_INDEX);
 				String params = methCallMatch.group(SECOND_GROUPD_INDEX);
 				// Check the method params.
@@ -263,7 +280,6 @@ public class Parser {
 				// TODO how could we have a more specific exception
 				throw new unmatchedSyntaxException("Current line doesn't match any possible correct "
 						+ "syntax.");
-				
 			}
 			
 		}

@@ -1,11 +1,13 @@
 package types;
 
+import main.SJavacException;
+
 public class TypeFactory {
 
 	private boolean isFinal = false;
 	
 	public Type generateType(String finalStr, String type, String name, String value, int depth) 
-			throws InvalidTypeException, InvalidValueException{
+			throws SJavacException {
 		if(finalStr != null){
 			isFinal = true;
 		}
