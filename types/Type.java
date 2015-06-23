@@ -9,7 +9,7 @@ public abstract class Type {
 	private boolean isFinal;
 	private String name;
 	private String value;
-	private int currInitializationDepth;
+	private int currInitializationDepth; //TODO we dont' need this now that we have a symbol table to EACH depth
 	private boolean isInitialized = false;
 	//TODO delete below variables if don't use.
 	//private boolean isLocallyInitialized; //TODO remember what this is for?
@@ -49,12 +49,11 @@ public abstract class Type {
 		return this.value;
 	}
 	
-	public void setValue(String value, int depth) throws SJavacException {
+	public void setValue(String value) throws SJavacException {
 		if(!isFinal){
 			if(doesValueMatchType(value)){
 				this.value = value;
 				this.isInitialized = true;
-				this.currInitializationDepth = depth;
 			}
 		}else{
 			throw new FinalVariableException("A final variable cannot be reassigned.");

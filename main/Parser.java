@@ -231,14 +231,17 @@ public class Parser {
 						
 					}
 					// Otherwise, even though we're not building the variable we found a syntax match
-					// So it's kosher, continue to next line.
-					else {
-						continue;
-					}
+					// So it's kosher, continue to next line. (no need for conintue because they're all
+					// "else if"
 
 				} 
 				
-				else if (methDecMatch.matches() && this.depth == GLOBAL_ITERATION) {
+				else if (methDecMatch.matches()) {
+					
+					// If the method declaration comes inside another method, TREIF!
+					if (this.depth > GLOBAL_DEPTH) {
+						throw new NestedMethodDeclarationException();
+					}
 					
 					this.previousLnType = METHOD_DECLARATION;
 					
@@ -288,35 +291,42 @@ public class Parser {
 						curMethod.closeMethod();
 					}
 					this.previousLnType = METHOD_RETURN;
-					continue;
 				} 
 				
 				else if ((scopeCloseMatch.matches())) {
-					// A closing bracket can't exist in global scope, so if it does throw Excp.
+					// A closing bracket can't exist in global scope, so if it does throw Exception
 					if (this.depth == GLOBAL_DEPTH) {
 						throw new GlobalClosingBracketException();
 					}
-					if ((this.depth == METHOD_DEPTH)
+					else if ((this.depth == METHOD_DEPTH)
 							&& (this.previousLnType != METHOD_RETURN)) {
-						throw new MissingMethodReturnException(
-								"Missing the method return statement.");
+						throw new MissingMethodReturnException("Missing the method return statement.");
 					}
+					// Delete the table for the scope that is closing, and decrement depth
+					this.symbolTableList.remove(this.depth);
 					this.depth--;
-					//continue;
-					// TODO the above line shouldn't be a comment.
-				} else if (varAssignmentMatch.matches()) {
+				} 
+				
+				else if (varAssignmentMatch.matches()) {
 					// Update the variable value. If variable doesn't exist throw error.
 					String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 					String value = varAssignmentMatch
 							.group(SECOND_GROUPD_INDEX);
 					this.previousLnType = VAR_ASSIGNMENT;
-				} else if ((methCallMatch.matches())
+					
+					// Now try to change the value in our symbol table
+					tryChangeVarValue(name, value);
+				} 
+				
+				else if ((methCallMatch.matches())
 						&& (this.depth >= METHOD_DEPTH)) {
 					String name = methCallMatch.group(FIRST_GROUP_INDEX);
 					String params = methCallMatch.group(SECOND_GROUPD_INDEX);
 					// Check the method params.
 					this.previousLnType = METHOD_CALL;
-				} else {
+				} 
+				
+				else {
 					// Throw syntax error.
 					// TODO how could we have a more specific exception
 					throw new unmatchedSyntaxException(
@@ -333,6 +343,25 @@ public class Parser {
 				// Do nothing, since we would have caught this exception the first time 
 				// we create the scanner.
 			}
+		}
+	}
+
+
+	private void tryChangeVarValue(String varName, String valueToUpdate) throws SJavacException {
+		// Start at highest depth (where we are now) and go down to global
+		boolean foundVar = false;
+		for (int i = this.depth; i >= 0; i--) {
+			Type varToSet = this.symbolTableList.elementAt(i).get(varName);
+			if (varToSet != null) {
+				foundVar = true;
+				varToSet.setValue(valueToUpdate);
+				break;
+			}
+		}
+		
+		// Now check to make sure we actually found a declared var, if not throw exception:
+		if (foundVar == false) {
+			throw new 
 		}
 	}
 
