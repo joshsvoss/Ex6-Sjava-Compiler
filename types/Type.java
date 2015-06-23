@@ -8,8 +8,8 @@ public abstract class Type {
 	private String name;
 	private String value;
 	private int currInitializationDepth;
+	private boolean isInitialized = false;
 	//TODO delete below variables if don't use.
-	//private boolean isInitialized; //TODO change this to method?
 	//private boolean isLocallyInitialized; //TODO remember what this is for?
 	
 	
@@ -31,6 +31,7 @@ public abstract class Type {
 		this.name = name;
 		if(doesValueMatchType(value)){
 			this.value = value;
+			this.isInitialized = true;
 		}
 		// TODO delet below vars if don't end up using.
 		//this.isInitialized = isInitialized;
@@ -47,9 +48,10 @@ public abstract class Type {
 	}
 	
 	public void setValue(String value, int depth) throws FinalVariableException, InvalidValueException{
-		if(isFinal){
+		if(!isFinal){
 			if(doesValueMatchType(value)){
 				this.value = value;
+				this.isInitialized = true;
 				this.currInitializationDepth = depth;
 			}
 		}else{
@@ -68,7 +70,7 @@ public abstract class Type {
 	public abstract boolean doesValueMatchType(String value) throws InvalidValueException;
 	
 	public boolean isInitialized(){
-		return !this.name.equals(null);
+		return this.isInitialized();
 	}
 	public boolean isLocallyInitialized(){
 		// TODO write this method. Do we need this?

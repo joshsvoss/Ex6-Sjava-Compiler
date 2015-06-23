@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class Double extends Type{
 	
 	//TODO is -0 an issue?
-	Pattern doubleRegex = Pattern.compile("\\-?[0-9]+(\\.{1}+[0-9]+)?");
+	Pattern doubleRegex = Pattern.compile("-?[0-9]+(\\.{1}+[0-9]+)?");
 	
 	public Double(boolean isFinal){
 		super(isFinal);

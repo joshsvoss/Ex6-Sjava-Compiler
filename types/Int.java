@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class Int extends Type {
 	
-	private Pattern intRegex = Pattern.compile("\\-?[0-9]+");
+	private Pattern intRegex = Pattern.compile("-?[0-9]+");
 	
 	public Int(boolean isFinal){
 		super(isFinal);

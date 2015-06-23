@@ -174,6 +174,7 @@ public class Parser {
 			Matcher methCallMatch = methCall.matcher(currLn);
 			
 			// If the currLn is documentation, a blank line, method call, or method return, continue.
+			// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
 			if(docMatch.matches()||whiteSpaceMatch.matches()||methEndMatch.matches()){
 				//continue;
 				// TODO the above line shouldn't be a comment.
@@ -194,11 +195,10 @@ public class Parser {
 				// TODO the above line shouldn't be a comment.
 			}else if(ifWhileMatch.matches()){
 				this.depth++;
-				// Send currLn and depth to loop Factory.
+				// Create new if/while block
 				String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
 				String conditions = ifWhileMatch.group(THIRD_GROUP_INDEX);
-				//Scope loop = lFactory.generateLoop(currLn, this.depth);
-				// TODO the above line shouldn't be a comment.
+			// TODO A though - if the depth is 1 and it is not preceded by a return, throw error incorrect method close.
 			}else if(scopeCloseMatch.matches()){
 				this.depth--;
 				//continue;
