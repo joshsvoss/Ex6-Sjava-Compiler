@@ -3,6 +3,7 @@ package scopes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import main.SJavacException;
 import types.InvalidTypeException;
 import types.InvalidValueException;
 import types.Type;
@@ -68,12 +69,19 @@ public class Method extends Scope{
 	}
 
 	@Override
-	public boolean checkParamLogic(String params) throws InvalidValueException {
+	public boolean checkParamLogic(String params) throws SJavacException {
 		String[] paramsPassedThrough = params.split(commaSeparater);
 		for(int i = 0; i < paramsPassedThrough.length; i++){
+			isParamLocallyInitialized(paramsPassedThrough[i]);
 			this.paramTypes[i].doesValueMatchType(paramsPassedThrough[i]);
 		}
 		return true;
+	}
+	
+	private boolean isParamLocallyInitialized(String paramName) throws ParameterNotInitializedException{
+		// TODO search for variable, if it isn't locally initialized (or doesn't exist) throw the exception below, else return true.
+		throw new ParameterNotInitializedException("One of the parameters passed through the method is "
+				+ "not initialized.");
 	}
 
 }

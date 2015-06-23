@@ -1,5 +1,6 @@
 package scopes;
 
+import main.SJavacException;
 import types.InvalidValueException;
 
 public abstract class Scope {
@@ -25,7 +26,7 @@ public abstract class Scope {
 	}
 	
 	// TODO may want to try catch in method..
-	public abstract boolean checkParamLogic(String params) throws InvalidValueException;
+	public abstract boolean checkParamLogic(String params) throws SJavacException;
 	
 	/**
 	 * @return the scope name.

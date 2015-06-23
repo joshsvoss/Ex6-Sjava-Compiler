@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import scopes.LoopFactory;
 import scopes.Method;
 import scopes.Scope;
 import types.Type;
@@ -14,61 +13,27 @@ import types.TypeFactory;
 
 public class Parser {
 	
-	// The index for the first capture group.
+	// Indices for the different capture groups.
 	private static final int FIRST_GROUP_INDEX = 1;
-	
-	// The index for the second capture group.
 	private static final int SECOND_GROUPD_INDEX = 2;
-	
-	// The index for the third capture group.
 	private static final int THIRD_GROUP_INDEX = 3;
-	
-	// The index for the fourth capture group.
 	private static final int FOURTH_GROUP_INDEX = 4;
-	
-	// The index for the fifth capture group.
 	private static final int FIFTH_GROUP_INDEX = 5;
-	
-	// The index for the sixth capture group.
-	private static final int SIXTH_GROUP_INDEX = 6;
-	
-	// The index for the seventh capture group.
+	private static final int SIXTH_GROUP_INDEX = 6;	
 	private static final int SEVENTH_GROUP_INDEX = 7;
-	
-	// The index for the eighth capture group.
 	private static final int EIGHTH_GROUP_INDEX = 8;
-	
-	// The index for the ninth capture group.
 	private static final int NINTH_GROUP_INDEX = 9;
-	
-	// The index for the tenth capture group.
 	private static final int TENTH_GROUP_INDEX = 10;
 	
-	// The documentation or whitespace line type.
+	// The possible line types.
 	private static final int DOC_OR_BLANK = 0;
-	
-	// The variable declaration line type.
 	private static final int VAR_DECLARATION = 1;
-	
-	// The variable assignment line type.
 	private static final int VAR_ASSIGNMENT = 2;
-	
-	// The method declaration line type.
 	private static final int METHOD_DECLARATION = 3;
-	
-	// The method call line type.
 	private static final int METHOD_CALL = 4;
-
-	// The method return line type.
 	private static final int METHOD_RETURN = 5;
-	
-	// The if/while line type.
 	private static final int IF_WHILE = 6;
-
-	// The scope close line type.
 	private static final int SCOPE_CLOSE = 7;
-	
-	// The method scope basic depth.
 	private static final int METHOD_DEPTH = 1;
 	
 	// The line type of the previous line.
@@ -187,6 +152,7 @@ public class Parser {
 	
 	/**
 	 * Read the file line by line, sending each line to the line factory.
+	 * 
 	 * @throws unmatchedSyntaxException 
 	 */
 	public void readCode() throws SJavacException {
