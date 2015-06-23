@@ -12,6 +12,8 @@ public class Method extends Scope{
 	private Type[] paramTypes;
 	private String name;
 	private String[] params;
+	private static final int SECOND_GROUPD_INDEX = 2;
+	private static final int THIRD_GROUP_INDEX = 3;
 
 	// The regex for a comma seperator.
 	private String commaSeparater = "\\s*[,]{1}\\s*";
@@ -30,8 +32,8 @@ public class Method extends Scope{
 		// Create the method param types;
 		for(int i = 0; i < this.params.length; i++){
 			Matcher methParamMatch = this.methParam.matcher(this.params[i]);
-			String finalStr = methParamMatch.group(2);
-			String type = methParamMatch.group(3);
+			String finalStr = methParamMatch.group(SECOND_GROUPD_INDEX);
+			String type = methParamMatch.group(THIRD_GROUP_INDEX);
 			Type paramType = typeFactory.generateMethodParamType(finalStr, type);
 			this.paramTypes[i] = paramType;
 		}
@@ -46,12 +48,11 @@ public class Method extends Scope{
 		return params.split(commaSeparater);
 	}
 
+	// TODO necessary?
 	private void checkSyntax(String line) {
 		// TODO Auto-generated method stub
 		
 	}
-
-
 
 	// Separates a string of the arguments into an array of types.
 	public Type[] getParamTypes() {

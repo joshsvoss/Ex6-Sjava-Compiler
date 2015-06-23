@@ -106,6 +106,7 @@ public class Parser {
 	private TypeFactory tFactory = new TypeFactory();
 	
 	// A loop factory.
+	// TODO delete.
 	private LoopFactory lFactory = new LoopFactory();
 	
 	// A list of symbol tables:
@@ -195,7 +196,7 @@ public class Parser {
 				this.depth++;
 				// Send currLn and depth to loop Factory.
 				String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
-				String params = ifWhileMatch.group(THIRD_GROUP_INDEX);
+				String conditions = ifWhileMatch.group(THIRD_GROUP_INDEX);
 				//Scope loop = lFactory.generateLoop(currLn, this.depth);
 				// TODO the above line shouldn't be a comment.
 			}else if(scopeCloseMatch.matches()){
