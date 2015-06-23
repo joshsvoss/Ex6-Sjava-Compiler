@@ -1,3 +1,6 @@
 1) Are if and while similar enough for them to inherit from their own "block" parent class?
 
-2) 
+2) Consider refactoring of Scope class 
+
+3) Consider making ifWhile just a static method that checks it's argument for validity, not an object
+that inherits from scope.

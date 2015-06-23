@@ -15,6 +15,7 @@ public class Method extends Scope{
 	private String[] params;
 	private static final int SECOND_GROUPD_INDEX = 2;
 	private static final int THIRD_GROUP_INDEX = 3;
+	private boolean doesMethodClose;
 
 	// The regex for a comma seperator.
 	private String commaSeparater = "\\s*[,]{1}\\s*";
@@ -28,6 +29,7 @@ public class Method extends Scope{
 
 	public Method(String name, String params, int depth) throws InvalidTypeException {
 		super(name, params, depth);
+		this.doesMethodClose = false;
 		this.params = separateParams(params);
 		this.paramTypes = new Type[this.params.length];
 		// Create the method param types;
@@ -82,6 +84,14 @@ public class Method extends Scope{
 		// TODO search for variable, if it isn't locally initialized (or doesn't exist) throw the exception below, else return true.
 		throw new ParameterNotInitializedException("One of the parameters passed through the method is "
 				+ "not initialized.");
+	}
+	
+	public boolean doesMethodClose(){
+		return this.doesMethodClose;
+	}
+	
+	public void closeMethod(){
+		this.doesMethodClose = true;
 	}
 
 }

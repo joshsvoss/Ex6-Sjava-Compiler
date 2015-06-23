@@ -9,7 +9,7 @@ public abstract class Scope {
 	protected String name;
 	
 	// The depth of the current scope.
-	protected int depth;
+	protected int depth; //TODO we might not need this now that depth is handled in parser
 	
 	// The current scope's params.
 	protected String params;

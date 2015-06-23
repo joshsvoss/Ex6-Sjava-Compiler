@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import scopes.IfWhile;
 import scopes.Method;
 import scopes.Scope;
 import types.Type;
@@ -26,6 +27,11 @@ public class Parser {
 	private static final int TENTH_GROUP_INDEX = 10;
 	
 	private static final int NUM_READ_ITERATIONS = 2;
+	private static final int GLOBAL_ITERATION = 0;
+	private static final int SECOND_ITERATION = 1;
+	private static final int METHOD_DEPTH = 1;
+	private static final int GLOBAL_DEPTH = 0;
+	
 	
 	// The possible line types.
 	private static final int DOC_OR_BLANK = 0;
@@ -36,7 +42,7 @@ public class Parser {
 	private static final int METHOD_RETURN = 5;
 	private static final int IF_WHILE = 6;
 	private static final int SCOPE_CLOSE = 7;
-	private static final int METHOD_DEPTH = 1;
+
 	
 	// The line type of the previous line.
 	private int previousLnType;
@@ -160,6 +166,8 @@ public class Parser {
 	 */
 	public void readCode() throws SJavacException {
 		
+		// For keeping track of the current method that we're in:
+		Method curMethod = null;
 		
 		for (int i = 0; i < NUM_READ_ITERATIONS; i++) {
 			
@@ -214,7 +222,13 @@ public class Parser {
 								name, value, this.depth);
 						
 						// Now put it into the correct symbol table
-						symbolTableList.elementAt(this.depth).put(name, var);
+						Type previousType = symbolTableList.elementAt(this.depth).put(name, var);
+						if (previousType != null) {
+							// This means that we tried to declare something with the same name
+							// Twice in same scope, throw exception
+							throw new DoubleDeclarationInScopeException();
+						}
+						
 					}
 					// Otherwise, even though we're not building the variable we found a syntax match
 					// So it's kosher, continue to next line.
@@ -224,17 +238,17 @@ public class Parser {
 
 				} 
 				
-				else if (methDecMatch.matches() && this.depth == 0) {
+				else if (methDecMatch.matches() && this.depth == GLOBAL_ITERATION) {
 					
 					this.previousLnType = METHOD_DECLARATION;
 					
-					if (i == 0) {
+					if (i == GLOBAL_ITERATION) {
 						// Create new method.
 						String name = methDecMatch.group(FIRST_GROUP_INDEX);
 						String params = methDecMatch.group(THIRD_GROUP_INDEX);
-						Method method = new Method(name, params, this.depth);
+						curMethod = new Method(name, params, this.depth);
 						// Add the created method to list:
-						Method previousValue = methodMap.put(name, method);
+						Method previousValue = methodMap.put(name, curMethod);
 						if (previousValue != null) {
 							// This means that we tried to declare something with the same name
 							// Twice in same scope, throw exception
@@ -246,24 +260,42 @@ public class Parser {
 					
 				} 
 				
-				else if ((ifWhileMatch.matches())
-						&& (this.depth >= METHOD_DEPTH)) {
-					this.depth++;
-					// Create new if/while block
-					String name = ifWhileMatch.group(FIRST_GROUP_INDEX);
-					String conditions = ifWhileMatch.group(THIRD_GROUP_INDEX);
+				else if ((ifWhileMatch.matches())) {
+					
 					this.previousLnType = IF_WHILE;
-				} else if (methEndMatch.matches()) {
+					
+					if (this.depth == GLOBAL_DEPTH ) {
+						throw new GlobalIfWhileException();
+					}
+					
+					// Otherwise, we're at LEAST in the method depth
+					this.depth++;
+					// Only create the if/while block if we're on the second iteration:
+					if (i == SECOND_ITERATION) {
+						// Create new if/while block
+						String name = ifWhileMatch.group(FIRST_GROUP_INDEX); 
+						String conditions = ifWhileMatch
+								.group(THIRD_GROUP_INDEX);
+						IfWhile ifWhile = new IfWhile(name, conditions, depth); //TODO warning here for not doing anything with new object
+					}
+
+				}
+				
+				else if (this.depth > GLOBAL_DEPTH && methEndMatch.matches()) {
 					if ((this.depth == METHOD_DEPTH)
 							&& (scanner.hasNext("\\s*\\}{1}\\s*"))) {
 						// The a method is being closed
+						curMethod.closeMethod();
 					}
 					this.previousLnType = METHOD_RETURN;
 					continue;
-
-					// TODO A though - if the depth is 1 and it is not preceded by a return, throw error incorrect method close.
-				} else if ((scopeCloseMatch.matches())
-						&& (this.depth >= METHOD_DEPTH)) {
+				} 
+				
+				else if ((scopeCloseMatch.matches())) {
+					// A closing bracket can't exist in global scope, so if it does throw Excp.
+					if (this.depth == GLOBAL_DEPTH) {
+						throw new GlobalClosingBracketException();
+					}
 					if ((this.depth == METHOD_DEPTH)
 							&& (this.previousLnType != METHOD_RETURN)) {
 						throw new MissingMethodReturnException(
@@ -306,7 +338,8 @@ public class Parser {
 
 
 	private boolean shouldCreateLine(int i) {
-		return (i == 0 && this.depth == 0) || (i != 0 && this.depth != 0);
+		return (i == GLOBAL_ITERATION && this.depth == GLOBAL_ITERATION) || 
+				(i != GLOBAL_ITERATION  && this.depth != GLOBAL_ITERATION);
 	}
 
 }
