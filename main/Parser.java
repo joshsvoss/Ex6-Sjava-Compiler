@@ -353,15 +353,25 @@ public class Parser {
 		for (int i = this.depth; i >= 0; i--) {
 			Type varToSet = this.symbolTableList.elementAt(i).get(varName);
 			if (varToSet != null) {
+				
+				if (this.depth > GLOBAL_DEPTH && i == GLOBAL_DEPTH) {
+					// Then copy the value from the global level to ONLY the method level 
+					// (not deeper) so that we don't ruin any global initialization of the variable
+					// for future methods
+					Type clonedVar = varToSet.copyVar();
+					this.symbolTableList.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
+				}
+				// Either way, set the new value and boolean
 				foundVar = true;
 				varToSet.setValue(valueToUpdate);
 				break;
+
 			}
 		}
 		
 		// Now check to make sure we actually found a declared var, if not throw exception:
 		if (foundVar == false) {
-			throw new 
+			throw new UndeclaredAssignmentException();
 		}
 	}
 
