@@ -77,5 +77,31 @@ public abstract class Type {
 		// TODO write this method. Do we need this?
 		return false;
 	}
+	
+	
+	public Type copyVar() throws InvalidValueException{
+		// Based on the type of the Type, call it's specifc constructor
+		Type toReturn;
+
+		toReturn = null;
+		if (this instanceof Int) {
+			toReturn = new Int(this.name, this.value, this.declarationDepth, this.isFinal);
+		}
+		else if (this instanceof Boolean) {
+			toReturn = new Boolean(this.name, this.value, this.declarationDepth, this.isFinal);
+		}
+		else if (this instanceof Char) {
+			toReturn = new Char(this.name, this.value, this.declarationDepth, this.isFinal);
+		}
+		else if (this instanceof Double) {
+			toReturn = new Double(this.name, this.value, this.declarationDepth, this.isFinal);
+		}
+		else if (this instanceof StringType) {
+			toReturn = new StringType(this.name, this.value, this.declarationDepth, this.isFinal);
+		}
+	
+		
+		return toReturn;
+	}
 
 }
