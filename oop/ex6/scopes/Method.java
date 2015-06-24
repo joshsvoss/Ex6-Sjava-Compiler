@@ -1,5 +1,6 @@
 package oop.ex6.scopes;
 
+import java.security.InvalidParameterException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,21 +14,23 @@ public class Method extends Scope{
 	private Type[] paramTypes;
 	private String name;
 	private String[] paramsList;
-	private static final int SECOND_GROUPD_INDEX = 2;
+	private static final int SECOND_GROUP_INDEX = 2;
 	private static final int THIRD_GROUP_INDEX = 3;
 	private boolean doesMethodClose;
 
 	// The regex for a comma seperator.
-	private String commaSeparater = "\\s*[,]{1}\\s*";
+	private static final String commaSeparater = "\\s*[,]{1}\\s*";
 	
 	// The regex for the method parameters.
-	Pattern methParam = Pattern.compile("\\s*+((final{1})+\\s{1})?+((int|boolean|char|double|String){1})+"
+	private static final Pattern methParam = Pattern.compile("\\s*+((final{1})+\\s+)?+"
+			+ "((int|boolean|char|double|String){1})+"
 			+ "\\s*+[a-zA-Z_]{1}+\\w*+\\s*");
 	
 	// A type factory.
 	TypeFactory typeFactory = new TypeFactory();
 
-	public Method(String name, String params, int depth) throws InvalidTypeException {
+	public Method(String name, String params, int depth) throws InvalidTypeException,
+	InvalidParameterSyntaxException {
 		super(name, params, depth);
 		this.doesMethodClose = false;
 		if (this.params != null) {
@@ -35,13 +38,17 @@ public class Method extends Scope{
 			this.paramTypes = new Type[this.paramsList.length];
 			// Create the method param types;
 			for (int i = 0; i < this.paramsList.length; i++) {
-				Matcher methParamMatch = this.methParam
-						.matcher(this.paramsList[i]);
-				String finalStr = methParamMatch.group(SECOND_GROUPD_INDEX);
-				String type = methParamMatch.group(THIRD_GROUP_INDEX);
-				Type paramType = typeFactory.generateMethodParamType(finalStr,
-						type);
-				this.paramTypes[i] = paramType;
+				Matcher methParamMatch = methParam.matcher(this.paramsList[i]);
+				
+				if (methParamMatch.matches()) {
+					String finalStr = methParamMatch.group(SECOND_GROUP_INDEX);
+					String type = methParamMatch.group(THIRD_GROUP_INDEX);
+					Type paramType = typeFactory.generateMethodParamType(
+							finalStr, type);
+					this.paramTypes[i] = paramType;
+				} else {
+					throw new InvalidParameterSyntaxException();
+				}
 			}
 		} else{
 			this.paramTypes = null;
