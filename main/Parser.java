@@ -318,14 +318,17 @@ public class Parser {
 					} 
 					
 					else if (varAssignmentMatch.matches()) {
-						// Update the variable value. If variable doesn't exist throw error.
-						String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
-						String value = varAssignmentMatch
-								.group(SECOND_GROUPD_INDEX);
-						this.previousLnType = VAR_ASSIGNMENT;
 						
-						// Now try to change the value in our symbol table
-						tryChangeVarValue(name, value);
+						if (! (this.depth == GLOBAL_DEPTH && i == SECOND_ITERATION)) {
+							// Update the variable value. If variable doesn't exist throw error.
+							String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
+							String value = varAssignmentMatch
+									.group(SECOND_GROUPD_INDEX);
+							this.previousLnType = VAR_ASSIGNMENT;
+							
+							// Now try to change the value in our symbol table
+							tryChangeVarValue(name, value);
+						}
 					} 
 					
 					else if ((methCallMatch.matches())
