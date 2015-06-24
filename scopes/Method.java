@@ -12,7 +12,7 @@ import types.TypeFactory;
 public class Method extends Scope{
 	private Type[] paramTypes;
 	private String name;
-	private String[] params;
+	private String[] paramsList;
 	private static final int SECOND_GROUPD_INDEX = 2;
 	private static final int THIRD_GROUP_INDEX = 3;
 	private boolean doesMethodClose;
@@ -30,15 +30,21 @@ public class Method extends Scope{
 	public Method(String name, String params, int depth) throws InvalidTypeException {
 		super(name, params, depth);
 		this.doesMethodClose = false;
-		this.params = separateParams(params);
-		this.paramTypes = new Type[this.params.length];
-		// Create the method param types;
-		for(int i = 0; i < this.params.length; i++){
-			Matcher methParamMatch = this.methParam.matcher(this.params[i]);
-			String finalStr = methParamMatch.group(SECOND_GROUPD_INDEX);
-			String type = methParamMatch.group(THIRD_GROUP_INDEX);
-			Type paramType = typeFactory.generateMethodParamType(finalStr, type);
-			this.paramTypes[i] = paramType;
+		if (this.params != null) {
+			this.paramsList = separateParams(this.params);
+			this.paramTypes = new Type[this.paramsList.length];
+			// Create the method param types;
+			for (int i = 0; i < this.paramsList.length; i++) {
+				Matcher methParamMatch = this.methParam
+						.matcher(this.paramsList[i]);
+				String finalStr = methParamMatch.group(SECOND_GROUPD_INDEX);
+				String type = methParamMatch.group(THIRD_GROUP_INDEX);
+				Type paramType = typeFactory.generateMethodParamType(finalStr,
+						type);
+				this.paramTypes[i] = paramType;
+			}
+		} else{
+			this.paramTypes = null;
 		}
 	}
 	
@@ -72,6 +78,14 @@ public class Method extends Scope{
 
 	@Override
 	public boolean checkParamLogic(String params) throws SJavacException {
+	
+		// If one of the two is null, they both have to be null (0 args) to match
+		if(this.paramTypes == null || params == null) {
+			if ( !( this.paramTypes == null && params == null )) {
+				throw new IncorrectNumArgsException();
+			}
+		}
+		
 		String[] paramsPassedThrough = params.split(commaSeparater);
 		
 		// First check that the number of arguments matches the number of parameters
