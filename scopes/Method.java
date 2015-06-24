@@ -73,8 +73,15 @@ public class Method extends Scope{
 	@Override
 	public boolean checkParamLogic(String params) throws SJavacException {
 		String[] paramsPassedThrough = params.split(commaSeparater);
+		
+		// First check that the number of arguments matches the number of parameters
+		if (paramsPassedThrough.length != this.paramTypes.length) {
+			throw new IncorrectNumArgsException();
+		}
+		
+		// Then make sure that their corresponding types match
 		for(int i = 0; i < paramsPassedThrough.length; i++){
-			isParamLocallyInitialized(paramsPassedThrough[i]);
+//			isParamLocallyInitialized(paramsPassedThrough[i]); //TODO according to our test, you can pass an uninitialized arg to a method! so no need!
 			this.paramTypes[i].doesValueMatchType(paramsPassedThrough[i]);
 		}
 		return true;

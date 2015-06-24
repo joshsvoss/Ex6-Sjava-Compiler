@@ -57,7 +57,9 @@ public class Parser {
 	private String currLn;
 	
 	// A line counter.
-	private int lineCtr = 0;
+	// NOTE: for expandibility, to have multiple parser instances running simultaneously,
+	// NOTE: make this field and its getter non-static.
+	private static int lineCtr = 0;
 	
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
@@ -169,182 +171,195 @@ public class Parser {
 		// For keeping track of the current method that we're in:
 		Method curMethod = null;
 		
-		for (int i = 0; i < NUM_READ_ITERATIONS; i++) {
-			
-			while (scanner.hasNext()) {
-				currLn = scanner.nextLine();
-				lineCtr++;
-
-				// Documentation matcher against the current line.
-				Matcher docMatch = doc.matcher(currLn);
-
-				// White space matcher against the current line.
-				Matcher whiteSpaceMatch = whiteSpace.matcher(currLn);
-
-				// Method end matcher against the current line.
-				Matcher methEndMatch = methEnd.matcher(currLn);
-
-				// Variable declaration matcher against the current line.
-				Matcher varDecMatch = varDec.matcher(currLn);
-
-				// Method declaration matcher against the current line.
-				Matcher methDecMatch = methDec.matcher(currLn);
-
-				// Loop matcher against the current line.
-				Matcher ifWhileMatch = ifWhile.matcher(currLn);
-
-				//  Scope closer matcher against the current line.
-				Matcher scopeCloseMatch = scopeClose.matcher(currLn);
-
-				// Variable assignment matcher against the current line.
-				Matcher varAssignmentMatch = varAss.matcher(currLn);
-
-				// Method call matcher against the current line.
-				Matcher methCallMatch = methCall.matcher(currLn);
-
-				// If the currLn is documentation, a blank line, method call, or method return, continue.
-				// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
-				if (docMatch.matches() || whiteSpaceMatch.matches()) {
-					this.previousLnType = DOC_OR_BLANK;
-					continue;
-
-				} 
+		try {
+			for (int i = 0; i < NUM_READ_ITERATIONS; i++) {
 				
-				else if (varDecMatch.matches()) {
-					this.previousLnType = VAR_DECLARATION;
-					if (shouldCreateLine(i) ) {
-						// Send currLn and depth to type factory.
-						String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
-						String type = varDecMatch.group(THIRD_GROUP_INDEX);
-						String name = varDecMatch.group(FIFTH_GROUP_INDEX);
-						String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
-						Type var = typeFactory.generateType(finalStr, type,
-								name, value, this.depth);
+				while (scanner.hasNext()) {
+					currLn = scanner.nextLine();
+					lineCtr++;
+
+					// Documentation matcher against the current line.
+					Matcher docMatch = doc.matcher(currLn);
+
+					// White space matcher against the current line.
+					Matcher whiteSpaceMatch = whiteSpace.matcher(currLn);
+
+					// Method end matcher against the current line.
+					Matcher methEndMatch = methEnd.matcher(currLn);
+
+					// Variable declaration matcher against the current line.
+					Matcher varDecMatch = varDec.matcher(currLn);
+
+					// Method declaration matcher against the current line.
+					Matcher methDecMatch = methDec.matcher(currLn);
+
+					// Loop matcher against the current line.
+					Matcher ifWhileMatch = ifWhile.matcher(currLn);
+
+					//  Scope closer matcher against the current line.
+					Matcher scopeCloseMatch = scopeClose.matcher(currLn);
+
+					// Variable assignment matcher against the current line.
+					Matcher varAssignmentMatch = varAss.matcher(currLn);
+
+					// Method call matcher against the current line.
+					Matcher methCallMatch = methCall.matcher(currLn);
+
+					// If the currLn is documentation, a blank line, method call, or method return, continue.
+					// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
+					if (docMatch.matches() || whiteSpaceMatch.matches()) {
+						this.previousLnType = DOC_OR_BLANK;
+						continue;
+
+					} 
+					
+					else if (varDecMatch.matches()) {
+						this.previousLnType = VAR_DECLARATION;
+						if (shouldCreateLine(i) ) {
+							// Send currLn and depth to type factory.
+							String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
+							String type = varDecMatch.group(THIRD_GROUP_INDEX);
+							String name = varDecMatch.group(FIFTH_GROUP_INDEX);
+							String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
+							Type var = typeFactory.generateType(finalStr, type,
+									name, value, this.depth);
+							
+							// Now put it into the correct symbol table
+							Type previousType = symbolTableList.elementAt(this.depth).put(name, var);
+							if (previousType != null) {
+								// This means that we tried to declare something with the same name
+								// Twice in same scope, throw exception
+								throw new DoubleDeclarationInScopeException();
+							}
+							
+						}
+						// Otherwise, even though we're not building the variable we found a syntax match
+						// So it's kosher, continue to next line. (no need for conintue because they're all
+						// "else if"
+
+					} 
+					
+					else if (methDecMatch.matches()) {
 						
-						// Now put it into the correct symbol table
-						Type previousType = symbolTableList.elementAt(this.depth).put(name, var);
-						if (previousType != null) {
-							// This means that we tried to declare something with the same name
-							// Twice in same scope, throw exception
-							throw new DoubleDeclarationInScopeException();
+						// If the method declaration comes inside another method, TREIF!
+						if (this.depth > GLOBAL_DEPTH) {
+							throw new NestedMethodDeclarationException();
 						}
 						
-					}
-					// Otherwise, even though we're not building the variable we found a syntax match
-					// So it's kosher, continue to next line. (no need for conintue because they're all
-					// "else if"
-
-				} 
-				
-				else if (methDecMatch.matches()) {
+						this.previousLnType = METHOD_DECLARATION;
+						
+						if (i == GLOBAL_ITERATION) {
+							// Create new method.
+							String name = methDecMatch.group(FIRST_GROUP_INDEX);
+							String params = methDecMatch.group(THIRD_GROUP_INDEX);
+							curMethod = new Method(name, params, this.depth);
+							// Add the created method to list:
+							Method previousValue = methodMap.put(name, curMethod);
+							if (previousValue != null) {
+								// This means that we tried to declare something with the same name
+								// Twice in same scope, throw exception
+								throw new DoubleDeclarationInScopeException();
+							}
+							
+						}
+						this.depth++;
+						
+					} 
 					
-					// If the method declaration comes inside another method, TREIF!
-					if (this.depth > GLOBAL_DEPTH) {
-						throw new NestedMethodDeclarationException();
-					}
-					
-					this.previousLnType = METHOD_DECLARATION;
-					
-					if (i == GLOBAL_ITERATION) {
-						// Create new method.
-						String name = methDecMatch.group(FIRST_GROUP_INDEX);
-						String params = methDecMatch.group(THIRD_GROUP_INDEX);
-						curMethod = new Method(name, params, this.depth);
-						// Add the created method to list:
-						Method previousValue = methodMap.put(name, curMethod);
-						if (previousValue != null) {
-							// This means that we tried to declare something with the same name
-							// Twice in same scope, throw exception
-							throw new DoubleDeclarationInScopeException();
+					else if ((ifWhileMatch.matches())) {
+						
+						this.previousLnType = IF_WHILE;
+						
+						if (this.depth == GLOBAL_DEPTH ) {
+							throw new GlobalIfWhileException();
 						}
 						
+						// Otherwise, we're at LEAST in the method depth
+						this.depth++;
+						// Only create the if/while block if we're on the second iteration:
+						if (i == SECOND_ITERATION) {
+							// Create new if/while block
+							String name = ifWhileMatch.group(FIRST_GROUP_INDEX); 
+							String conditions = ifWhileMatch
+									.group(THIRD_GROUP_INDEX);
+							IfWhile ifWhile = new IfWhile(name, conditions, depth); //TODO warning here for not doing anything with new object
+						}
+
 					}
-					this.depth++;
 					
-				} 
-				
-				else if ((ifWhileMatch.matches())) {
+					else if (this.depth > GLOBAL_DEPTH && methEndMatch.matches()) {
+						if ((this.depth == METHOD_DEPTH)
+								&& (scanner.hasNext("\\s*\\}{1}\\s*"))) {
+							// The a method is being closed
+							curMethod.closeMethod();
+						}
+						this.previousLnType = METHOD_RETURN;
+					} 
 					
-					this.previousLnType = IF_WHILE;
+					else if ((scopeCloseMatch.matches())) {
+						// A closing bracket can't exist in global scope, so if it does throw Exception
+						if (this.depth == GLOBAL_DEPTH) {
+							throw new GlobalClosingBracketException();
+						}
+						else if ((this.depth == METHOD_DEPTH)
+								&& (this.previousLnType != METHOD_RETURN)) {
+							throw new MissingMethodReturnException("Missing the method return statement.");
+						}
+						// Delete the table for the scope that is closing, and decrement depth
+						this.symbolTableList.remove(this.depth);
+						this.depth--;
+					} 
 					
-					if (this.depth == GLOBAL_DEPTH ) {
-						throw new GlobalIfWhileException();
-					}
+					else if (varAssignmentMatch.matches()) {
+						// Update the variable value. If variable doesn't exist throw error.
+						String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
+						String value = varAssignmentMatch
+								.group(SECOND_GROUPD_INDEX);
+						this.previousLnType = VAR_ASSIGNMENT;
+						
+						// Now try to change the value in our symbol table
+						tryChangeVarValue(name, value);
+					} 
 					
-					// Otherwise, we're at LEAST in the method depth
-					this.depth++;
-					// Only create the if/while block if we're on the second iteration:
-					if (i == SECOND_ITERATION) {
-						// Create new if/while block
-						String name = ifWhileMatch.group(FIRST_GROUP_INDEX); 
-						String conditions = ifWhileMatch
-								.group(THIRD_GROUP_INDEX);
-						IfWhile ifWhile = new IfWhile(name, conditions, depth); //TODO warning here for not doing anything with new object
+					else if ((methCallMatch.matches())
+							&& (this.depth >= METHOD_DEPTH)) {
+						String name = methCallMatch.group(FIRST_GROUP_INDEX);
+						String params = methCallMatch.group(SECOND_GROUPD_INDEX);
+						// Check the method params.
+						this.previousLnType = METHOD_CALL;
+						
+					} 
+					
+					else {
+						// Throw syntax error.
+						// TODO how could we have a more specific exception
+						throw new unmatchedSyntaxException(
+								"Current line doesn't match any possible correct "
+										+ "syntax regex patterns.");
 					}
 
 				}
 				
-				else if (this.depth > GLOBAL_DEPTH && methEndMatch.matches()) {
-					if ((this.depth == METHOD_DEPTH)
-							&& (scanner.hasNext("\\s*\\}{1}\\s*"))) {
-						// The a method is being closed
-						curMethod.closeMethod();
-					}
-					this.previousLnType = METHOD_RETURN;
-				} 
-				
-				else if ((scopeCloseMatch.matches())) {
-					// A closing bracket can't exist in global scope, so if it does throw Exception
-					if (this.depth == GLOBAL_DEPTH) {
-						throw new GlobalClosingBracketException();
-					}
-					else if ((this.depth == METHOD_DEPTH)
-							&& (this.previousLnType != METHOD_RETURN)) {
-						throw new MissingMethodReturnException("Missing the method return statement.");
-					}
-					// Delete the table for the scope that is closing, and decrement depth
-					this.symbolTableList.remove(this.depth);
-					this.depth--;
-				} 
-				
-				else if (varAssignmentMatch.matches()) {
-					// Update the variable value. If variable doesn't exist throw error.
-					String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
-					String value = varAssignmentMatch
-							.group(SECOND_GROUPD_INDEX);
-					this.previousLnType = VAR_ASSIGNMENT;
-					
-					// Now try to change the value in our symbol table
-					tryChangeVarValue(name, value);
-				} 
-				
-				else if ((methCallMatch.matches())
-						&& (this.depth >= METHOD_DEPTH)) {
-					String name = methCallMatch.group(FIRST_GROUP_INDEX);
-					String params = methCallMatch.group(SECOND_GROUPD_INDEX);
-					// Check the method params.
-					this.previousLnType = METHOD_CALL;
-				} 
-				
-				else {
-					// Throw syntax error.
-					// TODO how could we have a more specific exception
-					throw new unmatchedSyntaxException(
-							"Current line doesn't match any possible correct "
-									+ "syntax.");
+				// At the end of for loop, reset scanner to beginign
+				try {
+					scanner = new Scanner(this.srcFile);
+				} catch (FileNotFoundException e) {
+					// Do nothing, since we would have caught this exception the first time 
+					// we create the scanner.
 				}
-
 			}
-			
-			// At the end of for loop, reset scanner to beginign
-			try {
-				scanner = new Scanner(this.srcFile);
-			} catch (FileNotFoundException e) {
-				// Do nothing, since we would have caught this exception the first time 
-				// we create the scanner.
-			}
+		} catch (SJavacException exceptionToRethrowAfterClosing) {
+			// This catch exists to make sure you close the scanner (in the finally block) no matter
+			// What exception is thrown and no matter where it is thrown.
+			// After closing the scanner, rethrow the exception up to the main undisturbed
+			// So it can be printed:
+			throw exceptionToRethrowAfterClosing;
+		}
+		finally {
+			this.scanner.close();
 		}
 	}
+	
 
 
 	private void tryChangeVarValue(String varName, String valueToUpdate) throws SJavacException {
@@ -379,6 +394,16 @@ public class Parser {
 	private boolean shouldCreateLine(int i) {
 		return (i == GLOBAL_ITERATION && this.depth == GLOBAL_ITERATION) || 
 				(i != GLOBAL_ITERATION  && this.depth != GLOBAL_ITERATION);
+	}
+	
+	/** This method returns the current line of the parser.
+	 * 
+	 * NOTE: for expandability, if you want to have more than one Parser instance at once,
+	 * make this method non-static and call it on a reference to the Parser instance.  
+	 * @return int current line in parser.
+	 */
+	public static int getLineCounter() {
+		return Parser.lineCtr;
 	}
 
 }

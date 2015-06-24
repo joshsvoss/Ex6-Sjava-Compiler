@@ -41,6 +41,7 @@ public class Sjavac {
 		} catch (SJavacException e){
 			// TODO error sometimes prints weirdly for some tests ie.062.
 			System.out.println(ILLEGAL_CODE_NUM);
+			System.err.println("Syntax error in line:  " + Parser.getLineCounter());
 			System.err.println(e.getMessage());
 			return;
 		}
