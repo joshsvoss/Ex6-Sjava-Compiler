@@ -32,6 +32,10 @@ public class Parser {
 	private static final int METHOD_DEPTH = 1;
 	private static final int GLOBAL_DEPTH = 0;
 	
+	private static final int BEG_OF_FILE = 0;
+	
+	
+	
 	
 	// The possible line types.
 	private static final int DOC_OR_BLANK = 0;
@@ -331,19 +335,27 @@ public class Parser {
 						}
 					} 
 					
-					else if ((methCallMatch.matches())
-							&& (this.depth >= METHOD_DEPTH)) {
-						String name = methCallMatch.group(FIRST_GROUP_INDEX);
-						String params = methCallMatch.group(SECOND_GROUPD_INDEX);
-						// Check the method params.
+					else if (methCallMatch.matches()) {
+						
 						this.previousLnType = METHOD_CALL;
-						verifyMethodCall(name, params);
+						
+						if (i == SECOND_ITERATION){
+							if (this.depth == GLOBAL_DEPTH) {
+								throw new GlobalMethodCallException();
+							}
+							String name = methCallMatch.group(FIRST_GROUP_INDEX);
+							String params = methCallMatch.group(SECOND_GROUPD_INDEX);
+							// Check the method params.
+							
+							verifyMethodCall(name, params);
+						}
+						
+						
 						
 					} 
 					
 					else {
 						// Throw syntax error.
-						// TODO how could we have a more specific exception
 						throw new unmatchedSyntaxException(
 								"Current line doesn't match any possible correct "
 										+ "syntax regex patterns.");
@@ -354,6 +366,7 @@ public class Parser {
 				// At the end of for loop, reset scanner to beginign
 				try {
 					scanner = new Scanner(this.srcFile);
+					lineCtr = BEG_OF_FILE;
 				} catch (FileNotFoundException e) {
 					// Do nothing, since we would have caught this exception the first time 
 					// we create the scanner.
@@ -388,8 +401,7 @@ public class Parser {
 		else {
 			invokedMethod.checkParamLogic(params);
 		}
-		
-		
+
 	}
 
 
