@@ -4,3 +4,7 @@
 
 3) Consider making ifWhile just a static method that checks it's argument for validity, not an object
 that inherits from scope.
+
+4) move data structures and data structure methods to be members of a seperate class: symbolTables
+
+5)  Move exceptions around to correct package

@@ -337,6 +337,7 @@ public class Parser {
 						String params = methCallMatch.group(SECOND_GROUPD_INDEX);
 						// Check the method params.
 						this.previousLnType = METHOD_CALL;
+						verifyMethodCall(name, params);
 						
 					} 
 					
@@ -368,6 +369,27 @@ public class Parser {
 		finally {
 			this.scanner.close();
 		}
+	}
+
+
+	/** This method  first tries to find an existing declared method with the same name
+	 * as the method call, and then checks if the parameters are legal.
+	 * @param methodName name of the method.
+	 * @param params arguments passed to said method.
+	 * @throws SJavacException if the method call was incorrect
+	 */
+	private void verifyMethodCall(String methodName, String params) throws SJavacException {
+		Method invokedMethod = this.methodMap.get(methodName);
+		
+		if (invokedMethod == null) {
+			// Then the method name being called doesn't exist!
+			throw new WrongMethodNameException();
+		}
+		else {
+			invokedMethod.checkParamLogic(params);
+		}
+		
+		
 	}
 
 
