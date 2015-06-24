@@ -24,8 +24,7 @@ public class Double extends Type{
 		if(doubleMatch.matches()){
 			return true;
 		}
-		throw new InvalidValueException("The given value does not fit the variable type to which it is "
-				+ "being assigned.");
+		throw new InvalidValueException();
 	}
 
 }

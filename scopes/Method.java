@@ -82,8 +82,7 @@ public class Method extends Scope{
 	
 	private boolean isParamLocallyInitialized(String paramName) throws ParameterNotInitializedException{
 		// TODO search for variable, if it isn't locally initialized (or doesn't exist) throw the exception below, else return true.
-		throw new ParameterNotInitializedException("One of the parameters passed through the method is "
-				+ "not initialized.");
+		throw new ParameterNotInitializedException();
 	}
 	
 	public boolean doesMethodClose(){

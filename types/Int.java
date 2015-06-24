@@ -48,8 +48,7 @@ public class Int extends Type {
 		if(intMatch.matches()){
 			return true;
 		}
-		throw new InvalidValueException("The given value does not fit the variable type to which it is "
-				+ "being assigned.");
+		throw new InvalidValueException();
 	}
 
 }

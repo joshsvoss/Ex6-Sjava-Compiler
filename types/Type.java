@@ -56,7 +56,7 @@ public abstract class Type {
 				this.isInitialized = true;
 			}
 		}else{
-			throw new FinalVariableException("A final variable cannot be reassigned.");
+			throw new FinalVariableException();
 		}
 	}
 	
