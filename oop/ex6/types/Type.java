@@ -38,14 +38,16 @@ public abstract class Type {
 			throw new UninitializedFinalVariableException();
 		}
 		
-		// Only try to match if value isn't null:
-		if ((value != null) && this.doesValueMatchType(value)) {
-			this.value = value;
-			this.isInitialized = true;
+		if ((value != null)) {
+			// Only try to match if value isn't null:
+			if (this.doesValueMatchType(value)) {
+				this.value = value;
+				this.isInitialized = true;
+			}
+			// TODO delet below vars if don't end up using.
+			//this.isInitialized = isInitialized;
+			//this.isLocallyInitialized = isLocallyInitialized;
 		}
-		// TODO delet below vars if don't end up using.
-		//this.isInitialized = isInitialized;
-		//this.isLocallyInitialized = isLocallyInitialized;
 		
 	}
 	
