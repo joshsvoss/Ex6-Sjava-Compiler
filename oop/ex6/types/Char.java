@@ -1,7 +1,5 @@
 package oop.ex6.types;
 
-import java.util.HashMap;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,10 +11,9 @@ public class Char extends Type {
 		super(isFinal);
 	}
 	
-	public Char(String name, String value, int depth, boolean isFinal, 
-			Vector<HashMap<String, Type>> symbolTableList) throws InvalidValueException,
+	public Char(String name, String value, int depth, boolean isFinal) throws InvalidValueException,
 	UninitializedFinalVariableException, AssignmentFromUninitializedVarException {
-		super(name, value, depth, isFinal, symbolTableList);
+		super(name, value, depth, isFinal);
 		// TODO Auto-generated constructor stub
 	}
 

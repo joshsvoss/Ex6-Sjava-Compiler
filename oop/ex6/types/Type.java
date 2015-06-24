@@ -30,8 +30,7 @@ public abstract class Type {
 		this.value = null;
 	}
 	
-	public Type(String name, String value, int depth, boolean isFinal, 
-			Vector<HashMap<String, Type>> symbolTableList) 
+	public Type(String name, String value, int depth, boolean isFinal) 
 			throws InvalidValueException, UninitializedFinalVariableException, AssignmentFromUninitializedVarException { //TODO should isLocallyInitialized be a method too?
 		
 		this.declarationDepth = depth;
@@ -45,7 +44,7 @@ public abstract class Type {
 		
 		if ((value != null)) {
 			// first check if "value" isn't a literal, but rather is a reference to a symbol (variable)
-			Type foundType = lookupPossibleSymbol(value, symbolTableList);
+			Type foundType = lookupPossibleSymbol(value);
 			if (foundType != null) {
 				// That means we found a symbol in our lookup, but we have to make sure
 				// It's initialized and is Matim.
@@ -80,10 +79,13 @@ public abstract class Type {
 	 * instead of a literal.  
 	 * 
 	 */
-	private Type lookupPossibleSymbol(String value, Vector<HashMap<String, Type>> symbolTabelList) {
+	private Type lookupPossibleSymbol(String value) {
 		// Start from most recent scope and go down to global:
+		
+		Vector<HashMap<String, Type>> list = Parser.getSymbolTableList();
+		
 		for (int i = this.declarationDepth; i >= Parser.GLOBAL_DEPTH; i--) {
-			Type foundType = symbolTabelList.elementAt(i).get(value);
+			Type foundType = list.elementAt(i).get(value);
 			
 			if (foundType != null) {
 				 // That means we found a symbol of that name. All that remains is to make sure

@@ -13,11 +13,9 @@ public class Boolean extends Type {
 		super(isFinal);
 	}
 
-	public Boolean(String name, String value, int depth, boolean isFinal, 
-			Vector<HashMap<String, Type>> symbolTableList) throws InvalidValueException,
+	public Boolean(String name, String value, int depth, boolean isFinal) throws InvalidValueException,
 	UninitializedFinalVariableException, AssignmentFromUninitializedVarException {
-		super(name, value, depth, isFinal, symbolTableList);
-		// TODO Auto-generated constructor stub
+		super(name, value, depth, isFinal);
 	}
 
 	@Override

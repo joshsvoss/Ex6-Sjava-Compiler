@@ -138,7 +138,10 @@ public class Parser {
 //	private LoopFactory lFactory = new LoopFactory();
 	
 	// A list of symbol tables:
-	private Vector<HashMap<String, Type>> symbolTableList;
+	// NOTE: for expandibility, if you want to run multiple parsers instances at once, 
+	// NOTE: You'll need to make this and the getter non-static, as well as other places 
+	// NOTE: where the NOTE comment appears.
+	private static Vector<HashMap<String, Type>> symbolTableList;
 	
 	// List of methods:
 	private HashMap<String, Method> methodMap;
@@ -404,8 +407,10 @@ public class Parser {
 
 	}
 	
-	Vector<HashMap<String, Type>> getSymbolTableList() {
-		return this.symbolTableList;
+	// TODO I don't like that this is PUBLIC!!!!!
+	public static Vector<HashMap<String, Type>> getSymbolTableList() {
+		return symbolTableList;
+		//TODO THIS might sometimes return null if it's called statically before an instance has been created.
 	}
 
 

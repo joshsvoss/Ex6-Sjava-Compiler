@@ -4,6 +4,8 @@ import oop.ex6.main.SJavacException;
 
 public class InvalidTypeException extends SJavacException {
 
+	private static final long serialVersionUID = 1L;
+
 	public InvalidTypeException() {
 		// TODO Auto-generated constructor stub
 	}
