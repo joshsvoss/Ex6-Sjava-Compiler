@@ -42,8 +42,8 @@ public class Int extends Type {
 //	}
 
 	@Override
-	public boolean doesValueMatchType(String value)
-			throws InvalidValueException {
+	public boolean doesValueMatchType(String value) throws InvalidValueException {
+		
 		Matcher intMatch = intRegex.matcher(value);
 		if(intMatch.matches()){
 			return true;

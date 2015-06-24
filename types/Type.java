@@ -31,7 +31,8 @@ public abstract class Type {
 		this.declarationDepth = depth;
 		this.isFinal = isFinal;
 		this.name = name;
-		if(doesValueMatchType(value)){
+		// Only try to match if value isn't null:
+		if(this.value != null && doesValueMatchType(value)){
 			this.value = value;
 			this.isInitialized = true;
 		}
@@ -69,6 +70,7 @@ public abstract class Type {
 	}
 	
 	public abstract boolean doesValueMatchType(String value) throws InvalidValueException;
+		
 	
 	public boolean isInitialized(){
 		return this.isInitialized();
