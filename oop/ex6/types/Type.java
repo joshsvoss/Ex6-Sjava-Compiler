@@ -1,5 +1,9 @@
 package oop.ex6.types;
 
+import java.util.HashMap;
+import java.util.Vector;
+
+import oop.ex6.main.Parser;
 import oop.ex6.main.SJavacException;
 
 public abstract class Type {
@@ -26,8 +30,9 @@ public abstract class Type {
 		this.value = null;
 	}
 	
-	public Type(String name, String value, int depth, boolean isFinal) throws InvalidValueException, 
-	UninitializedFinalVariableException { //TODO should isLocallyInitialized be a method too?
+	public Type(String name, String value, int depth, boolean isFinal, 
+			Vector<HashMap<String, Type>> symbolTableList) 
+			throws InvalidValueException, UninitializedFinalVariableException, AssignmentFromUninitializedVarException { //TODO should isLocallyInitialized be a method too?
 		
 		this.declarationDepth = depth;
 		this.isFinal = isFinal;
@@ -39,6 +44,24 @@ public abstract class Type {
 		}
 		
 		if ((value != null)) {
+			// first check if "value" isn't a literal, but rather is a reference to a symbol (variable)
+			Type foundType = lookupPossibleSymbol(value, symbolTableList);
+			if (foundType != null) {
+				// That means we found a symbol in our lookup, but we have to make sure
+				// It's initialized and is Matim.
+				if(!foundType.isInitialized) {
+					throw new AssignmentFromUninitializedVarException();
+				}
+				// If it is initialized, check that the type matchs
+				boolean isMatch = doesTargetTypeMatchSource(foundType);
+				if (!isMatch) {
+					throw new InvalidValueException();
+				}
+				
+				// Otherwise, we can assign the value from the source to the target variable:
+				this.value = new String(foundType.getValue());
+			}
+			
 			// Only try to match if value isn't null:
 			if (this.doesValueMatchType(value)) {
 				this.value = value;
@@ -51,6 +74,27 @@ public abstract class Type {
 		
 	}
 	
+	protected abstract boolean doesTargetTypeMatchSource(Type foundType);
+
+	/** This method takes the value in an assignment statement, and checks to see if it's a symbol
+	 * instead of a literal.  
+	 * 
+	 */
+	private Type lookupPossibleSymbol(String value, Vector<HashMap<String, Type>> symbolTabelList) {
+		// Start from most recent scope and go down to global:
+		for (int i = this.declarationDepth; i >= Parser.GLOBAL_DEPTH; i--) {
+			Type foundType = symbolTabelList.elementAt(i).get(value);
+			
+			if (foundType != null) {
+				 // That means we found a symbol of that name. All that remains is to make sure
+				// it's initialized and the source type and be assigned to the target type.
+				return foundType;
+			}
+		}
+		
+		return null;
+	}
+
 	public String getName(){
 		return this.name;
 	}
@@ -90,7 +134,7 @@ public abstract class Type {
 	}
 	
 	
-	public Type copyVar() throws InvalidValueException, UninitializedFinalVariableException{
+	public Type copyVar() throws InvalidValueException, UninitializedFinalVariableException, AssignmentFromUninitializedVarException{
 		// Based on the type of the Type, call it's specifc constructor
 		Type toReturn;
 

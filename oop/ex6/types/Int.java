@@ -1,5 +1,7 @@
 package oop.ex6.types;
 
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,9 +14,10 @@ public class Int extends Type {
 		super(isFinal);
 	}
 	
-	public Int(String name, String value, int depth, boolean isFinal) throws InvalidValueException, 
-	UninitializedFinalVariableException {
-		super(name, value, depth, isFinal);
+	public Int(String name, String value, int depth, boolean isFinal, 
+			Vector<HashMap<String, Type>> symbolTableList) throws InvalidValueException, 
+	UninitializedFinalVariableException, AssignmentFromUninitializedVarException {
+		super(name, value, depth, isFinal, symbolTableList);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -50,6 +53,11 @@ public class Int extends Type {
 			return true;
 		}
 		throw new InvalidValueException();
+	}
+	
+	@Override
+	protected boolean doesTargetTypeMatchSource(Type foundType) {
+		return foundType instanceof Int; 
 	}
 
 }

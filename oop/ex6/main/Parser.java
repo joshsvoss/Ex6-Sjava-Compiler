@@ -29,8 +29,8 @@ public class Parser {
 	private static final int NUM_READ_ITERATIONS = 2;
 	private static final int GLOBAL_ITERATION = 0;
 	private static final int SECOND_ITERATION = 1;
-	private static final int METHOD_DEPTH = 1;
-	private static final int GLOBAL_DEPTH = 0;
+	public static final int METHOD_DEPTH = 1;
+	public static final int GLOBAL_DEPTH = 0;
 	
 	private static final int BEG_OF_FILE = 0;
 	
@@ -402,6 +402,10 @@ public class Parser {
 			invokedMethod.checkParamLogic(params);
 		}
 
+	}
+	
+	Vector<HashMap<String, Type>> getSymbolTableList() {
+		return this.symbolTableList;
 	}
 
 
