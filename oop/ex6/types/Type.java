@@ -31,14 +31,16 @@ public abstract class Type {
 		this.declarationDepth = depth;
 		this.isFinal = isFinal;
 		this.name = name;
-		// Only try to match if value isn't null:
-		if(this.value != null && doesValueMatchType(value)){
-			this.value = value;
-			this.isInitialized = true;
+		if (value != null) {
+			// Only try to match if value isn't null:
+			if (doesValueMatchType(value)) {
+				this.value = value;
+				this.isInitialized = true;
+			}
+			// TODO delet below vars if don't end up using.
+			//this.isInitialized = isInitialized;
+			//this.isLocallyInitialized = isLocallyInitialized;
 		}
-		// TODO delet below vars if don't end up using.
-		//this.isInitialized = isInitialized;
-		//this.isLocallyInitialized = isLocallyInitialized;
 		
 	}
 	

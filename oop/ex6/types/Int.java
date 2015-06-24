@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class Int extends Type {
 	
-	private static final Pattern intRegex = Pattern.compile("-?+[0-9]+"); //TODO Magic number?
+	private static final Pattern intRegex = Pattern.compile("-?[0-9]+"); //TODO Magic number?
 	
 	public Int(boolean isFinal){
 		super(isFinal);
