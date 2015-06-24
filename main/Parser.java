@@ -157,6 +157,8 @@ public class Parser {
 		
 		// Initilize the data structures to hold the symbol and method tables.
 		this.symbolTableList = new Vector<HashMap<String, Type>>();
+		// And add a table in the first spot:
+		this.symbolTableList.add(new HashMap<String, Type>());
 		this.methodMap = new HashMap<String, Method>();
 	}
 	
@@ -246,6 +248,8 @@ public class Parser {
 							throw new NestedMethodDeclarationException();
 						}
 						
+						this.incrementDepth();
+						
 						this.previousLnType = METHOD_DECLARATION;
 						
 						if (i == GLOBAL_ITERATION) {
@@ -262,7 +266,7 @@ public class Parser {
 							}
 							
 						}
-						this.depth++;
+
 						
 					} 
 					
@@ -274,8 +278,7 @@ public class Parser {
 							throw new GlobalIfWhileException();
 						}
 						
-						// Otherwise, we're at LEAST in the method depth
-						this.depth++;
+						incrementDepth();
 						// Only create the if/while block if we're on the second iteration:
 						if (i == SECOND_ITERATION) {
 							// Create new if/while block
@@ -357,6 +360,25 @@ public class Parser {
 		}
 		finally {
 			this.scanner.close();
+		}
+	}
+
+
+	/** This method both increments the depth and creates a new symbolTable 
+	 * and the "depth" index of the vector IF one wasn't already created at that level.
+	 * 
+	 */
+	private void incrementDepth() {
+		this.depth++;
+		
+		// Now check if table needs to be created or not:
+		if (this.symbolTableList.size()  < this.depth + 1) {
+			// then we need to add a new spot AND table onto the end:
+			this.symbolTableList.add(new HashMap<String, Type>());
+		}
+		
+		if (this.symbolTableList.elementAt(this.depth)  == null) {
+			this.symbolTableList.add(this.depth, new HashMap<String, Type>());
 		}
 	}
 	
