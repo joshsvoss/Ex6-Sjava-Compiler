@@ -163,9 +163,9 @@ public class Parser {
 		this.scanner = new Scanner(this.srcFile);
 		
 		// Initilize the data structures to hold the symbol and method tables.
-		this.symbolTableList = new Vector<HashMap<String, Type>>();
+		symbolTableList = new Vector<HashMap<String, Type>>();
 		// And add a table in the first spot:
-		this.symbolTableList.add(new HashMap<String, Type>());
+		symbolTableList.add(new HashMap<String, Type>());
 		this.methodMap = new HashMap<String, Method>();
 	}
 	
@@ -320,7 +320,7 @@ public class Parser {
 							throw new MissingMethodReturnException("Missing the method return statement.");
 						}
 						// Delete the table for the scope that is closing, and decrement depth
-						this.symbolTableList.remove(this.depth);
+						symbolTableList.remove(this.depth);
 						this.depth--;
 					} 
 					
@@ -422,13 +422,13 @@ public class Parser {
 		this.depth++;
 		
 		// Now check if table needs to be created or not:
-		if (this.symbolTableList.size()  < this.depth + 1) {
+		if (symbolTableList.size()  < this.depth + 1) {
 			// then we need to add a new spot AND table onto the end:
-			this.symbolTableList.add(new HashMap<String, Type>());
+			symbolTableList.add(new HashMap<String, Type>());
 		}
 		
-		if (this.symbolTableList.elementAt(this.depth)  == null) {
-			this.symbolTableList.add(this.depth, new HashMap<String, Type>());
+		if (symbolTableList.elementAt(this.depth)  == null) {
+			symbolTableList.add(this.depth, new HashMap<String, Type>());
 		}
 	}
 	
@@ -438,7 +438,7 @@ public class Parser {
 		// Start at highest depth (where we are now) and go down to global
 		boolean foundVar = false;
 		for (int i = this.depth; i >= 0; i--) {
-			Type varToSet = this.symbolTableList.elementAt(i).get(varName);
+			Type varToSet = symbolTableList.elementAt(i).get(varName);
 			if (varToSet != null) {
 				
 				if (this.depth > GLOBAL_DEPTH && i == GLOBAL_DEPTH) {
@@ -446,7 +446,7 @@ public class Parser {
 					// (not deeper) so that we don't ruin any global initialization of the variable
 					// for future methods
 					Type clonedVar = varToSet.copyVar();
-					this.symbolTableList.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
+					symbolTableList.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
 				}
 				// Either way, set the new value and boolean
 				foundVar = true;

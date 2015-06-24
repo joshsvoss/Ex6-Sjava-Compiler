@@ -62,7 +62,7 @@ public abstract class Type {
 			}
 			
 			// Only try to match if value isn't null:
-			if (this.doesValueMatchType(value)) {
+			else if (this.doesValueMatchType(value)) {
 				this.value = value;
 				this.isInitialized = true;
 			}
