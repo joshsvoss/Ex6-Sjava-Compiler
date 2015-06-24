@@ -211,13 +211,12 @@ public class Parser {
 					// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
 					if (docMatch.matches() || whiteSpaceMatch.matches()) {
 						this.previousLnType = DOC_OR_BLANK;
-						continue;
-
+						// This will continue automatically because every other if clause is else if.
 					} 
 					
 					else if (varDecMatch.matches()) {
 						this.previousLnType = VAR_DECLARATION;
-						if (shouldCreateLine(i) ) {
+						if (shouldDeclareVare(i) ) {
 							// Send currLn and depth to type factory.
 							String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
 							String type = varDecMatch.group(THIRD_GROUP_INDEX);
@@ -290,7 +289,12 @@ public class Parser {
 
 					}
 					
-					else if (this.depth > GLOBAL_DEPTH && methEndMatch.matches()) {
+					else if ( methEndMatch.matches()) {
+						// If this return statement is in global scope, that's a problem:
+						if (this.depth == GLOBAL_DEPTH) {
+							throw new GlobalReturnException();
+						}
+						
 						if ((this.depth == METHOD_DEPTH)
 								&& (scanner.hasNext("\\s*\\}{1}\\s*"))) {
 							// The a method is being closed
@@ -413,7 +417,7 @@ public class Parser {
 	}
 
 
-	private boolean shouldCreateLine(int i) {
+	private boolean shouldDeclareVare(int i) {
 		return (i == GLOBAL_ITERATION && this.depth == GLOBAL_ITERATION) || 
 				(i != GLOBAL_ITERATION  && this.depth != GLOBAL_ITERATION);
 	}
