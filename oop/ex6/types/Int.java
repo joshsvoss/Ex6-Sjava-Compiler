@@ -12,7 +12,8 @@ public class Int extends Type {
 		super(isFinal);
 	}
 	
-	public Int(String name, String value, int depth, boolean isFinal) throws InvalidValueException {
+	public Int(String name, String value, int depth, boolean isFinal) throws InvalidValueException, 
+	UninitializedFinalVariableException {
 		super(name, value, depth, isFinal);
 		// TODO Auto-generated constructor stub
 	}

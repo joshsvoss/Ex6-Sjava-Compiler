@@ -5,14 +5,14 @@ import java.util.regex.Pattern;
 
 public class Double extends Type{
 	
-	//TODO is -0 an issue?
-	Pattern doubleRegex = Pattern.compile("-?[0-9]+(\\.{1}+[0-9]+)?");
+	private static final Pattern doubleRegex = Pattern.compile("-?[0-9]+(\\.{1}+[0-9]+)?");
 	
 	public Double(boolean isFinal){
 		super(isFinal);
 	}
 
-	public Double(String name, String value, int depth, boolean isFinal) throws InvalidValueException {
+	public Double(String name, String value, int depth, boolean isFinal) throws InvalidValueException, 
+	UninitializedFinalVariableException {
 		super(name, value, depth, isFinal);
 		// TODO Auto-generated constructor stub
 	}

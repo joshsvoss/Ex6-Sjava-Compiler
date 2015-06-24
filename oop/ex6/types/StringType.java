@@ -5,13 +5,14 @@ import java.util.regex.Pattern;
 
 public class StringType extends Type {
 
-	private Pattern stringRegex = Pattern.compile("\"{1}.*\"{1}");
+	private static final Pattern stringRegex = Pattern.compile("\"{1}.*\"{1}");
 	
 	public StringType(boolean isFinal){
 		super(isFinal);
 	}
 	
-	public StringType(String name, String value, int depth, boolean isFinal) throws InvalidValueException {
+	public StringType(String name, String value, int depth, boolean isFinal) throws InvalidValueException,
+	UninitializedFinalVariableException {
 		super(name, value, depth, isFinal);
 		// TODO Auto-generated constructor stub
 	}
