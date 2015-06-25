@@ -1,5 +1,7 @@
 package oop.ex6.scopes;
 
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,7 +88,7 @@ public class Method extends Scope{
 	}
 
 	@Override
-	public boolean checkParamLogic(String params) throws SJavacException {
+	public boolean checkParamLogic(String params, int depth) throws SJavacException {
 		
 		// If no params assign it as null so as to avoid differences in number of parameters.
 		if(params == ""){
@@ -113,8 +115,20 @@ public class Method extends Scope{
 		
 		// Then make sure that their corresponding types match
 		for(int i = 0; i < paramsPassedThrough.length; i++){
+			boolean paramFound = false;
 //			isParamLocallyInitialized(paramsPassedThrough[i]); //TODO according to our test, you can pass an uninitialized arg to a method! so no need!
-			this.paramTypesList[i].doesValueMatchType(paramsPassedThrough[i]);
+			for (int j = depth; j >= 0; j--) {
+				Type paramToCheck = Parser.getSymbolTableList().elementAt(j).get(paramsPassedThrough[i]);
+				if (paramToCheck != null) {
+					this.paramTypesList[i].doesValueMatchType(paramToCheck.getValue());
+					paramFound = true;
+					break;
+				}
+					
+				}
+			if(!paramFound){
+				this.paramTypesList[i].doesValueMatchType(paramsPassedThrough[i]);	
+			}
 		}
 		return true;
 	}

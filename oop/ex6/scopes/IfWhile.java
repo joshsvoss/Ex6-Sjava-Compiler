@@ -26,7 +26,7 @@ public class IfWhile extends Scope{
 		super(name, conditions, depth);
 		this.conditions = separateConditions(conditions);
 		for(int i = 0; i < this.conditions.length; i++){
-			checkParamLogic(this.conditions[i]);
+			checkParamLogic(this.conditions[i], this.depth);
 		}
 		
 	}
@@ -46,14 +46,14 @@ public class IfWhile extends Scope{
 	}
 
 	@Override
-	public boolean checkParamLogic(String condition) throws InvalidValueException,
+	public boolean checkParamLogic(String condition, int depth) throws InvalidValueException,
 	UninitializedVariableUsedException {
 		Matcher boolenaIntOrDoubleMatch = booleanIntOrDouble.matcher(condition);
 		Matcher legalVarNameMatch = legalVarName.matcher(condition);
 		if(boolenaIntOrDoubleMatch.matches()){
 			return true;
 		}else if(legalVarNameMatch.matches()){
-			for (int i = this.depth; i >= 0; i--) {
+			for (int i = depth; i >= 0; i--) {
 				Type conditionVar = Parser.getSymbolTableList().elementAt(i).get(condition);
 				if(conditionVar != null){
 					if((conditionVar instanceof Int) || (conditionVar instanceof Double) || 

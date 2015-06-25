@@ -26,7 +26,7 @@ public abstract class Scope {
 	}
 	
 	// TODO may want to try catch in method..
-	public abstract boolean checkParamLogic(String params) throws SJavacException;
+	public abstract boolean checkParamLogic(String params, int depth) throws SJavacException;
 	
 	/**
 	 * @return the scope name.

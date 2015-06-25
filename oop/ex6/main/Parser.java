@@ -453,7 +453,7 @@ public class Parser {
 			throw new WrongMethodNameException();
 		}
 		else {
-			invokedMethod.checkParamLogic(params);
+			invokedMethod.checkParamLogic(params, this.depth);
 		}
 
 	}
