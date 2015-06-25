@@ -15,8 +15,9 @@ public class IfWhile extends Scope{
 	//TODO We don't need to have an ifWhile object do we, so maybe we should just have a static 
 	// TODO "checkIFWhile()" method
 	
-	private Pattern booleanIntOrDouble = Pattern.compile("true|false|(-?+[0-9]++(\\.{1}+[0-9]+)?)");
-	private Pattern legalVarName = Pattern.compile("([a-zA-Z_]{1}+\\w*)");
+	private Pattern booleanIntOrDouble = Pattern.compile("\\s*(true|false|(-?+[0-9]++(\\.{1}+[0-9]+)?))\\s*"
+			);
+	private Pattern legalVarName = Pattern.compile("\\s*([a-zA-Z_]{1}+\\w*)\\s*");
 	private String booleanOperatorSeparator = "\\s*([|][|]){1}\\s*|\\s*([&][&]){1}\\s*";
 	private String[] conditions;
 
