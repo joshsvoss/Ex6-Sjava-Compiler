@@ -38,7 +38,6 @@ public class Parser {
 	
 	
 	
-	
 	// The possible line types.
 	private static final int DOC_OR_BLANK = 0; //TODO README use as example for enum
 	private static final int VAR_DECLARATION = 1;
@@ -67,12 +66,22 @@ public class Parser {
 	// NOTE: make this field and its getter non-static.
 	private static int lineCtr = 0;
 	
+	// A regex for finding commas.
+	private static final String COMMA_SEPARATOR = "\\s*[,]{1}\\s*";
+	
+	private static final String POSSIBLE_VAR_VALUES = "true|false|(-?[0-9]+(\\.{1}+[0-9]+)?)|"
+			+ "(\'{1}+.{1}+\'{1})|(\"{1}.*\"{1})|([a-zA-Z_]{1}+\\w*+)";
+	
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
-	public static Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char|"
-			+ "double|String){1})+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+(\\S+(\\s*+\\S+)*))?\\s*+;{1}+"
-			+ "\\s*$");
+	public static final Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char"
+			+ "|double|String){1})+\\s*+(([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+ POSSIBLE_VAR_VALUES+"){1})?\\s*+(,{1}+\\s*+"
+			+ "([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES+"){1})?\\s*)*)\\s*+;{1}\\s*$");
+	
+	// The regex for the variable name with/out the value, upon declaration.
+	public static final Pattern varNameAndValue = Pattern.compile("\\s*+([a-zA-Z_]{1}+\\w*){1}+\\s*+(={1}+\\s*+(\\S+"
+			+ "((\\s*+\\S+\\s*)*\"{1})?))?+\\s*");
 	
 	// The regex for variable (re)assignment.
 	public static Pattern varAss = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+={1}+\\s*+"
@@ -229,17 +238,32 @@ public class Parser {
 							// Send currLn and depth to type factory.
 							String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
 							String type = varDecMatch.group(THIRD_GROUP_INDEX);
-							String name = varDecMatch.group(FIFTH_GROUP_INDEX);
-							String value = varDecMatch.group(SEVENTH_GROUP_INDEX);
-							Type var = typeFactory.generateType(finalStr, type,
-									name, value, this.depth);
+							String vars = varDecMatch.group(FIFTH_GROUP_INDEX);
+							String[] varArray = vars.split(COMMA_SEPARATOR);
 							
-							// Now put it into the correct symbol table
-							Type previousType = symbolTableList.elementAt(this.depth).put(name, var);
-							if (previousType != null) {
-								// This means that we tried to declare something with the same name
-								// Twice in same scope, throw exception
-								throw new DoubleDeclarationInScopeException();
+							for (int j = 0; j < varArray.length; j++) {
+								Matcher nameAndValueMatch = varNameAndValue.matcher(varArray[j]);
+								if (nameAndValueMatch.matches()) {
+									String name = nameAndValueMatch
+											.group(FIRST_GROUP_INDEX);
+									String value = nameAndValueMatch
+											.group(THIRD_GROUP_INDEX);
+									Type variable = typeFactory.generateType(
+											finalStr, type, name, value,
+											this.depth);
+									// Now put it into the correct symbol table
+									Type previousType = symbolTableList
+											.elementAt(this.depth).put(name,
+													variable);
+									if (previousType != null) {
+										// This means that we tried to declare something with the same name
+										// Twice in same scope, throw exception
+										throw new DoubleDeclarationInScopeException();
+									}
+									
+									}else{
+										throw new IncorrectVariableSyntaxException();
+								}
 							}
 							
 						}
