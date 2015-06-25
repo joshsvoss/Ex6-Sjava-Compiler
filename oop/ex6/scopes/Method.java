@@ -13,8 +13,6 @@ public class Method extends Scope{
 	private Type[] paramTypesList;
 	private String name;
 	private String[] paramsList;
-	private static final int SECOND_GROUP_INDEX = 2;
-	private static final int THIRD_GROUP_INDEX = 3;
 	private boolean doesMethodClose;
 
 	// The regex for a comma seperator.
