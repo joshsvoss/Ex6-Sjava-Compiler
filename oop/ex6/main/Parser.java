@@ -111,8 +111,9 @@ public class Parser {
 //			+ "+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*$");
 	
 	// The regex for a method call, with params.
-	public static Pattern methCall = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}(\\s*\\S*\\s*+"
-			+ "(,{1}+\\s*\\S*\\s*)*)\\){1}+\\s*+;{1}+\\s*$");
+	public static Pattern methCall = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}\\s*(("+
+	POSSIBLE_VAR_VALUES+"|([a-zA-Z]{1}+\\w*)){1}+\\s*+(\\s*,{1}+\\s*+("+POSSIBLE_VAR_VALUES+"|"
+			+ "([a-zA-Z]{1}+\\w*)){1})*)*\\s*\\){1}+\\s*+;{1}+\\s*$");
 
 	
 	// The regex for if/while loop.
