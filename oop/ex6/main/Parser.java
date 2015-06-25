@@ -93,10 +93,10 @@ public class Parser {
 //			+ "\\s*+[{]{1}+\\s*");
 	
 	// The regex for method declaration, with parameters.
-	public static Pattern methDec = Pattern.compile("^\\s*void{1}+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*\\({1}"
-			+ "(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+"
-			+ "(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+"
-			+ "\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
+	public static Pattern methDec = Pattern.compile("^\\s*+void{1}+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*+\\({1}"
+			+ "(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+[a-zA-Z_]{1}+\\w*+"
+			+ "\\s*+(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+[a-zA-Z_]{1}"
+			+ "+\\w*+\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a method call.
 	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
