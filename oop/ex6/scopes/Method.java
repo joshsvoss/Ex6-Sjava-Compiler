@@ -87,11 +87,20 @@ public class Method extends Scope{
 
 	@Override
 	public boolean checkParamLogic(String params) throws SJavacException {
+		
+		// If no params assign it as null so as to avoid differences in number of parameters.
+		if(params == ""){
+			params = null;
+		}
 	
 		// If one of the two is null, they both have to be null (0 args) to match
 		if(this.paramTypesList == null || params == null) {
-			if ( !( this.paramTypesList == null && params == null )) {
+			if (!(this.paramTypesList == null || params == null)) {
 				throw new IncorrectNumArgsException();
+			}
+			// If both are null return true.
+			else{
+				return true;
 			}
 		}
 		
