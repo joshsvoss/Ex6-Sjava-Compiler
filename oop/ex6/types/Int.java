@@ -9,8 +9,8 @@ public class Int extends Type {
 	
 	private static final Pattern intRegex = Pattern.compile("-?[0-9]+"); //TODO Magic number?
 	
-	public Int(boolean isFinal){
-		super(isFinal);
+	public Int(boolean isFinal, String name){
+		super(isFinal, name);
 	}
 	
 	public Int(String name, String value, int depth, boolean isFinal) throws InvalidValueException, 

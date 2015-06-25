@@ -24,16 +24,20 @@ public abstract class Type {
 	 * 
 	 * @param isFinal
 	 */
-	public Type(boolean isFinal){
+	public Type(boolean isFinal, String name){
 		this.isFinal = isFinal;
-		this.name = null;
+		this.name = name;
 		this.value = null;
+		
+		//Because only method parameters are being constructed, and they are treated as if they are
+		// already initialized, set initialized to true.
+		this.isInitialized = true;
 	}
 	
 	public Type(String name, String value, int depth, boolean isFinal) 
 			throws InvalidValueException, UninitializedFinalVariableException, AssignmentFromUninitializedVarException { //TODO should isLocallyInitialized be a method too?
 		
-		this.declarationDepth = depth;
+		this.declarationDepth = depth; //TODO are we using depth or does the vector of hashmaps make this superflouous?
 		this.isFinal = isFinal;
 		this.name = name;
 		

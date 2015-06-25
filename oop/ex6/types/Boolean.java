@@ -1,7 +1,6 @@
 package oop.ex6.types;
 
-import java.util.HashMap;
-import java.util.Vector;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,8 +8,12 @@ public class Boolean extends Type {
 	
 	private static final Pattern booleanRegex = Pattern.compile("true|false|(\\-?[0-9]+(\\.{1}+[0-9]+)?)");
 	
-	public Boolean(boolean isFinal){
-		super(isFinal);
+	/** This constructor is for making Type instances out of method declaration's paramaters.
+	 * @param isFinal this is passed as true
+	 * @param name
+	 */
+	public Boolean(boolean isFinal, String name){
+		super(isFinal, name); 
 	}
 
 	public Boolean(String name, String value, int depth, boolean isFinal) throws InvalidValueException,

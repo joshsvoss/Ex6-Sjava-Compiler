@@ -7,8 +7,8 @@ public class Double extends Type{
 	
 	private static final Pattern doubleRegex = Pattern.compile("-?[0-9]+(\\.{1}+[0-9]+)?");
 	
-	public Double(boolean isFinal){
-		super(isFinal);
+	public Double(boolean isFinal, String name){
+		super(isFinal, name);
 	}
 
 	public Double(String name, String value, int depth, boolean isFinal) throws InvalidValueException, 

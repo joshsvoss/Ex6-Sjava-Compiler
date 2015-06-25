@@ -8,23 +8,25 @@ import java.util.regex.Pattern;
 
 import oop.ex6.scopes.IfWhile;
 import oop.ex6.scopes.Method;
-import oop.ex6.scopes.Scope;
 import oop.ex6.types.Type;
 import oop.ex6.types.TypeFactory;
 
 public class Parser {
 	
 	// Indices for the different capture groups.
-	private static final int FIRST_GROUP_INDEX = 1;
-	private static final int SECOND_GROUPD_INDEX = 2;
-	private static final int THIRD_GROUP_INDEX = 3;
-	private static final int FOURTH_GROUP_INDEX = 4;
-	private static final int FIFTH_GROUP_INDEX = 5;
-	private static final int SIXTH_GROUP_INDEX = 6;	
-	private static final int SEVENTH_GROUP_INDEX = 7;
-	private static final int EIGHTH_GROUP_INDEX = 8;
-	private static final int NINTH_GROUP_INDEX = 9;
-	private static final int TENTH_GROUP_INDEX = 10;
+	// These have been made public because they are useful to classes in the Method package.
+	//TODO this is akward that we need to make these public instead of just package, because things outside
+	// TODO the package use them.  Should all things using common resources be inside one package then?
+	public static final int FIRST_GROUP_INDEX = 1;
+	public static final int SECOND_GROUP_INDEX = 2;
+	public static final int THIRD_GROUP_INDEX = 3;
+	public static final int FOURTH_GROUP_INDEX = 4;
+	public static final int FIFTH_GROUP_INDEX = 5;
+	public static final int SIXTH_GROUP_INDEX = 6;	
+	public static final int SEVENTH_GROUP_INDEX = 7;
+	public static final int EIGHTH_GROUP_INDEX = 8;
+	public static final int NINTH_GROUP_INDEX = 9;
+	public static final int TENTH_GROUP_INDEX = 10;
 	
 	private static final int NUM_READ_ITERATIONS = 2;
 	private static final int GLOBAL_ITERATION = 0;
@@ -37,7 +39,7 @@ public class Parser {
 	
 	
 	// The possible line types.
-	private static final int DOC_OR_BLANK = 0;
+	private static final int DOC_OR_BLANK = 0; //TODO README use as example for enum
 	private static final int VAR_DECLARATION = 1;
 	private static final int VAR_ASSIGNMENT = 2;
 	private static final int METHOD_DECLARATION = 3;
@@ -273,7 +275,7 @@ public class Parser {
 					
 					else if (methDecMatch.matches()) {
 						
-						// If the method declaration comes inside another method, TREIF!
+						// If the method declaration comes inside another method, TREIF! (aka "not kosher")
 						if (this.depth > GLOBAL_DEPTH) {
 							throw new NestedMethodDeclarationException();
 						}
@@ -282,17 +284,40 @@ public class Parser {
 						
 						this.previousLnType = METHOD_DECLARATION;
 						
+						// We want the name to be accessable to the else if as well.
+						String methodName = methDecMatch.group(FIRST_GROUP_INDEX);
 						if (i == GLOBAL_ITERATION) {
 							// Create new method.
-							String name = methDecMatch.group(FIRST_GROUP_INDEX);
 							String params = methDecMatch.group(THIRD_GROUP_INDEX);
-							curMethod = new Method(name, params, this.depth);
+							curMethod = new Method(methodName, params, this.depth);
 							// Add the created method to list:
-							Method previousValue = methodMap.put(name, curMethod);
+							Method previousValue = methodMap.put(methodName, curMethod);
 							if (previousValue != null) {
 								// This means that we tried to declare something with the same name
 								// Twice in same scope, throw exception
 								throw new DoubleDeclarationInScopeException();
+							}
+						}
+						// But if we're in the second run through, we want to create all of the 
+						// methods params as Type objects in our symbol tables, so they can 
+						// be referenced (and checked) just like regular local variables.
+						else if (i == SECOND_ITERATION) {
+							// Get the method from our method list that matches the name
+							Method runningMethod = this.methodMap.get(methodName);
+							Type[] paramList = runningMethod.getParamTypesList();
+							// Only iterate through the list and add them IF there are ARGS! 
+							if (paramList != null) {
+								for (Type paramType : paramList) {
+									Type addReturn = symbolTableList.elementAt(
+											this.depth).put(
+											paramType.getName(), paramType);
+									// If our insertion replaced another Type, then their names overlap:
+									if (addReturn != null) {
+										// TODO delte message below, debug
+										throw new DoubleDeclarationInScopeException(
+												"ThiS error shouldn't be happenign here!Cuz this scope symbol table should be empty since we just entered method.");
+									}
+								}
 							}
 							
 						}
@@ -320,7 +345,7 @@ public class Parser {
 
 					}
 					
-					else if ( methEndMatch.matches()) {
+					else if (methEndMatch.matches()) {
 						// If this return statement is in global scope, that's a problem:
 						if (this.depth == GLOBAL_DEPTH) {
 							throw new GlobalReturnException();
@@ -346,6 +371,8 @@ public class Parser {
 						// Delete the table for the scope that is closing, and decrement depth
 						symbolTableList.remove(this.depth);
 						this.depth--;
+						
+						this.previousLnType = SCOPE_CLOSE;
 					} 
 					
 					else if (varAssignmentMatch.matches()) {
@@ -354,7 +381,7 @@ public class Parser {
 							// Update the variable value. If variable doesn't exist throw error.
 							String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 							String value = varAssignmentMatch
-									.group(SECOND_GROUPD_INDEX);
+									.group(SECOND_GROUP_INDEX);
 							this.previousLnType = VAR_ASSIGNMENT;
 							
 							// Now try to change the value in our symbol table
@@ -371,14 +398,12 @@ public class Parser {
 								throw new GlobalMethodCallException();
 							}
 							String name = methCallMatch.group(FIRST_GROUP_INDEX);
-							String params = methCallMatch.group(SECOND_GROUPD_INDEX);
+							String params = methCallMatch.group(SECOND_GROUP_INDEX);
 							// Check the method params.
 							
 							verifyMethodCall(name, params);
 						}
-						
-						
-						
+	
 					} 
 					
 					else {
