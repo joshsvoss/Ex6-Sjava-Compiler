@@ -281,13 +281,18 @@ public class Parser {
 							// Get the method from our method list that matches the name
 							Method runningMethod = this.methodMap.get(methodName);
 							Type[] paramList = runningMethod.getParamTypesList();
-							for (Type paramType: paramList) {
-								Type addReturn = symbolTableList.elementAt(this.depth).put(
-										paramType.getName(), paramType);
-								// If our insertion replaced another Type, then their names overlap:
-								if (addReturn != null) {
-									// TODO delte message below, debug
-									throw new DoubleDeclarationInScopeException("ThiS error shouldn't be happenign here!Cuz this scope symbol table should be empty since we just entered method.");
+							// Only iterate through the list and add them IF there are ARGS! 
+							if (paramList != null) {
+								for (Type paramType : paramList) {
+									Type addReturn = symbolTableList.elementAt(
+											this.depth).put(
+											paramType.getName(), paramType);
+									// If our insertion replaced another Type, then their names overlap:
+									if (addReturn != null) {
+										// TODO delte message below, debug
+										throw new DoubleDeclarationInScopeException(
+												"ThiS error shouldn't be happenign here!Cuz this scope symbol table should be empty since we just entered method.");
+									}
 								}
 							}
 							
