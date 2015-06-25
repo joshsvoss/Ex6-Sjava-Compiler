@@ -251,7 +251,7 @@ public class Parser {
 					
 					else if (methDecMatch.matches()) {
 						
-						// If the method declaration comes inside another method, TREIF!
+						// If the method declaration comes inside another method, TREIF! (aka "not kosher")
 						if (this.depth > GLOBAL_DEPTH) {
 							throw new NestedMethodDeclarationException();
 						}
@@ -260,17 +260,35 @@ public class Parser {
 						
 						this.previousLnType = METHOD_DECLARATION;
 						
+						// We want the name to be accessable to the else if as well.
+						String methodName = methDecMatch.group(FIRST_GROUP_INDEX);
 						if (i == GLOBAL_ITERATION) {
 							// Create new method.
-							String name = methDecMatch.group(FIRST_GROUP_INDEX);
 							String params = methDecMatch.group(THIRD_GROUP_INDEX);
-							curMethod = new Method(name, params, this.depth);
+							curMethod = new Method(methodName, params, this.depth);
 							// Add the created method to list:
-							Method previousValue = methodMap.put(name, curMethod);
+							Method previousValue = methodMap.put(methodName, curMethod);
 							if (previousValue != null) {
 								// This means that we tried to declare something with the same name
 								// Twice in same scope, throw exception
 								throw new DoubleDeclarationInScopeException();
+							}
+						}
+						// But if we're in the second run through, we want to create all of the 
+						// methods params as Type objects in our symbol tables, so they can 
+						// be referenced (and checked) just like regular local variables.
+						else if (i == SECOND_ITERATION) {
+							// Get the method from our method list that matches the name
+							Method runningMethod = this.methodMap.get(methodName);
+							Type[] paramList = runningMethod.getParamTypesList();
+							for (Type paramType: paramList) {
+								Type addReturn = symbolTableList.elementAt(this.depth).put(
+										paramType.getName(), paramType);
+								// If our insertion replaced another Type, then their names overlap:
+								if (addReturn != null) {
+									// TODO delte message below, debug
+									throw new DoubleDeclarationInScopeException("ThiS error shouldn't be happenign here!Cuz this scope symbol table should be empty since we just entered method.");
+								}
 							}
 							
 						}
@@ -298,7 +316,7 @@ public class Parser {
 
 					}
 					
-					else if ( methEndMatch.matches()) {
+					else if (methEndMatch.matches()) {
 						// If this return statement is in global scope, that's a problem:
 						if (this.depth == GLOBAL_DEPTH) {
 							throw new GlobalReturnException();
