@@ -1,31 +1,78 @@
-joshsvoss
-shanam
+joshsvoss shanam
 
 
 
 =============================
 =      File description     =
 =============================
-Game.java - contains the game implementation and the main method of the program
-Tool.java - implements the Tool class.
+
+************************
+
+PACKAGE: oop.ex6.main :
+
+DoubleDeclarationInScopeException.java -
+GlobalClosingBracketException.java - 
+GlobalIfWhileException.java - 
+GlobalMethodCalException.java - 
+GlobalReturnException.java - 
+LineFactory.java - 
+MissingMethodReturnException.java - 
+NestedMethodDeclarationException.java - 
+Parser.java - 
+Sjavac.java - 
+SJavacException.java
+UndeclaredAssignmentException.java -
+UnmatchedSyntaxException.java - 
+WrongMethodNameException.java -
+
+*****************************
+
+PACKAGE: oop.ex6.scopes - 
+
+Global.java - 
+IfWhile.java - 
+IncorrectNumArgsException.java - 
+InvalidParameterSyntaxException.java - 
+Method.java - 
+MethodNamespaceCollision.java - 
+ParameterNotInitializedException - 
+Scope.java - 
+
+*****************************
+
+PACKAGE: oop.ex6.types - 
+
+AssignmentFromUninitializedVarException.java - 
+AssignmentMismatchException.java - 
+Boolean.java - 
+Char.java - 
+Double.java - 
+FinalVariableException.java - 
+Int.java -
+InvalidTypeException.java -
+InvalidValueException.java - 
+StringType.java - 
+Type.java - The parent class for all the type objects (Int, Char, etc).
+TypeAssignmentMismatch.java - 
+TypeFactory.java - 
+UninitializedFinalVariableException.java - 
+
+******************************
+
+
+
+
 
 
 
 =============================
 =          Design           =
 =============================
-I implemented the Tool class in a way that it can be reused between games, meaning that instead of creating a new tool
- every game, I use the previously used tool and just reset it with new parameters.
-I chose this design because it is similar to how tools act like in the real world:
-different players use the same tool after they erased the name of the previous player from it.
-
 
 
 =============================
 =  Implementation details   =
 =============================
-In the Game class, in order to store the different players, I chose the TreeSet dataset because we perform many
- insertion and deletion actions on this dataset, actions which a balanced tree performs efficiently.
 
 
 =============================

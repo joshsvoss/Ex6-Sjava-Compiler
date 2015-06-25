@@ -175,7 +175,7 @@ public class Parser {
 	/**
 	 * Read the file line by line, sending each line to the line factory.
 	 * 
-	 * @throws unmatchedSyntaxException 
+	 * @throws UnmatchedSyntaxException 
 	 */
 	public void readCode() throws SJavacException {
 		
@@ -384,7 +384,7 @@ public class Parser {
 					
 					else {
 						// Throw syntax error.
-						throw new unmatchedSyntaxException(
+						throw new UnmatchedSyntaxException(
 								"Current line doesn't match any possible correct "
 										+ "syntax regex patterns.");
 					}

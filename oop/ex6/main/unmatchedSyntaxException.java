@@ -5,15 +5,15 @@ package oop.ex6.main;
  * @author Joshua Voss
  *
  */
-public class unmatchedSyntaxException extends SJavacException {
+public class UnmatchedSyntaxException extends SJavacException {
 	
 	private static final long serialVersionUID = 1L;
 
-	public unmatchedSyntaxException() {
+	public UnmatchedSyntaxException() {
 		super();
 	}
 	
-	public unmatchedSyntaxException(String msg) {
+	public UnmatchedSyntaxException(String msg) {
 		super(msg);
 	}
 }
