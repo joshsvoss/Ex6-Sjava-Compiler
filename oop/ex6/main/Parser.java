@@ -496,11 +496,15 @@ public class Parser {
 					// for future methods
 					Type clonedVar = varToSet.copyVar();
 					symbolTableList.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
-				}
+					clonedVar.setValue(valueToUpdate);
+				}else{
 				// Either way, set the new value and boolean
-				foundVar = true;
 				varToSet.setValue(valueToUpdate);
+				}
+				foundVar = true;
 				break;
+
+
 
 			}
 		}
