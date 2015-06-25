@@ -18,7 +18,7 @@ public abstract class Type {
 	//TODO delete below variables if don't use.
 	//private boolean isLocallyInitialized; //TODO remember what this is for?
 	
-	
+
 	/**
 	 * Method parameter type initialization.
 	 * 
@@ -60,9 +60,15 @@ public abstract class Type {
 				if (!isMatch) {
 					throw new InvalidValueException();
 				}
-				
+
 				// Otherwise, we can assign the value from the source to the target variable:
+				// If found type value is null, because created in the method declaration.
+				if(foundType.getValue() == null){
+					this.value = null;
+			}
+				else{
 				this.value = new String(foundType.getValue());
+				}
 			}
 			
 			// Only try to match if value isn't null:
