@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import oop.ex6.main.Parser;
 import oop.ex6.main.SJavacException;
 import oop.ex6.types.InvalidTypeException;
 import oop.ex6.types.InvalidValueException;
@@ -24,14 +25,14 @@ public class Method extends Scope{
 	// The regex for the method parameters.
 	private static final Pattern methParam = Pattern.compile("\\s*+((final{1})+\\s+)?+"
 			+ "((int|boolean|char|double|String){1})+"
-			+ "\\s*+[a-zA-Z_]{1}+\\w*+\\s*");
+			+ "\\s*+([a-zA-Z_]{1}+\\w*+)\\s*");
 	
 	// A type factory.
 	TypeFactory typeFactory = new TypeFactory();
 
 	public Method(String name, String params, int depth) throws InvalidTypeException,
 	InvalidParameterSyntaxException {
-		super(name, params, depth);
+		super(name, params, depth); //TODO Scope is only Method's parent.  Dissolve it and move functionality here?
 		this.doesMethodClose = false;
 		if (this.params != null) {
 			this.paramsList = separateParams(this.params);
@@ -41,9 +42,10 @@ public class Method extends Scope{
 				Matcher methParamMatch = methParam.matcher(this.paramsList[i]);
 				
 				if (methParamMatch.matches()) {
-					String finalStr = methParamMatch.group(SECOND_GROUP_INDEX);
-					String type = methParamMatch.group(THIRD_GROUP_INDEX);
-					Type paramType = typeFactory.generateMethodParamType(
+					String finalStr = methParamMatch.group(Parser.SECOND_GROUP_INDEX);
+					String type = methParamMatch.group(Parser.THIRD_GROUP_INDEX);
+					String paramName = methParamMatch.group(Parser.FIFTH_GROUP_INDEX);
+					Type paramType = typeFactory.generateMethodParamType( 
 							finalStr, type);
 					this.paramTypes[i] = paramType;
 				} else {

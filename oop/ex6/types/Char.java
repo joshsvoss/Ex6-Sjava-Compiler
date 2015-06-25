@@ -7,8 +7,8 @@ public class Char extends Type {
 
 	private static final Pattern charRegex = Pattern.compile("\\'{1}+.{1}+\\'{1}");
 	
-	public Char(boolean isFinal){
-		super(isFinal);
+	public Char(boolean isFinal, String name){
+		super(isFinal, name);
 	}
 	
 	public Char(String name, String value, int depth, boolean isFinal) throws InvalidValueException,

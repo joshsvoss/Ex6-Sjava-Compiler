@@ -54,7 +54,7 @@ public class TypeFactory {
 	 * @throws InvalidTypeException is thrown when the String type doesn't match any
 	 * of the accepted type patterns.
 	 */
-	public Type generateMethodParamType(String finalStr, String type) throws InvalidTypeException{
+	public Type generateMethodParamType(String finalStr, String type, String name) throws InvalidTypeException{
 		if(finalStr != null){
 			isFinal = true;
 		}
@@ -62,15 +62,15 @@ public class TypeFactory {
 		switch(type){
 		
 		case "boolean":
-			return new Boolean(isFinal);
+			return new Boolean(isFinal, name);
 		case "char":
-			return new Char(isFinal);
+			return new Char(isFinal, name);
 		case "int":
-			return new Int(isFinal);
+			return new Int(isFinal, name);
 		case "double":
-			return new Double(isFinal);
+			return new Double(isFinal, name);
 		case "String":
-			return new StringType(isFinal);
+			return new StringType(isFinal, name);
 		default:
 			break;
 		}
