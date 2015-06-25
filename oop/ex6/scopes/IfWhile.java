@@ -20,7 +20,8 @@ public class IfWhile extends Scope{
 	private String booleanOperatorSeparator = "\\s*([|][|]){1}\\s*|\\s*([&][&]){1}\\s*";
 	private String[] conditions;
 
-	public IfWhile(String name, String conditions, int depth) throws InvalidValueException {
+	public IfWhile(String name, String conditions, int depth) throws InvalidValueException,
+	UninitializedVariableUsedException {
 		super(name, conditions, depth);
 		this.conditions = separateConditions(conditions);
 		for(int i = 0; i < this.conditions.length; i++){
@@ -44,7 +45,8 @@ public class IfWhile extends Scope{
 	}
 
 	@Override
-	public boolean checkParamLogic(String condition) throws InvalidValueException {
+	public boolean checkParamLogic(String condition) throws InvalidValueException,
+	UninitializedVariableUsedException {
 		Matcher boolenaIntOrDoubleMatch = booleanIntOrDouble.matcher(condition);
 		Matcher legalVarNameMatch = legalVarName.matcher(condition);
 		if(boolenaIntOrDoubleMatch.matches()){
@@ -55,7 +57,11 @@ public class IfWhile extends Scope{
 				if(conditionVar != null){
 					if((conditionVar instanceof Int) || (conditionVar instanceof Double) || 
 							(conditionVar instanceof Boolean)){
+						if(!conditionVar.isInitialized()){
+							throw new UninitializedVariableUsedException();
+						}
 						return true;
+						
 					}
 					break;
 				}

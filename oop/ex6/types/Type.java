@@ -68,6 +68,7 @@ public abstract class Type {
 			}
 				else{
 				this.value = new String(foundType.getValue());
+				this.isInitialized = foundType.isInitialized();
 				}
 			}
 			
@@ -138,7 +139,7 @@ public abstract class Type {
 		
 	
 	public boolean isInitialized(){
-		return this.isInitialized();
+		return this.isInitialized;
 	}
 	public boolean isLocallyInitialized(){
 		// TODO write this method. Do we need this?
