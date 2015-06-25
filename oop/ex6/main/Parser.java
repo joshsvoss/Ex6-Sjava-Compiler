@@ -127,7 +127,7 @@ public class Parser {
 			+ "\\s*$");
 	
 	// The regex for a comment.
-	public static Pattern doc = Pattern.compile("^/s*//{1}+.*$");
+	public static Pattern doc = Pattern.compile("^\\s*//{1}+.*$");
 	
 	// The regex for white space.
 	public static Pattern whiteSpace = Pattern.compile("^\\s*$");
@@ -377,7 +377,8 @@ public class Parser {
 					
 					else if (varAssignmentMatch.matches()) {
 						
-						if (! (this.depth == GLOBAL_DEPTH && i == SECOND_ITERATION)) {
+						// Only assign the value if on global scope XOR in second iteration.
+						if (this.depth == GLOBAL_DEPTH ^ i == SECOND_ITERATION) {
 							// Update the variable value. If variable doesn't exist throw error.
 							String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 							String value = varAssignmentMatch
