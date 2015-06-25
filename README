@@ -60,11 +60,6 @@ UninitializedFinalVariableException.java -
 ******************************
 
 
-
-
-
-
-
 =============================
 =          Design           =
 =============================
@@ -79,9 +74,3 @@ UninitializedFinalVariableException.java -
 =    Answers to questions   =
 =============================
 
-1)
-The smart player picks his moves by simply looking at all the possible valid moves, and picking the 
-one that leaves the opponent with the minimal number of possible steps (and which does not make him lose)
-
-2)
-On the given example, the run time of the TresSet took 0.3445 seconds, While the run time of the HashSet took 0.56547.
