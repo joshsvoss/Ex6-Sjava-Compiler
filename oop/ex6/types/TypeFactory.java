@@ -22,28 +22,38 @@ public class TypeFactory {
 	 * @return a reference to an instance of the correct subtype of Type
 	 * @throws SJavacException
 	 */
-	public Type generateType(String finalStr, String type, String name, String value, int depth) 
+	public Type generateType(String finalStr, String type, String name, String value, int depth) //TODO Shouldn't this be static?
 			throws SJavacException {
 		if(finalStr != null){
 			isFinal = true;
 		}
 		
+		Type toReturn;
 		switch(type){
-		
-		case "boolean":
-			return new Boolean(name, value, depth, isFinal);
-		case "char":
-			return new Char(name, value, depth, isFinal);
-		case "int":
-			return new Int(name, value, depth, isFinal);
-		case "double":
-			return new Double(name, value, depth, isFinal);
-		case "String":
-			return new StringType(name, value, depth, isFinal);
-		default:
-			break;
+			case "boolean":
+				toReturn = new Boolean(name, value, depth, isFinal);
+				break;
+			case "char":
+				toReturn = new Char(name, value, depth, isFinal);
+				break;
+			case "int":
+				toReturn = new Int(name, value, depth, isFinal);
+				break;
+			case "double":
+				toReturn = new Double(name, value, depth, isFinal);
+				break;
+			case "String":
+				toReturn = new StringType(name, value, depth, isFinal);
+				break;
+			default:
+				throw new InvalidTypeException("Invalid type for variable declaration.");
 		}
-		throw new InvalidTypeException("Invalid type for variable declaration.");
+		
+		isFinal = false;
+		return toReturn;
+		
+		
+		
 	}
 	
 	/** This method returns a the correct Type of a method argument, 
