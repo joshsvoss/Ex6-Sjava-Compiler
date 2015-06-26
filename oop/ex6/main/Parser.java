@@ -217,7 +217,7 @@ public class Parser {
 					
 					else if (varDecMatch.matches()) {
 						this.previousLnType = VAR_DECLARATION;
-						if (shouldDeclareVare(i) ) {
+						if (shouldDeclareVar(i) ) {
 							// Send currLn and depth to type factory.
 							String finalStr = varDecMatch.group(FIRST_GROUP_INDEX);
 							String type = varDecMatch.group(THIRD_GROUP_INDEX);
@@ -328,7 +328,7 @@ public class Parser {
 							String name = ifWhileMatch.group(FIRST_GROUP_INDEX); 
 							String conditions = ifWhileMatch
 									.group(THIRD_GROUP_INDEX);
-							IfWhile ifWhile = new IfWhile(name, conditions, depth); //TODO warning here for not doing anything with new object
+							new IfWhile(name, conditions, depth); //TODO warning here for not doing anything with new object
 						}
 
 					}
@@ -358,6 +358,7 @@ public class Parser {
 						}
 						// Delete the table for the scope that is closing, and decrement depth
 //						symbolTableListA.remove(this.depth);
+						symbolTableList.decreaseLevel(this.depth);
 						this.depth--;
 						
 						this.previousLnType = SCOPE_CLOSE;
@@ -500,7 +501,6 @@ public class Parser {
 					symbolTableList.addTypeToALevel(clonedVar.getName(), clonedVar, METHOD_DEPTH);
 					clonedVar.setValue(valueToUpdate);
 				}else{
-				// Either way, set the new value and boolean
 				varToSet.setValue(valueToUpdate);
 				}
 				foundVar = true;
@@ -518,7 +518,7 @@ public class Parser {
 	}
 
 
-	private boolean shouldDeclareVare(int i) {
+	private boolean shouldDeclareVar(int i) {
 		return (i == GLOBAL_ITERATION && this.depth == GLOBAL_ITERATION) || 
 				(i != GLOBAL_ITERATION  && this.depth != GLOBAL_ITERATION);
 	}
