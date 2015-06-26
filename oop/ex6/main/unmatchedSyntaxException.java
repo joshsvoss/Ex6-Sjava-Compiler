@@ -8,9 +8,12 @@ package oop.ex6.main;
 public class UnmatchedSyntaxException extends SJavacException {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final String defaultMsg = "Current line doesn't match any possible correct "
+			+ "syntax regex patterns.";
 
 	public UnmatchedSyntaxException() {
-		super();
+		super(defaultMsg);
 	}
 	
 	public UnmatchedSyntaxException(String msg) {
