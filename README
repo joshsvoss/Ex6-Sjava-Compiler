@@ -10,14 +10,20 @@ joshsvoss
 
 PACKAGE: oop.ex6.main :
 
-DoubleDeclarationInScopeException.java -
-GlobalClosingBracketException.java - 
-GlobalIfWhileException.java - 
-GlobalMethodCalException.java - 
-GlobalReturnException.java - 
-LineFactory.java - 
-MissingMethodReturnException.java - 
-NestedMethodDeclarationException.java - 
+DoubleDeclarationInScopeException.java - This Exception is to be thrown when two variable of the same 
+name are declared in the same scope.
+GlobalClosingBracketException.java - This exception is thrown when the parser encounters a closing bracket 
+in the global scope.
+GlobalIfWhileException.java - This exception is thrown when the parser encounters an if or while block in 
+the global scope. 
+GlobalMethodCallException.java - This exception is thrown when a method is called in the global scope.
+GlobalReturnException.java - This exception is thrown when a return statement is encountered 
+in the global scope.
+IncorrectVariableSyntaxException - This exception is thrown when a variable is declared with 
+incorrect syntax.  
+MissingMethodReturnException.java -  This exception is thrown when a method is missing its return 
+statement.  
+NestedMethodDeclarationException.java - This exception is thrown when a method is declared inside another.  
 Parser.java - 
 Sjavac.java - 
 SJavacException.java

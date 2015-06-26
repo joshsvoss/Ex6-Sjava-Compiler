@@ -2,7 +2,7 @@
 package oop.ex6.main;
 
 /** This exception is thrown when a method is called in the global scope.
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class GlobalMethodCallException extends SJavacException {

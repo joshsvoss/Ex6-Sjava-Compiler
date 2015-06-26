@@ -14,6 +14,10 @@ import oop.ex6.scopes.MethodNamespaceCollision;
 import oop.ex6.types.Type;
 import oop.ex6.types.TypeFactory;
 
+/** This class handles reading in the Sjava file and parsing through it.
+ * @author Joshua Voss
+ *
+ */
 public class Parser {
 	
 	// Indices for the different capture groups.
@@ -169,9 +173,13 @@ public class Parser {
 	
 	
 	/**
-	 * Read the file line by line, sending each line to the line factory.
+	 * Read the file line by line, matching each line with it's corresponding regex, 
+	 * and creating the logical structure through Type objects and inserting them into
+	 * different levels of the symbolTableList.  
 	 * 
-	 * @throws UnmatchedSyntaxException 
+	 * @throws SJavacException this is thrown upon encountering an invalid syntax.  The subclasses
+	 * of SJavacException are the actual excpetions that will be thrown.  And they also
+	 * carry default messages which will make the cause of the error more clear.   
 	 */
 	public void readCode() throws SJavacException {
 		
@@ -297,16 +305,12 @@ public class Parser {
 							// Only iterate through the list and add them IF there are ARGS! 
 							if (paramList != null) {
 								for (Type paramType : paramList) {
-//									Type addReturn = symbolTableListA.elementAt(
-//											this.depth).put(
-//											paramType.getName(), paramType);
-//									
 									Type addReturn = symbolTableList.addTypeToALevel(paramType.getName(), 
 											paramType, this.depth);
 									// If our insertion replaced another Type, then their names overlap:
 									if (addReturn != null) {
 										// TODO delte message below, debug
-										throw new DoubleDeclarationInScopeException(
+										throw new DoubleDeclarationInScopeException( 
 												"ThiS error shouldn't be happenign here!Cuz this scope symbol table should be empty since we just entered method.");
 									}
 								}
@@ -448,12 +452,12 @@ public class Parser {
 
 	}
 	
-	// TODO I don't like that this is PUBLIC!!!!!
-//	public static Vector<HashMap<String, Type>> getSymbolTableList() {
-//		return symbolTableListA;
-//		//TODO THIS might sometimes return null if it's called statically before an instance has been created.
-//	}
-//	
+	/** This method searched the symbolTableList for a certain variable (or Type object).
+	 * It wraps the search() method of the SymbolTableList class.
+	 * @param name the name of the variable to be searched. 
+	 * @param depth the level of the list where the table we want to search is.  
+	 * @return
+	 */
 	public static Type searchSymbolTableList(String name, int depth){
 		return symbolTableList.search(name, depth);
 	}
