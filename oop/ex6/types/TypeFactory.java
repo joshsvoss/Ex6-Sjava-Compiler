@@ -69,21 +69,29 @@ public class TypeFactory {
 			isFinal = true;
 		}
 		
+		Type toReturn;
 		switch(type){
 		
-		case "boolean":
-			return new Boolean(isFinal, name);
-		case "char":
-			return new Char(isFinal, name);
-		case "int":
-			return new Int(isFinal, name);
-		case "double":
-			return new Double(isFinal, name);
-		case "String":
-			return new StringType(isFinal, name);
-		default:
-			break;
-		}
-		throw new InvalidTypeException();
+			case "boolean":
+				toReturn = new Boolean(isFinal, name);
+				break;
+			case "char":
+				toReturn = new Char(isFinal, name);
+				break;
+			case "int":
+				toReturn = new Int(isFinal, name);
+				break;
+			case "double":
+				toReturn = new Double(isFinal, name);
+				break;
+			case "String":
+				toReturn = new StringType(isFinal, name);
+				break;
+			default:
+				throw new InvalidTypeException();
+		}	
+		return toReturn;
 	}
+	
+		
 }
