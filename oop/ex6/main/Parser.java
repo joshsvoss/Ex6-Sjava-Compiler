@@ -128,12 +128,14 @@ public class Parser {
 	// NOTE: for expandibility, if you want to run multiple parsers instances at once, 
 	// NOTE: You'll need to make this and the getter non-static, as well as other places 
 	// NOTE: where the NOTE comment appears.
-	private static Vector<HashMap<String, Type>> symbolTableList;
+//	private static Vector<HashMap<String, Type>> symbolTableListA; //TODO remove and all associated with it.
+	
+	public static SymbolTableList symbolTableList;
 	
 	// List of methods:
 	private HashMap<String, Method> methodMap;
 	
-	HashMap<String, String> map;
+	HashMap<String, String> map;// TODO do we need this?
 	
 	// Scope list 
 	
@@ -150,9 +152,10 @@ public class Parser {
 		this.scanner = new Scanner(this.srcFile);
 		
 		// Initilize the data structures to hold the symbol and method tables.
-		symbolTableList = new Vector<HashMap<String, Type>>();
+		//symbolTableListA = new Vector<HashMap<String, Type>>(); //TODO remove?
+		symbolTableList = new SymbolTableList();
 		// And add a table in the first spot:
-		symbolTableList.add(new HashMap<String, Type>());
+//		symbolTableListA.add(new HashMap<String, Type>());
 		this.methodMap = new HashMap<String, Method>();
 	}
 	
@@ -228,9 +231,11 @@ public class Parser {
 											finalStr, type, name, value,
 											this.depth);
 									// Now put it into the correct symbol table
-									Type previousType = symbolTableList
-											.elementAt(this.depth).put(name,
-													variable);
+//									Type previousType = symbolTableListA
+//											.elementAt(this.depth).put(name,
+//													variable);
+									Type previousType = symbolTableList.addTypeToALevel(name,
+													variable, this.depth);
 									if (previousType != null) {
 										// This means that we tried to declare something with the same name
 										// Twice in same scope, throw exception
@@ -284,9 +289,12 @@ public class Parser {
 							// Only iterate through the list and add them IF there are ARGS! 
 							if (paramList != null) {
 								for (Type paramType : paramList) {
-									Type addReturn = symbolTableList.elementAt(
-											this.depth).put(
-											paramType.getName(), paramType);
+//									Type addReturn = symbolTableListA.elementAt(
+//											this.depth).put(
+//											paramType.getName(), paramType);
+//									
+									Type addReturn = symbolTableList.addTypeToALevel(paramType.getName(), 
+											paramType, this.depth);
 									// If our insertion replaced another Type, then their names overlap:
 									if (addReturn != null) {
 										// TODO delte message below, debug
@@ -345,7 +353,7 @@ public class Parser {
 							throw new MissingMethodReturnException();
 						}
 						// Delete the table for the scope that is closing, and decrement depth
-						symbolTableList.remove(this.depth);
+//						symbolTableListA.remove(this.depth);
 						this.depth--;
 						
 						this.previousLnType = SCOPE_CLOSE;
@@ -432,9 +440,13 @@ public class Parser {
 	}
 	
 	// TODO I don't like that this is PUBLIC!!!!!
-	public static Vector<HashMap<String, Type>> getSymbolTableList() {
-		return symbolTableList;
-		//TODO THIS might sometimes return null if it's called statically before an instance has been created.
+//	public static Vector<HashMap<String, Type>> getSymbolTableList() {
+//		return symbolTableListA;
+//		//TODO THIS might sometimes return null if it's called statically before an instance has been created.
+//	}
+//	
+	public static Type searchSymbolTableList(String name, int depth){
+		return symbolTableList.search(name, depth);
 	}
 
 
@@ -446,13 +458,22 @@ public class Parser {
 		this.depth++;
 		
 		// Now check if table needs to be created or not:
+//		if (symbolTableListA.size()  < this.depth + 1) {
+//			// then we need to add a new spot AND table onto the end:
+//			symbolTableListA.add(new HashMap<String, Type>());
+//		}
+//		
+//		if (symbolTableListA.elementAt(this.depth)  == null) {
+//			symbolTableListA.add(this.depth, new HashMap<String, Type>());
+//		}
+		
 		if (symbolTableList.size()  < this.depth + 1) {
 			// then we need to add a new spot AND table onto the end:
-			symbolTableList.add(new HashMap<String, Type>());
+			symbolTableList.increaseLevel();
 		}
 		
-		if (symbolTableList.elementAt(this.depth)  == null) {
-			symbolTableList.add(this.depth, new HashMap<String, Type>());
+		if (symbolTableList.findLevel(this.depth)  == null) {
+			symbolTableList.increaseLevel(this.depth);
 		}
 	}
 	
@@ -462,7 +483,8 @@ public class Parser {
 		// Start at highest depth (where we are now) and go down to global
 		boolean foundVar = false;
 		for (int i = this.depth; i >= 0; i--) {
-			Type varToSet = symbolTableList.elementAt(i).get(varName);
+//			Type varToSet = symbolTableListA.elementAt(i).get(varName);
+			Type varToSet = symbolTableList.search(varName, i);
 			if (varToSet != null) {
 				
 				if (this.depth > GLOBAL_DEPTH && i == GLOBAL_DEPTH) {
@@ -470,7 +492,8 @@ public class Parser {
 					// (not deeper) so that we don't ruin any global initialization of the variable
 					// for future methods
 					Type clonedVar = varToSet.copyVar();
-					symbolTableList.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
+//					symbolTableListA.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
+					symbolTableList.addTypeToALevel(clonedVar.getName(), clonedVar, METHOD_DEPTH);
 					clonedVar.setValue(valueToUpdate);
 				}else{
 				// Either way, set the new value and boolean

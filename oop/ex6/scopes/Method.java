@@ -114,7 +114,8 @@ public class Method extends Scope{
 		for(int i = 0; i < paramsPassedThrough.length; i++){
 			boolean paramFound = false;
 			for (int j = depth; j >= 0; j--) {
-				Type paramToCheck = Parser.getSymbolTableList().elementAt(j).get(paramsPassedThrough[i]);
+//				Type paramToCheck = Parser.getSymbolTableList().elementAt(j).get(paramsPassedThrough[i]); //Switch to symbollist object
+				Type paramToCheck = Parser.searchSymbolTableList(paramsPassedThrough[i], j);
 				if (paramToCheck != null) {
 					this.paramTypesList[i].doesValueMatchType(paramToCheck.getValue());
 					paramFound = true;
