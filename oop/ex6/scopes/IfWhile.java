@@ -17,7 +17,8 @@ public class IfWhile extends Scope{
 	
 	private static final Pattern BOOLEAN_INT_DOUBLE = Pattern.compile("\\s*(true|false|(-?+[0-9]++(\\.{1}+"
 			+ "[0-9]+)?))\\s*");
-	private static final Pattern LEGAL_VAR_NAMES = Pattern.compile("\\s*([a-zA-Z_]{1}+\\w*)\\s*");
+	private static final Pattern LEGAL_VAR_NAMES = Pattern.compile("\\s*("+Parser.POSSIBLE_VAR_NAMES+")"
+			+ "\\s*");
 	private static final String BOOLEAN_OPERATOR_SEPARATOR = "\\s*([|][|]){1}\\s*|\\s*([&][&]){1}\\s*";
 	private String[] conditions;
 

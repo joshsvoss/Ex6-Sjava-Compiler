@@ -26,7 +26,7 @@ public class Method extends Scope{
 	// The regex for the method parameters.
 	private static final Pattern METH_PARAM = Pattern.compile("\\s*+((final{1})+\\s+)?+"
 			+ "((int|boolean|char|double|String){1})+"
-			+ "\\s*+([a-zA-Z_]{1}+\\w*+)\\s*");
+			+ "\\s*+("+Parser.POSSIBLE_VAR_NAMES+"+)\\s*");
 	
 	// A type factory.
 	TypeFactory typeFactory = new TypeFactory();

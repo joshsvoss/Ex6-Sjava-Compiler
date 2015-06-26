@@ -79,7 +79,7 @@ public class Parser {
 	private static final String POSSIBLE_VAR_VALUES = "(true|false|(-?[0-9]+(\\.{1}+[0-9]+)?)|"
 			+ "(\'{1}+.{1}+\'{1})|(\"{1}.*\"{1})|([a-zA-Z_]{1}+\\w*+))";
 	
-	private static final String POSSIBLE_VAR_NAMES = "(([a-zA-Z]{1}+\\w*)|(_{1}\\w+))";
+	public static final String POSSIBLE_VAR_NAMES = "(([a-zA-Z]{1}+\\w*)|(_{1}\\w+))";
 	
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
@@ -106,8 +106,8 @@ public class Parser {
 	
 	// The regex for a method call, with params.
 	private static final Pattern METH_CALL = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}\\s*(("+
-	POSSIBLE_VAR_VALUES+"|([a-zA-Z]{1}+\\w*)){1}+\\s*+(\\s*,{1}+\\s*+("+POSSIBLE_VAR_VALUES+"|"
-			+ "([a-zA-Z]{1}+\\w*)){1})*)*\\s*\\){1}+\\s*+;{1}+\\s*$");
+	POSSIBLE_VAR_VALUES+"|("+POSSIBLE_VAR_NAMES+")){1}+\\s*+(\\s*,{1}+\\s*+("+POSSIBLE_VAR_VALUES+"|"
+			+ "("+POSSIBLE_VAR_NAMES+")){1})*)*\\s*\\){1}+\\s*+;{1}+\\s*$");
 	
 	// The regex for the opening of an if/while scope, with conditions.
 	private static final Pattern IF_WHILE_OPEN = Pattern.compile("^\\s*+((if|while){1})+\\s*+\\({1}\\s*+"
