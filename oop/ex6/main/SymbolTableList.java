@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package oop.ex6.main;
 
 import java.util.HashMap;

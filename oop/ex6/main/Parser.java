@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import oop.ex6.scopes.IfWhile;
 import oop.ex6.scopes.Method;
+import oop.ex6.scopes.MethodNamespaceCollision;
 import oop.ex6.types.Type;
 import oop.ex6.types.TypeFactory;
 
@@ -279,7 +280,7 @@ public class Parser {
 							if (previousValue != null) {
 								// This means that we tried to declare something with the same name
 								// Twice in same scope, throw exception
-								throw new DoubleDeclarationInScopeException();
+								throw new MethodNamespaceCollision();
 							}
 						}
 						// But if we're in the second run through, we want to create all of the 
