@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 
 public class Boolean extends Type {
 	
-	private static final Pattern BOOLEAN_REGEX_CONDITION = Pattern.compile("(true|false|(\\-?[0-9]+(\\.{1}+[0-9]+)?))");
+	private static final Pattern BOOLEAN_REGEX_CONDITION = Pattern.compile("(true|false|"
+			+ "(\\-?[0-9]+(\\.{1}+[0-9]+)?))");
 	
 	/** This constructor is for making Type instances out of method declaration's paramaters.
 	 * @param isFinal this is passed as true

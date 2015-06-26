@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.sql.PooledConnection;
+
 import oop.ex6.scopes.IfWhile;
 import oop.ex6.scopes.Method;
 import oop.ex6.scopes.MethodNamespaceCollision;
@@ -70,30 +72,32 @@ public class Parser {
 	// A regex for finding commas.
 	public static final String COMMA_SEPARATOR = "\\s*[,]{1}\\s*";
 	
-	private static final String POSSIBLE_VAR_VALUES = "true|false|(-?[0-9]+(\\.{1}+[0-9]+)?)|"
-			+ "(\'{1}+.{1}+\'{1})|(\"{1}.*\"{1})|([a-zA-Z_]{1}+\\w*+)";
+	private static final String POSSIBLE_VAR_VALUES = "(true|false|(-?[0-9]+(\\.{1}+[0-9]+)?)|"
+			+ "(\'{1}+.{1}+\'{1})|(\"{1}.*\"{1})|([a-zA-Z_]{1}+\\w*+))";
+	
+	private static final String POSSIBLE_VAR_NAMES = "(([a-zA-Z]{1}+\\w*)|(_{1}\\w+))";
 	
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
 	private static final Pattern VAR_DEC = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|"
-			+ "char|double|String){1})+\\s*+(([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+ POSSIBLE_VAR_VALUES+")"
-			+ "{1})?\\s*+(,{1}+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES+"){1})?\\s*)"
-			+ "*)\\s*+;{1}\\s*$");
+			+ "char|double|String){1})+\\s*+(("+POSSIBLE_VAR_NAMES+"+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES
+			+"){1})?\\s*+(,{1}+\\s*+("+POSSIBLE_VAR_NAMES+"+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES+"){1})?"
+			+ "\\s*)*)\\s*+;{1}\\s*$");
 	
 	// The regex for the variable name with/out the value, upon declaration.
-	private static final Pattern VAR_NAME_OR_VALUE = Pattern.compile("\\s*+([a-zA-Z_]{1}+\\w*){1}+\\s*+(={1}"
-			+ "+\\s*+(\\S+((\\s*+\\S+\\s*)*\"{1})?))?+\\s*");
+	private static final Pattern VAR_NAME_OR_VALUE = Pattern.compile("\\s*+("+POSSIBLE_VAR_NAMES+"){1}+\\s*+"
+			+ "(={1}+\\s*+"+POSSIBLE_VAR_VALUES+"{1}+\\s*)?+\\s*");
 	
 	// The regex for variable (re)assignment.
-	private static final Pattern VAR_ASS = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+={1}+\\s*+"
-			+ "(\\S+(\\s*+\\S+)*)\\s*+;{1}+\\s*$");
+	private static final Pattern VAR_ASS = Pattern.compile("^\\s*+("+POSSIBLE_VAR_NAMES+")+\\s*+={1}+\\s*+"
+			+ "("+POSSIBLE_VAR_VALUES+")\\s*+;{1}+\\s*$");
 	
 	// The regex for method declaration, with parameters.
 	private static final Pattern METH_DEC = Pattern.compile("^\\s*+void{1}+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*+"
-			+ "\\({1}(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+[a-zA-Z_]{1}+"
-			+ "\\w*+\\s*+(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+"
-			+ "[a-zA-Z_]{1}+\\w*+\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
+			+ "\\({1}(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+"+
+			POSSIBLE_VAR_NAMES+"+\\s*+(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}"
+			+ "+\\s*+"+POSSIBLE_VAR_NAMES+"+\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	
 	// The regex for a method call, with params.
@@ -103,9 +107,9 @@ public class Parser {
 	
 	// The regex for the opening of an if/while scope, with conditions.
 	private static final Pattern IF_WHILE_OPEN = Pattern.compile("^\\s*+((if|while){1})+\\s*+\\({1}\\s*+"
-			+ "((true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+"
-			+ "\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*)\\s*\\){1}+\\s*"
-			+ "+\\{{1}+\\s*$");
+			+ "((true|false|("+POSSIBLE_VAR_NAMES+")|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+"
+			+ "(([|][|]|[&][&]){1}+\\s*+(true|false|("+POSSIBLE_VAR_NAMES+")|"
+			+ "(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*)\\s*\\){1}+\\s*+\\{{1}+\\s*$");
 	
 	// The regex for a comment.
 	private static final Pattern DOCUMENTATION = Pattern.compile("^\\s*//{1}+.*$");
@@ -230,7 +234,7 @@ public class Parser {
 									String name = nameAndValueMatch
 											.group(FIRST_GROUP_INDEX);
 									String value = nameAndValueMatch
-											.group(THIRD_GROUP_INDEX);
+											.group(SIXTH_GROUP_INDEX);
 									Type variable = typeFactory.generateType(
 											finalStr, type, name, value,
 											this.depth);
@@ -371,7 +375,7 @@ public class Parser {
 							// Update the variable value. If variable doesn't exist throw error.
 							String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 							String value = varAssignmentMatch
-									.group(SECOND_GROUP_INDEX);
+									.group(FIFTH_GROUP_INDEX);
 							this.previousLnType = VAR_ASSIGNMENT;
 							
 							// Now try to change the value in our symbol table
