@@ -9,7 +9,7 @@ public class MethodNamespaceCollision extends SJavacException {
 	
 	
 	public MethodNamespaceCollision() {
-		super("ERROR: The names of two different methods were identical.");
+		super("ERROR: The names of two different methods were identical."); //TODO doesn't look like this exception is in use, are we accounting for this?
 	}
 	
 	public MethodNamespaceCollision(String msg) {

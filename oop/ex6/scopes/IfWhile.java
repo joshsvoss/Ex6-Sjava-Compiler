@@ -3,28 +3,36 @@ package oop.ex6.scopes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import oop.ex6.main.Parser;
+import oop.ex6.types.Int;
 import oop.ex6.types.InvalidValueException;
+import oop.ex6.types.Type;
+import oop.ex6.types.Double;
+import oop.ex6.types.Boolean;
 
 public class IfWhile extends Scope{
 	
 	//TODO We don't need to have an ifWhile object do we, so maybe we should just have a static 
 	// TODO "checkIFWhile()" method
 	
-	private Pattern legalConditions = Pattern.compile("true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)");
-	private String booleanOperatorSeparator = "\\s*([|][|]){1}\\s*|\\s*([&][&]){1}\\s*";
+	private static final Pattern BOOLEAN_INT_DOUBLE = Pattern.compile("\\s*(true|false|(-?+[0-9]++(\\.{1}+"
+			+ "[0-9]+)?))\\s*");
+	private static final Pattern LEGAL_VAR_NAMES = Pattern.compile("\\s*([a-zA-Z_]{1}+\\w*)\\s*");
+	private static final String BOOLEAN_OPERATOR_SEPARATOR = "\\s*([|][|]){1}\\s*|\\s*([&][&]){1}\\s*";
 	private String[] conditions;
 
-	public IfWhile(String name, String conditions, int depth) throws InvalidValueException {
+	public IfWhile(String name, String conditions, int depth) throws InvalidValueException,
+	UninitializedVariableUsedException {
 		super(name, conditions, depth);
 		this.conditions = separateConditions(conditions);
 		for(int i = 0; i < this.conditions.length; i++){
-			checkParamLogic(this.conditions[i]);
+			checkParamLogic(this.conditions[i], this.depth);
 		}
 		
 	}
 	
 	private String[] separateConditions(String conditions){
-		return conditions.split(booleanOperatorSeparator);
+		return conditions.split(BOOLEAN_OPERATOR_SEPARATOR);
 	}
 
 	// TODO is this necessary?
@@ -38,10 +46,28 @@ public class IfWhile extends Scope{
 	}
 
 	@Override
-	public boolean checkParamLogic(String condition) throws InvalidValueException {
-		Matcher legalConditionMatch = legalConditions.matcher(condition);
-		if(legalConditionMatch.matches()){
+	public boolean checkParamLogic(String condition, int depth) throws InvalidValueException,
+	UninitializedVariableUsedException {
+		Matcher boolenaIntOrDoubleMatch = BOOLEAN_INT_DOUBLE.matcher(condition);
+		Matcher legalVarNameMatch = LEGAL_VAR_NAMES.matcher(condition);
+		if(boolenaIntOrDoubleMatch.matches()){
 			return true;
+		}else if(legalVarNameMatch.matches()){
+			for (int i = depth; i >= 0; i--) {
+//				Type conditionVar = Parser.getSymbolTableList().elementAt(i).get(condition); //TODO switch to symbollist object
+				Type conditionVar = Parser.searchSymbolTableList(condition, i);
+				if(conditionVar != null){
+					if((conditionVar instanceof Int) || (conditionVar instanceof Double) || 
+							(conditionVar instanceof Boolean)){
+						if(!conditionVar.isInitialized()){
+							throw new UninitializedVariableUsedException();
+						}
+						return true;
+						
+					}
+					break;
+				}
+			}
 		}
 		throw new InvalidValueException("Invalid condition for an if/while block.");
 	}

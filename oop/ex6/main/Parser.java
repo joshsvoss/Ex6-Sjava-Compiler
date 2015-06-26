@@ -67,7 +67,7 @@ public class Parser {
 	private static int lineCtr = 0;
 	
 	// A regex for finding commas.
-	private static final String COMMA_SEPARATOR = "\\s*[,]{1}\\s*";
+	public static final String COMMA_SEPARATOR = "\\s*[,]{1}\\s*";
 	
 	private static final String POSSIBLE_VAR_VALUES = "true|false|(-?[0-9]+(\\.{1}+[0-9]+)?)|"
 			+ "(\'{1}+.{1}+\'{1})|(\"{1}.*\"{1})|([a-zA-Z_]{1}+\\w*+)";
@@ -75,68 +75,48 @@ public class Parser {
 	//TODO Should we make all of these regex fields private?
 	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
-	public static final Pattern varDec = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|char"
-			+ "|double|String){1})+\\s*+(([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+ POSSIBLE_VAR_VALUES+"){1})?\\s*+(,{1}+\\s*+"
-			+ "([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES+"){1})?\\s*)*)\\s*+;{1}\\s*$");
+	private static final Pattern VAR_DEC = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|"
+			+ "char|double|String){1})+\\s*+(([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+ POSSIBLE_VAR_VALUES+")"
+			+ "{1})?\\s*+(,{1}+\\s*+([a-zA-Z_]{1}+\\w*+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES+"){1})?\\s*)"
+			+ "*)\\s*+;{1}\\s*$");
 	
 	// The regex for the variable name with/out the value, upon declaration.
-	public static final Pattern varNameAndValue = Pattern.compile("\\s*+([a-zA-Z_]{1}+\\w*){1}+\\s*+(={1}+\\s*+(\\S+"
-			+ "((\\s*+\\S+\\s*)*\"{1})?))?+\\s*");
+	private static final Pattern VAR_NAME_OR_VALUE = Pattern.compile("\\s*+([a-zA-Z_]{1}+\\w*){1}+\\s*+(={1}"
+			+ "+\\s*+(\\S+((\\s*+\\S+\\s*)*\"{1})?))?+\\s*");
 	
 	// The regex for variable (re)assignment.
-	public static Pattern varAss = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+={1}+\\s*+"
+	private static final Pattern VAR_ASS = Pattern.compile("^\\s*+([a-zA-Z_]{1}+\\w*)+\\s*+={1}+\\s*+"
 			+ "(\\S+(\\s*+\\S+)*)\\s*+;{1}+\\s*$");
 	
-	// The regex for method declaration.
-	// TODO probably to delete, doesn't deal with method parameters, just that they may or may not exist.
-//	public static Pattern methDecA = Pattern.compile("void{1}+\\s[a-zA-Z]{1}+[\\w]*+\\s*[(]{1}.*[)]{1}+"
-//			+ "\\s*+[{]{1}+\\s*");
-	
 	// The regex for method declaration, with parameters.
-	public static Pattern methDec = Pattern.compile("^\\s*void{1}+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*\\({1}"
-			+ "(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+\\s*+"
-			+ "(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s[a-zA-Z_]{1}+\\w*+"
-			+ "\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
+	private static final Pattern METH_DEC = Pattern.compile("^\\s*+void{1}+\\s*+([a-zA-Z]{1}+[\\w]*)+\\s*+"
+			+ "\\({1}(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+[a-zA-Z_]{1}+"
+			+ "\\w*+\\s*+(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+"
+			+ "[a-zA-Z_]{1}+\\w*+\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
 	
-	// The regex for a method call.
-	// TODO prob delete this doesn't deal with method parameters, just that they may or may not exist.
-//	public static Pattern methCallA = Pattern.compile("^\\s*+[a-zA-Z]{1}+\\w*+\\s*\\({1}.*\\){1}+\\s*+"
-//			+ "\\{{1}+\\s*$");
-	
-
-	// The regex for the loop parameters.
-	// TODO prob to delete since dealt with in loop regex.
-//	public static Pattern loopParam = Pattern.compile("^\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++"
-//			+ "(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?"
-//			+ "+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*\\s*$");
 	
 	// The regex for a method call, with params.
-	public static Pattern methCall = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}(\\s*\\S*\\s*+"
-			+ "(,{1}+\\s*\\S*\\s*)*)\\){1}+\\s*+;{1}+\\s*$");
-
+	private static final Pattern METH_CALL = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}\\s*(("+
+	POSSIBLE_VAR_VALUES+"|([a-zA-Z]{1}+\\w*)){1}+\\s*+(\\s*,{1}+\\s*+("+POSSIBLE_VAR_VALUES+"|"
+			+ "([a-zA-Z]{1}+\\w*)){1})*)*\\s*\\){1}+\\s*+;{1}+\\s*$");
 	
-	// The regex for if/while loop.
-	// TODO prob to delete, doesn't deal with loop parameters, just that they exist.
-//	public static Pattern loopA = Pattern.compile("\\s*+(if|while){1}+\\s*+[(]{1}\\s*\\S+.*[)]{1}+\\s*+"
-//			+ "[{]{1}+\\s*");
-	
-	// The regex for if/while scope, with params.
-	public static Pattern ifWhile = Pattern.compile("^\\s*+((if|while){1})+\\s*+\\({1}\\s*+((true|false|"
-			+ "([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+\\s*+(true|"
-			+ "false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*)\\s*\\){1}+\\s*+\\{{1}+"
-			+ "\\s*$");
+	// The regex for the opening of an if/while scope, with conditions.
+	private static final Pattern IF_WHILE_OPEN = Pattern.compile("^\\s*+((if|while){1})+\\s*+\\({1}\\s*+"
+			+ "((true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*+(([|][|]|[&][&]){1}+"
+			+ "\\s*+(true|false|([a-zA-Z_]{1}+\\w*)|(-?+[0-9]++(\\.{1}+[0-9]+)?)){1}+\\s*)*)\\s*\\){1}+\\s*"
+			+ "+\\{{1}+\\s*$");
 	
 	// The regex for a comment.
-	public static Pattern doc = Pattern.compile("^/s*//{1}+.*$");
+	private static final Pattern DOCUMENTATION = Pattern.compile("^\\s*//{1}+.*$");
 	
 	// The regex for white space.
-	public static Pattern whiteSpace = Pattern.compile("^\\s*$");
+	private static final Pattern WHITE_SPACE = Pattern.compile("^\\s*$");
 	
 	// The regex for a method return.
-	public static Pattern methEnd = Pattern.compile("^\\s*+return{1}+\\s*+;{1}+\\s*$");
+	private static final Pattern METH_END = Pattern.compile("^\\s*+return{1}+\\s*+;{1}+\\s*$");
 	
 	// The regex for closing a scope.
-	public static Pattern scopeClose = Pattern.compile("^\\s*+\\}{1}+\\s*$");
+	private static final Pattern SCOPE_CLOSER = Pattern.compile("^\\s*+\\}{1}+\\s*$");
 	
 	// Scope depth counter.
 	private int depth = 0;
@@ -144,20 +124,18 @@ public class Parser {
 	// A type factory.
 	private TypeFactory typeFactory = new TypeFactory();
 	
-	// A loop factory.
-	// TODO delete.
-//	private LoopFactory lFactory = new LoopFactory();
-	
 	// A list of symbol tables:
 	// NOTE: for expandibility, if you want to run multiple parsers instances at once, 
 	// NOTE: You'll need to make this and the getter non-static, as well as other places 
 	// NOTE: where the NOTE comment appears.
-	private static Vector<HashMap<String, Type>> symbolTableList;
+//	private static Vector<HashMap<String, Type>> symbolTableListA; //TODO remove and all associated with it.
+	
+	public static SymbolTableList symbolTableList;
 	
 	// List of methods:
 	private HashMap<String, Method> methodMap;
 	
-	HashMap<String, String> map;
+	HashMap<String, String> map;// TODO do we need this?
 	
 	// Scope list 
 	
@@ -177,6 +155,10 @@ public class Parser {
 		symbolTableList = new Vector<HashMap<String, Type>>();
 		// And add the global table in the first spot:
 		symbolTableList.add(new HashMap<String, Type>());
+		//symbolTableListA = new Vector<HashMap<String, Type>>(); //TODO remove?
+		symbolTableList = new SymbolTableList();
+		// And add a table in the first spot:
+//		symbolTableListA.add(new HashMap<String, Type>());
 		this.methodMap = new HashMap<String, Method>();
 	}
 	
@@ -199,31 +181,31 @@ public class Parser {
 					lineCtr++;
 
 					// Documentation matcher against the current line.
-					Matcher docMatch = doc.matcher(currLn);
+					Matcher docMatch = DOCUMENTATION.matcher(currLn);
 
 					// White space matcher against the current line.
-					Matcher whiteSpaceMatch = whiteSpace.matcher(currLn);
+					Matcher whiteSpaceMatch = WHITE_SPACE.matcher(currLn);
 
 					// Method end matcher against the current line.
-					Matcher methEndMatch = methEnd.matcher(currLn);
+					Matcher methEndMatch = METH_END.matcher(currLn);
 
 					// Variable declaration matcher against the current line.
-					Matcher varDecMatch = varDec.matcher(currLn);
+					Matcher varDecMatch = VAR_DEC.matcher(currLn);
 
 					// Method declaration matcher against the current line.
-					Matcher methDecMatch = methDec.matcher(currLn);
+					Matcher methDecMatch = METH_DEC.matcher(currLn);
 
 					// Loop matcher against the current line.
-					Matcher ifWhileMatch = ifWhile.matcher(currLn);
+					Matcher ifWhileMatch = IF_WHILE_OPEN.matcher(currLn);
 
 					//  Scope closer matcher against the current line.
-					Matcher scopeCloseMatch = scopeClose.matcher(currLn);
+					Matcher scopeCloseMatch = SCOPE_CLOSER.matcher(currLn);
 
 					// Variable assignment matcher against the current line.
-					Matcher varAssignmentMatch = varAss.matcher(currLn);
+					Matcher varAssignmentMatch = VAR_ASS.matcher(currLn);
 
 					// Method call matcher against the current line.
-					Matcher methCallMatch = methCall.matcher(currLn);
+					Matcher methCallMatch = METH_CALL.matcher(currLn);
 
 					// If the currLn is documentation, a blank line, method call, or method return, continue.
 					// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
@@ -242,7 +224,7 @@ public class Parser {
 							String[] varArray = vars.split(COMMA_SEPARATOR);
 							
 							for (int j = 0; j < varArray.length; j++) {
-								Matcher nameAndValueMatch = varNameAndValue.matcher(varArray[j]);
+								Matcher nameAndValueMatch = VAR_NAME_OR_VALUE.matcher(varArray[j]);
 								if (nameAndValueMatch.matches()) {
 									String name = nameAndValueMatch
 											.group(FIRST_GROUP_INDEX);
@@ -252,9 +234,11 @@ public class Parser {
 											finalStr, type, name, value,
 											this.depth);
 									// Now put it into the correct symbol table
-									Type previousType = symbolTableList
-											.elementAt(this.depth).put(name,
-													variable);
+//									Type previousType = symbolTableListA
+//											.elementAt(this.depth).put(name,
+//													variable);
+									Type previousType = symbolTableList.addTypeToALevel(name,
+													variable, this.depth);
 									if (previousType != null) {
 										// This means that we tried to declare something with the same name
 										// Twice in same scope, throw exception
@@ -308,9 +292,12 @@ public class Parser {
 							// Only iterate through the list and add them IF there are ARGS! 
 							if (paramList != null) {
 								for (Type paramType : paramList) {
-									Type addReturn = symbolTableList.elementAt(
-											this.depth).put(
-											paramType.getName(), paramType);
+//									Type addReturn = symbolTableListA.elementAt(
+//											this.depth).put(
+//											paramType.getName(), paramType);
+//									
+									Type addReturn = symbolTableList.addTypeToALevel(paramType.getName(), 
+											paramType, this.depth);
 									// If our insertion replaced another Type, then their names overlap:
 									if (addReturn != null) {
 										// TODO delte message below, debug
@@ -366,10 +353,10 @@ public class Parser {
 						}
 						else if ((this.depth == METHOD_DEPTH)
 								&& (this.previousLnType != METHOD_RETURN)) {
-							throw new MissingMethodReturnException("Missing the method return statement.");
+							throw new MissingMethodReturnException();
 						}
 						// Delete the table for the scope that is closing, and decrement depth
-						symbolTableList.remove(this.depth);
+//						symbolTableListA.remove(this.depth);
 						this.depth--;
 						
 						this.previousLnType = SCOPE_CLOSE;
@@ -377,7 +364,8 @@ public class Parser {
 					
 					else if (varAssignmentMatch.matches()) {
 						
-						if (! (this.depth == GLOBAL_DEPTH && i == SECOND_ITERATION)) {
+						// Only assign the value if on global scope XOR in second iteration.
+						if (this.depth == GLOBAL_DEPTH ^ i == SECOND_ITERATION) {
 							// Update the variable value. If variable doesn't exist throw error.
 							String name = varAssignmentMatch.group(FIRST_GROUP_INDEX);
 							String value = varAssignmentMatch
@@ -408,9 +396,7 @@ public class Parser {
 					
 					else {
 						// Throw syntax error.
-						throw new UnmatchedSyntaxException(
-								"Current line doesn't match any possible correct "
-										+ "syntax regex patterns.");
+						throw new UnmatchedSyntaxException();
 					}
 
 				}
@@ -451,15 +437,19 @@ public class Parser {
 			throw new WrongMethodNameException();
 		}
 		else {
-			invokedMethod.checkParamLogic(params);
+			invokedMethod.checkParamLogic(params, this.depth);
 		}
 
 	}
 	
 	// TODO I don't like that this is PUBLIC!!!!!
-	public static Vector<HashMap<String, Type>> getSymbolTableList() {
-		return symbolTableList;
-		//TODO THIS might sometimes return null if it's called statically before an instance has been created.
+//	public static Vector<HashMap<String, Type>> getSymbolTableList() {
+//		return symbolTableListA;
+//		//TODO THIS might sometimes return null if it's called statically before an instance has been created.
+//	}
+//	
+	public static Type searchSymbolTableList(String name, int depth){
+		return symbolTableList.search(name, depth);
 	}
 
 
@@ -471,13 +461,22 @@ public class Parser {
 		this.depth++;
 		
 		// Now check if table needs to be created or not:
+//		if (symbolTableListA.size()  < this.depth + 1) {
+//			// then we need to add a new spot AND table onto the end:
+//			symbolTableListA.add(new HashMap<String, Type>());
+//		}
+//		
+//		if (symbolTableListA.elementAt(this.depth)  == null) {
+//			symbolTableListA.add(this.depth, new HashMap<String, Type>());
+//		}
+		
 		if (symbolTableList.size()  < this.depth + 1) {
 			// then we need to add a new spot AND table onto the end:
-			symbolTableList.add(new HashMap<String, Type>());
+			symbolTableList.increaseLevel();
 		}
 		
-		if (symbolTableList.elementAt(this.depth)  == null) {
-			symbolTableList.add(this.depth, new HashMap<String, Type>());
+		if (symbolTableList.findLevel(this.depth)  == null) {
+			symbolTableList.increaseLevel(this.depth);
 		}
 	}
 	
@@ -487,7 +486,8 @@ public class Parser {
 		// Start at highest depth (where we are now) and go down to global
 		boolean foundVar = false;
 		for (int i = this.depth; i >= 0; i--) {
-			Type varToSet = symbolTableList.elementAt(i).get(varName);
+//			Type varToSet = symbolTableListA.elementAt(i).get(varName);
+			Type varToSet = symbolTableList.search(varName, i);
 			if (varToSet != null) {
 				
 				if (this.depth > GLOBAL_DEPTH && i == GLOBAL_DEPTH) {
@@ -495,12 +495,17 @@ public class Parser {
 					// (not deeper) so that we don't ruin any global initialization of the variable
 					// for future methods
 					Type clonedVar = varToSet.copyVar();
-					symbolTableList.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
-				}
+//					symbolTableListA.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
+					symbolTableList.addTypeToALevel(clonedVar.getName(), clonedVar, METHOD_DEPTH);
+					clonedVar.setValue(valueToUpdate);
+				}else{
 				// Either way, set the new value and boolean
-				foundVar = true;
 				varToSet.setValue(valueToUpdate);
+				}
+				foundVar = true;
 				break;
+
+
 
 			}
 		}

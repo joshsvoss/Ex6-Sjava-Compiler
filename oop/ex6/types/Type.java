@@ -68,6 +68,7 @@ public abstract class Type {
 			}
 				else{
 				this.value = new String(foundType.getValue());
+				this.isInitialized = foundType.isInitialized();
 				}
 			}
 			
@@ -92,10 +93,12 @@ public abstract class Type {
 	private Type lookupPossibleSymbol(String value) {
 		// Start from most recent scope and go down to global:
 		
-		Vector<HashMap<String, Type>> list = Parser.getSymbolTableList();
+//		Vector<HashMap<String, Type>> list = Parser.getSymbolTableList(); // TODO switch to symbollist object
 		
 		for (int i = this.declarationDepth; i >= Parser.GLOBAL_DEPTH; i--) {
-			Type foundType = list.elementAt(i).get(value);
+//			Type foundType = list.elementAt(i).get(value);
+			
+			Type foundType = Parser.searchSymbolTableList(value, i);
 			
 			if (foundType != null) {
 				 // That means we found a symbol of that name. All that remains is to make sure
@@ -138,7 +141,7 @@ public abstract class Type {
 		
 	
 	public boolean isInitialized(){
-		return this.isInitialized();
+		return this.isInitialized;
 	}
 	public boolean isLocallyInitialized(){
 		// TODO write this method. Do we need this?

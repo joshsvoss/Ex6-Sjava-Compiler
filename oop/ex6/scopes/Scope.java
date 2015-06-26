@@ -1,7 +1,6 @@
 package oop.ex6.scopes;
 
 import oop.ex6.main.SJavacException;
-import oop.ex6.types.InvalidValueException;
 
 public abstract class Scope {
 	
@@ -14,10 +13,6 @@ public abstract class Scope {
 	// The current scope's params.
 	protected String params;
 	
-//	// Regex to single out the scope params.
-//	//TODO remove dealt with elsewhere.
-//	protected static final String findParams = ".*[(]{1}\\s*|\\s*[)]{1}.*"; 
-	
 	public Scope(String name, String params, int depth){
 		this.name = name;
 		this.depth = depth;
@@ -26,7 +21,7 @@ public abstract class Scope {
 	}
 	
 	// TODO may want to try catch in method..
-	public abstract boolean checkParamLogic(String params) throws SJavacException;
+	public abstract boolean checkParamLogic(String params, int depth) throws SJavacException;
 	
 	/**
 	 * @return the scope name.

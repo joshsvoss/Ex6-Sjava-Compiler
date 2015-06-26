@@ -10,16 +10,21 @@ import oop.ex6.types.Type;
 import oop.ex6.types.TypeFactory;
 
 public class Method extends Scope{
+	
+	// An array of the parameter types expected to be passed through the method.
 	private Type[] paramTypesList;
+	
+	// The name of the method.
 	private String name;
+	
+	// An array of the parameters in string form.
 	private String[] paramsList;
+	
+	// Does the method have a closing braket?
 	private boolean doesMethodClose;
-
-	// The regex for a comma seperator.
-	private static final String commaSeparater = "\\s*[,]{1}\\s*";
 	
 	// The regex for the method parameters.
-	private static final Pattern methParam = Pattern.compile("\\s*+((final{1})+\\s+)?+"
+	private static final Pattern METH_PARAM = Pattern.compile("\\s*+((final{1})+\\s+)?+"
 			+ "((int|boolean|char|double|String){1})+"
 			+ "\\s*+([a-zA-Z_]{1}+\\w*+)\\s*");
 	
@@ -35,7 +40,7 @@ public class Method extends Scope{
 			this.paramTypesList = new Type[this.paramsList.length];
 			// Create the method param types;
 			for (int i = 0; i < this.paramsList.length; i++) {
-				Matcher methParamMatch = methParam.matcher(this.paramsList[i]);
+				Matcher methParamMatch = METH_PARAM.matcher(this.paramsList[i]);
 				
 				if (methParamMatch.matches()) {
 					String finalStr = methParamMatch.group(Parser.SECOND_GROUP_INDEX);
@@ -61,13 +66,7 @@ public class Method extends Scope{
 	
 
 	private String[] separateParams(String params){
-		return params.split(commaSeparater);
-	}
-
-	// TODO we're not using this in the end right?
-	private void checkSyntax(String line) {
-		// TODO Auto-generated method stub
-		
+		return params.split(Parser.COMMA_SEPARATOR);
 	}
 
 	/** Returns the list of parameters this method declares
@@ -86,7 +85,7 @@ public class Method extends Scope{
 	}
 
 	@Override
-	public boolean checkParamLogic(String params) throws SJavacException {
+	public boolean checkParamLogic(String params, int depth) throws SJavacException {
 		
 		// If no params assign it as null so as to avoid differences in number of parameters.
 		if(params == ""){
@@ -104,7 +103,7 @@ public class Method extends Scope{
 			}
 		}
 		
-		String[] paramsPassedThrough = params.split(commaSeparater);
+		String[] paramsPassedThrough = params.split(Parser.COMMA_SEPARATOR);
 		
 		// First check that the number of arguments matches the number of parameters
 		if (paramsPassedThrough.length != this.paramTypesList.length) {
@@ -113,16 +112,22 @@ public class Method extends Scope{
 		
 		// Then make sure that their corresponding types match
 		for(int i = 0; i < paramsPassedThrough.length; i++){
-//			isParamLocallyInitialized(paramsPassedThrough[i]); //TODO according to our test, you can pass an uninitialized arg to a method! so no need!
-			this.paramTypesList[i].doesValueMatchType(paramsPassedThrough[i]);
+			boolean paramFound = false;
+			for (int j = depth; j >= 0; j--) {
+//				Type paramToCheck = Parser.getSymbolTableList().elementAt(j).get(paramsPassedThrough[i]); //Switch to symbollist object
+				Type paramToCheck = Parser.searchSymbolTableList(paramsPassedThrough[i], j);
+				if (paramToCheck != null) {
+					this.paramTypesList[i].doesValueMatchType(paramToCheck.getValue());
+					paramFound = true;
+					break;
+				}
+					
+				}
+			if(!paramFound){
+				this.paramTypesList[i].doesValueMatchType(paramsPassedThrough[i]);	
+			}
 		}
 		return true;
-	}
-	
-	//TODO why is this never used?
-	private boolean isParamLocallyInitialized(String paramName) throws ParameterNotInitializedException{
-		// TODO search for variable, if it isn't locally initialized (or doesn't exist) throw the exception below, else return true.
-		throw new ParameterNotInitializedException();
 	}
 	
 	public boolean doesMethodClose(){

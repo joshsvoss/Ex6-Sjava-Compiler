@@ -74,6 +74,6 @@ public class TypeFactory {
 		default:
 			break;
 		}
-		throw new InvalidTypeException("Invalid type for variable declaration.");
+		throw new InvalidTypeException();
 	}
 }
