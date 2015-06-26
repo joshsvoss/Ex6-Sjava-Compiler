@@ -175,7 +175,7 @@ public class Parser {
 		
 		// Initilize the data structures to hold the symbol and method tables.
 		symbolTableList = new Vector<HashMap<String, Type>>();
-		// And add a table in the first spot:
+		// And add the global table in the first spot:
 		symbolTableList.add(new HashMap<String, Type>());
 		this.methodMap = new HashMap<String, Method>();
 	}
