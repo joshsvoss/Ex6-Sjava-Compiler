@@ -152,7 +152,22 @@ by type Type, like we do when we create the symbol table HashMaps of type <Strin
  assigned to the variables, as well as to split a list of paramters, variables, or conditions.
  
  Number of passes through file:
- We concluded 
+ We concluded that two passes over the text of the file was the best way to organize the parsing: 
+ first to add all global variables to our symbol table list, and add all Method objects
+ to our Method list (which is a hashmap).  We need to do this since anywhere inside one of the methods, 
+ they can refer to either a 1) global variable or 2) a declared method.  So we need to know what 
+ all of these are before we enter into the text INSIDE the methods.  Since some of these variable
+ and method declarations may come physically AFTER a method's body, but LOGICALLY come BEFORE, 
+ we ignore the method bodies on our first "Global" iteration.  While this isn't the fastest approach,
+ we chose to sacrifice a negligible cost in time for an increase in the speed of coding and the level
+ of readability.  
+ Now the downside of this approach is two times reading the file from disk.  In our case, the code
+ files that we deal with are small enough that this "extra" call to disk would be completely negligable.
+ But if this syntax verifier were to be used with a LARGE suite of software, then it might be 
+ worth it to get rid of the second read from disk by: Reading in all of the code file once, and
+ saving it to memory in an array of Strings.  This way, yes you would have to access that string array
+ twice just like the file, but it will be stored in RAM not the disk, which is a much 
+ less expensive call.  
  
  
 
@@ -181,7 +196,7 @@ at the beginning of the variable declaration line.
 ADDING ARRAYS TO SJAVA:
 
 Syntax issues for arrays:
-1) Negative size declaration
+1) Size of the array in declaration must be > 0
 2) Size variable has to be an int
 3) The type of the array must be resolved to one or our Type subclasses, since objects don't exist in
 SJava
@@ -197,6 +212,8 @@ illegal.
 The inherited abstract method "doesValueMatchType" would be implemented to throw an exception
 if the assigned type of the array didn't match the declared type of the array, as well as 
 ensuring that it is indeed assigned the value of an array. 
+The inherited abstract method "doesTargetTypeMatchSource" would do the same checking but for 
+assignments to declared array variables, not the "array litera" (if you will) of "new <type>[<size>];"
 
 
 
