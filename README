@@ -86,7 +86,7 @@ Char.java - This is the class for the Char Type variable.
 
 Double.java - This is the class for the Double Type variable.
 
-FinalVariableException.java - 
+FinalVariableException.java - This exception is thrown when a final variable is reassigned.
 
 Int.java -
 
