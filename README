@@ -106,11 +106,11 @@ Java class String.
 
 Type.java - The parent class for all the type objects (Int, Char, etc).
 
-TypeAssignmentMismatch.java - 
+TypeFactory.java - This class has the job of received a string that defines what type to create, and trying 
+to create an instance of the corresponding type.
 
-TypeFactory.java - 
-
-UninitializedFinalVariableException.java - 
+UninitializedFinalVariableException.java - This exception is thrown when a final variable is declared 
+without initialization.
 
 ******************************
 
