@@ -121,7 +121,8 @@ without initialization.
 
 We chose to divide the program into 3 different packages based on their different purposes.  The main 
 package contains the driver class "Sjavac" and it's main method as well as the parser (and of course 
-all of the exceptions that are thrown by these classes, this will be the case in each package).
+all of the exceptions that are thrown by these classes, this will be the case in each package), and the data
+structure in which we stored the variables we created.
 We decided to create objects for each type of variable, int, String, char etc, since in order 
 to check the syntax of Sjava, we need the variables to persist so we can keep track of who they 
 are (name) and what their value is, as well as if they've been initialized and are final etc.  
@@ -143,8 +144,11 @@ by type Type, like we do when we create the symbol table HashMaps of type <Strin
  and had the checks be performed inside checkLogic() instead of the constructor, and got rid 
  of the Scope parent class, since all of it's functionality was only used by the Method class.  
  
- Placement or regexes:
-
+ To check the general syntax of each line of code from the source file, we used regexes. Creating one regex
+ per legal type of line (i.e. variable declaration, method declaration, variable assignment, etc.). All of
+ these regexes were placed in our parser class, allowing us to weed out any general syntax errors with the
+ first read through. We also used a couple of other regexes, for example to ensure that legal values are
+ assigned to the variables, as well as to split a list of paramters, variables, or conditions.
 
 =============================
 =  Implementation details   =
