@@ -184,6 +184,9 @@ This way we can keep track of a variable that references an array just like the 
 in out SymbolTableList.  We need to keep track of declared arrays, because if a reference to an
 array such as "arr[i]" or "arr.length" is referring to an array that hasn't been declared, that is 
 illegal.  
+The inherited abstract method "doesValueMatchType" would be implemented to throw an exception
+if the assigned type of the array didn't match the declared type of the array, as well as 
+ensuring that it is indeed assigned the value of an array. 
 
 
 
