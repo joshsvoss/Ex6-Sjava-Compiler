@@ -528,13 +528,13 @@ public class Parser {
 	
 	/** This method returns the current line of the parser.  This method is static so that
 	 * the main can have access to the current line number to print it out with the exception
-	 * for a more detailed error message.
+	 * for a more detailed error message. 
 	 * 
 	 * NOTE: for expandability, if you want to have more than one Parser instance at once,
 	 * make this method non-static and call it on a reference to the Parser instance.  
 	 * @return int current line in parser.
 	 */
-	public static int getLineCounter() {
+	public static int getLineCounter() { //TODO make this non static and instead return a reference to the parser object to the maiin.
 		return Parser.lineCtr;
 	}
 
