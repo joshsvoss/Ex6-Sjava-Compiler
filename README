@@ -224,6 +224,8 @@ package) would be Parser.java in the main package.  We would modify the parsing 
 by adding another else if statement that would be entered in the case our new array-matching regex
 would match with the current line being read.  Inside this else if code block, an object of Array type 
 would be constructed and placed into the correct level in the SymbolTableList just like any other variable.
+And a reference to this array variable would cause a lookup to be performed in the SymbolTableList using
+its search() method just like a variable of any other type.  
 
 
 
