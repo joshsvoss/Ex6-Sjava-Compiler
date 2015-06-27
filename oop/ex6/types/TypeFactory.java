@@ -6,7 +6,8 @@ import oop.ex6.main.SJavacException;
  * and trying to create an instance of the corresponding type.
  * 
  * If the String passed in does not match anything, an InvalidTypeException is thrown.
- * @author Joshua Voss
+ * 
+ * @author Joshua Voss, shanam
  *
  */
 public class TypeFactory {
@@ -14,6 +15,7 @@ public class TypeFactory {
 	private boolean isFinal = false;
 	
 	/** This  method returns the correct Type based on the type String.
+	 * 
 	 * @param finalStr the part of the line where "final" would be
 	 * @param type substring with the typename
 	 * @param name substring with the name of the variable.
@@ -22,7 +24,7 @@ public class TypeFactory {
 	 * @return a reference to an instance of the correct subtype of Type
 	 * @throws SJavacException
 	 */
-	public Type generateType(String finalStr, String type, String name, String value, int depth) //TODO Shouldn't this be static?
+	public Type generateType(String finalStr, String type, String name, String value, int depth)
 			throws SJavacException {
 		if(finalStr != null){
 			isFinal = true;
@@ -89,7 +91,8 @@ public class TypeFactory {
 				break;
 			default:
 				throw new InvalidTypeException();
-		}	
+		}
+		isFinal = false;
 		return toReturn;
 	}
 	

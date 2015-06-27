@@ -16,14 +16,15 @@ public class AssignmentFromUninitializedVarException extends SJavacException {
 	private static final String defaultMsg = "A variable was assigned a value from another variable, "
 			+ "when the second variable was not yet initialized";
 
-	/** Identical to parents constructor.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public AssignmentFromUninitializedVarException() {
 		super(defaultMsg);
 	}
 	
-	/** identical to that of super.  
+	/** Creates an exception with a custom message.
+	 * 
 	 * @param msg message to be passed up with exception.
 	 */
 	public AssignmentFromUninitializedVarException(String msg) {

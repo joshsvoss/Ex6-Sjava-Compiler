@@ -88,13 +88,15 @@ Double.java - This is the class for the Double Type variable.
 
 FinalVariableException.java - This exception is thrown when a final variable is reassigned.
 
-Int.java -
+Int.java - This is the class for the Int Type variable.
 
-InvalidTypeException.java -
+InvalidTypeException.java - This exception is thrown when an illegal type is declared.
 
-InvalidValueException.java - 
+InvalidValueException.java - This exception is thrown when an illegal value is assigned to a variable.
 
-StringType.java - 
+StringType.java - This class implements the object StringType.  This class is used to create object that 
+represent variable of the type String. The name "StringType" was used to avoid namespace collision with the 
+Java class String.
 
 Type.java - The parent class for all the type objects (Int, Char, etc).
 

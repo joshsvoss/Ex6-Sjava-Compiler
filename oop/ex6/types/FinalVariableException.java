@@ -14,13 +14,14 @@ public class FinalVariableException extends SJavacException {
 	private static final String defaultMsg = "A final variable cannot be reassigned.";
 	
 	/** 
-	 * Identical to parents constructor.
+	 * Creates an exception with a default message.
 	 */
 	public FinalVariableException() {
 		super(defaultMsg);
 	}
 	
-	/** Identical to that of super.  
+	/** Creates an exception with a custom message.
+	 * 
 	 * @param msg message to be passed up with exception.
 	 */
 	public FinalVariableException(String msg) {
