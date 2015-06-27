@@ -38,7 +38,9 @@ Sjavac.java - This class is the driver class of the Sjava code legality verifier
 
 SJavacException.java - This is the parent exception for all exceptions of Sjava syntax nature.  All 
 exceptions that are thrown because of a problem with the Sjava program specified in the cmd lin argument
-extend this exception.  
+extend this exception.
+
+SymbolTableList.java - This is the class for the  SybolTableList, a data structure that holds our variables.
 
 UndeclaredAssignmentException.java - This exception is thrown when the sjava program attempts to assign 
 a value to a variable that hasn't been declared.  
@@ -73,15 +75,16 @@ Scope.java -
 
 PACKAGE: oop.ex6.types - 
 
-AssignmentFromUninitializedVarException.java - 
+AssignmentFromUninitializedVarException.java - This exception is thrown when one variable was assigned the 
+value of another which wasn't initialized. 
 
 AssignmentMismatchException.java - 
 
-Boolean.java - 
+Boolean.java - This is the class for the Boolean Type variable.
 
-Char.java - 
+Char.java - This is the class for the Char Type variable.
 
-Double.java - 
+Double.java - This is the class for the Double Type variable.
 
 FinalVariableException.java - 
 
