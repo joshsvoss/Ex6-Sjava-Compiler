@@ -150,11 +150,17 @@ by type Type, like we do when we create the symbol table HashMaps of type <Strin
  these regexes were placed in our parser class, allowing us to weed out any general syntax errors with the
  first read through. We also used a couple of other regexes, for example to ensure that legal values are
  assigned to the variables, as well as to split a list of paramters, variables, or conditions.
+ 
+ Number of passes through file:
+ We concluded 
+ 
+ 
 
 =============================
 =  Implementation details   =
 =============================
 
+See above.
 
 =============================
 =    Answers to questions   =
@@ -175,12 +181,12 @@ at the beginning of the variable declaration line.
 ADDING ARRAYS TO SJAVA:
 
 Syntax issues for arrays:
-• Negative size declaration
-• Size variable has to be an int
-• The type of the array must be resolved to one or our Type subclasses, since objects don't exist in
+1) Negative size declaration
+2) Size variable has to be an int
+3) The type of the array must be resolved to one or our Type subclasses, since objects don't exist in
 SJava
-• The type must be the same on both sides of the assignment statement: String[] arr = int[x]; is illegal.
-• Statements like "arrayName[i]" would be legal only if arrayName pointed to an array type, and not
+4) The type must be the same on both sides of the assignment statement: String[] arr = int[x]; is illegal.
+5) Statements like "arrayName[i]" would be legal only if arrayName pointed to an array type, and not
 one of the other Type subclasses.  
 
 We would add a class Array.java to the types package, and it would extend the Type class.  
