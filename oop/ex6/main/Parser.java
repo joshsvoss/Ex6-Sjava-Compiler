@@ -456,7 +456,7 @@ public class Parser {
 	 * It wraps the search() method of the SymbolTableList class.
 	 * @param name the name of the variable to be searched. 
 	 * @param depth the level of the list where the table we want to search is.  
-	 * @return
+	 * @return The Type that was being searched for if it was found, or null if it wasn't found.
 	 */
 	public static Type searchSymbolTableList(String name, int depth){
 		return symbolTableList.search(name, depth);
@@ -470,16 +470,6 @@ public class Parser {
 	private void incrementDepth() {
 		this.depth++;
 		
-		// Now check if table needs to be created or not:
-//		if (symbolTableListA.size()  < this.depth + 1) {
-//			// then we need to add a new spot AND table onto the end:
-//			symbolTableListA.add(new HashMap<String, Type>());
-//		}
-//		
-//		if (symbolTableListA.elementAt(this.depth)  == null) {
-//			symbolTableListA.add(this.depth, new HashMap<String, Type>());
-//		}
-		
 		if (symbolTableList.size()  < this.depth + 1) {
 			// then we need to add a new spot AND table onto the end:
 			symbolTableList.increaseLevel();
@@ -492,11 +482,15 @@ public class Parser {
 	
 
 
-	private void tryChangeVarValue(String varName, String valueToUpdate) throws SJavacException {
+	/** This method is called when the sjava file performs a variable assignment.  
+	 * @param varName the name of the variable to be assigned with a new value.
+	 * @param valueToUpdate the value to assign to variable varName.
+	 * @throws SJavacException When the variable to be reassigned has not yet been declared!
+	 */
+	private void tryChangeVarValue(String varName, String valueToUpdate) throws SJavacException { 
 		// Start at highest depth (where we are now) and go down to global
 		boolean foundVar = false;
 		for (int i = this.depth; i >= 0; i--) {
-//			Type varToSet = symbolTableListA.elementAt(i).get(varName);
 			Type varToSet = symbolTableList.search(varName, i);
 			if (varToSet != null) {
 				
@@ -505,7 +499,6 @@ public class Parser {
 					// (not deeper) so that we don't ruin any global initialization of the variable
 					// for future methods
 					Type clonedVar = varToSet.copyVar();
-//					symbolTableListA.elementAt(METHOD_DEPTH).put(clonedVar.getName(), clonedVar);
 					symbolTableList.addTypeToALevel(clonedVar.getName(), clonedVar, METHOD_DEPTH);
 					clonedVar.setValue(valueToUpdate);
 				}else{
@@ -513,9 +506,6 @@ public class Parser {
 				}
 				foundVar = true;
 				break;
-
-
-
 			}
 		}
 		
@@ -526,12 +516,19 @@ public class Parser {
 	}
 
 
+	/** This boolean helper method returns true if the program should enter into the declaring
+	 * variable block. 
+	 * @param i is the iteration of reading the file.  There are two iterations, 0 and 1.
+	 * @return true if the variable should be declared inside the program.
+	 */
 	private boolean shouldDeclareVar(int i) {
 		return (i == GLOBAL_ITERATION && this.depth == GLOBAL_ITERATION) || 
 				(i != GLOBAL_ITERATION  && this.depth != GLOBAL_ITERATION);
 	}
 	
-	/** This method returns the current line of the parser.
+	/** This method returns the current line of the parser.  This method is static so that
+	 * the main can have access to the current line number to print it out with the exception
+	 * for a more detailed error message.
 	 * 
 	 * NOTE: for expandability, if you want to have more than one Parser instance at once,
 	 * make this method non-static and call it on a reference to the Parser instance.  
