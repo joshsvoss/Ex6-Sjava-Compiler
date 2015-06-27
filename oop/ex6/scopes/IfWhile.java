@@ -12,8 +12,7 @@ import oop.ex6.types.Boolean;
 
 public class IfWhile {
 	
-	//TODO We don't need to have an ifWhile object do we, so maybe we should just have a static 
-	// TODO "checkIFWhile()" method
+
 	
 	private static final Pattern BOOLEAN_INT_DOUBLE = Pattern.compile("\\s*(true|false|(-?+[0-9]++(\\.{1}+"
 			+ "[0-9]+)?))\\s*");
@@ -46,7 +45,7 @@ public class IfWhile {
 			return true;
 		}else if(legalVarNameMatch.matches()){
 			for (int i = depth; i >= 0; i--) {
-//				Type conditionVar = Parser.getSymbolTableList().elementAt(i).get(condition); //TODO switch to symbollist object
+
 				Type conditionVar = Parser.searchSymbolTableList(condition, i);
 				if(conditionVar != null){
 					if((conditionVar instanceof Int) || (conditionVar instanceof Double) || 
