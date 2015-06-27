@@ -3,6 +3,11 @@ package oop.ex6.main;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+/** This class is the driver class of the Sjava code legality verifier. 
+ *  
+ * @author Joshua Voss
+ *
+ */
 public class Sjavac {
 	
 	private static final int IO_FAILURE_NUM = 2;
@@ -10,6 +15,12 @@ public class Sjavac {
 	private static final int KOSHER_CODE_NUM = 0;
 	private static final int SRC_FILE_INDEX = 0;
 
+	/** The main method.  The program expects one command line argument, the path to the Sjava file 
+	 * we want to validate.  
+	 * @param args command line arguments.
+	 * 
+	 * USAGE: java Sjavac <filepath>
+	 */
 	public static void main(String[] args) {
 		
 		// Make sure we received the necessary arguments:

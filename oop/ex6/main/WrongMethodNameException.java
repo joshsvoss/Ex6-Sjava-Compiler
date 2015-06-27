@@ -1,6 +1,6 @@
 package oop.ex6.main;
 
-/**
+/** This exception is thrown when a method is called with a name that doesn't exist.  
  * @author Joshua Voss
  *
  */

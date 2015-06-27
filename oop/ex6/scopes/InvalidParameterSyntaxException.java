@@ -1,11 +1,9 @@
-/**
- * 
- */
+
 package oop.ex6.scopes;
 
 import oop.ex6.main.SJavacException;
 
-/**
+/** This exception is thrown when the parameter declaration of a method is invalid.  
  * @author Shana M
  *
  */

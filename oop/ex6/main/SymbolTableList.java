@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import oop.ex6.types.Type;
+//TODO shana add comments :))
+
 
 /**This is the class for the  SybolTableList, a data structure that holds our variables.
  * 
  * @author Shana M, Joshsvoss
- *
  */
 public class SymbolTableList{
 
