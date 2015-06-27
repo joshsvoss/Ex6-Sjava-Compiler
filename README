@@ -8,7 +8,9 @@ joshsvoss
 
 ************************
 
-PACKAGE: oop.ex6.main :
+PACKAGE: oop.ex6.main :  This package contains the main method and its class, Sjavac.java. It also
+contains the parser and all of the exceptions that are thrown in the parser and not in the 
+deeper methods that it calls.  
 
 DoubleDeclarationInScopeException.java - This Exception is to be thrown when two variable of the same 
 name are declared in the same scope.
@@ -53,9 +55,12 @@ doesn't exist.
 
 *****************************
 
-PACKAGE: oop.ex6.scopes - 
+PACKAGE: oop.ex6.scopes: This package contains the files that relate to checking the syntax
+of code blocks and scopes: such as if statements, while loops and methods. It also contains the e
+exceptions that they throw.  
 
-IfWhile.java - 
+IfWhile.java - This class performs static syntax validation checks on an if or while statement in 
+Sjava document.  
 
 IncorrectNumArgsException.java - This exception is thrown when a method is called with the incorrect number 
 of args.  
@@ -73,7 +78,8 @@ that haven't yet been initialized.
 
 *****************************
 
-PACKAGE: oop.ex6.types - 
+PACKAGE: oop.ex6.types: This package contains the different Type objects and their superclass
+Type.java and  the exceptions that they throw. 
 
 AssignmentFromUninitializedVarException.java - This exception is thrown when one variable was assigned the 
 value of another which wasn't initialized. 
@@ -112,6 +118,32 @@ UninitializedFinalVariableException.java -
 =============================
 =          Design           =
 =============================
+
+We chose to divide the program into 3 different packages based on their different purposes.  The main 
+package contains the driver class "Sjavac" and it's main method as well as the parser (and of course 
+all of the exceptions that are thrown by these classes, this will be the case in each package).
+We decided to create objects for each type of variable, int, String, char etc, since in order 
+to check the syntax of Sjava, we need the variables to persist so we can keep track of who they 
+are (name) and what their value is, as well as if they've been initialized and are final etc.  
+All the different variable objects extend the Type superclass, both to adhere to the DRY principle
+by centralizing all common code in one place, and to be able to refer to all of the different types
+by type Type, like we do when we create the symbol table HashMaps of type <String, Type>.
+ 
+ We used the factory paradigm for creating instances of the different types, so it can 
+ look a the string it's passed and attempt to create a object of the correct type.  This also allows
+ us to catch the situation where the string specifies a type that we don't recognize, such as 
+ "superBoolean b = true;", in which case we throw an exception.  
+ 
+ The scopes package deals with parts of the code that are a scope of their own, namely: if statements, 
+ while loops, and methods.  Out of these, only the methods need to actually be instantiated and 
+ kept in a data structure so we can keep track of them.  Therefore, although we initially started with
+ a common parent class Scope.java, as we progressed and realized that the ifWhile checks
+ can be performed statically and there was no need to create an ifWhile object, we thinned out 
+ the ifWhile.java class and got rid of all of it's unnecessary getters and setters, made it static
+ and had the checks be performed inside checkLogic() instead of the constructor, and got rid 
+ of the Scope parent class, since all of it's functionality was only used by the Method class.  
+ 
+ Placement or regexes:
 
 
 =============================

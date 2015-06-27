@@ -12,10 +12,16 @@ public class UnmatchedSyntaxException extends SJavacException {
 	private static final String defaultMsg = "Current line doesn't match any possible correct "
 			+ "syntax regex patterns.";
 
+	/** Creates an exception with default message. 
+	 * 
+	 */
 	public UnmatchedSyntaxException() {
 		super(defaultMsg);
 	}
 	
+	/** Creates an exception with custom message.  
+	 * @param msg the custom message.  
+	 */
 	public UnmatchedSyntaxException(String msg) {
 		super(msg);
 	}

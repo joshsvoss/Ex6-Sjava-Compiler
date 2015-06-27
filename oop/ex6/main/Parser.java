@@ -335,7 +335,7 @@ public class Parser {
 							String name = ifWhileMatch.group(FIRST_GROUP_INDEX); 
 							String conditions = ifWhileMatch
 									.group(THIRD_GROUP_INDEX);
-							new IfWhile(name, conditions, depth); //TODO warning here for not doing anything with new object
+							IfWhile.checkLogic(name, conditions, depth); //TODO warning here for not doing anything with new object
 						}
 
 					}
