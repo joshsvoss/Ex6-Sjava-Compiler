@@ -12,7 +12,7 @@ import oop.ex6.main.SJavacException;
  */
 public class TypeFactory {
 
-	private boolean isFinal = false;
+	private static boolean isFinal;
 	
 	/** This  method returns the correct Type based on the type String.
 	 * 
@@ -24,8 +24,10 @@ public class TypeFactory {
 	 * @return a reference to an instance of the correct subtype of Type
 	 * @throws SJavacException
 	 */
-	public Type generateType(String finalStr, String type, String name, String value, int depth)
+	public static Type generateType(String finalStr, String type, String name, String value, int depth)
 			throws SJavacException {
+		isFinal = false;
+				
 		if(finalStr != null){
 			isFinal = true;
 		}
@@ -66,7 +68,10 @@ public class TypeFactory {
 	 * @throws InvalidTypeException is thrown when the String type doesn't match any
 	 * of the accepted type patterns.
 	 */
-	public Type generateMethodParamType(String finalStr, String type, String name) throws InvalidTypeException{
+	public static Type generateMethodParamType(String finalStr, String type, String name) throws InvalidTypeException{
+		
+		isFinal = false;
+		
 		if(finalStr != null){
 			isFinal = true;
 		}
