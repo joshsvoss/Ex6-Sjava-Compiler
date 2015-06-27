@@ -166,16 +166,16 @@ See above.
 =    Answers to questions   =
 =============================
 ********************
-ADDING FLOAT VARIABLE:
-Adding a float variable to the spec of Sjava and therefore to our syntax verifier would fit
+ADDING OTHER VARIABLES:
+Adding a new variable type to the spec of Sjava and therefore to our syntax verifier would fit
 well with our design.  We already have a separate class for each type of variable, so we would just create
-a new class in the types package called "Float.java".  It would have a constructor and implement
+a new class in the types package, for example called "Float.java". It would have a constructor and implement
 the other methods that Type demands: doesValueMatchType() and doesTargetTypeMatchSource().  The
-first would make sure that the value assigned to the float variable is of the right syntax, "7" or "7.0" 
-etc.
+first would make sure that the value assigned to the variable is of the right syntax, for example with a 
+float "7" or "7.0" etc.
 In addition, we'd have to change the regexes in the parser that deal with variable declarations
-(as well as those in the parameter list of a method), by adding the option of having the substring "float" 
-at the beginning of the variable declaration line.  
+(as well as those in the parameter list of a method), by adding the option of having the type substring (eg.
+"float") at the beginning of the variable declaration line.  
 
 *********************
 ADDING ARRAYS TO SJAVA:
@@ -204,7 +204,17 @@ ensuring that it is indeed assigned the value of an array.
 **********************
 ADDING SWITCH STATEMENT:
 
-
+In order to support the switch statement feature, we would implement a new class in the scopes package
+called switch. Like the ifWhile class, it would not have a name, however, closer in functionality to the
+method class, it would keep track of the argument passed through the switch. We can keep track of this by 
+creating a field in the switch class that keeps track of the argument type. This is necessary to ensure 
+that the cases following match the type of the argument. Other fields it would need are a declaration depth
+variable to keep track of the opening and closing of the switch statement, as well as a boolean field
+keeping track of whether or not we are under a switch case/default, say "inCase".
+In our parser class, we would have to add regexes to account for all lines associated with the switch 
+statement, "switch(..){", "case..:", default:", etc. We would also implement a stack data structure, to keep
+track of open switch statementsAdditionally, we would add an else if block in out 
+readCode() method to account for the opening of the switch statement. Upon entrance to this block,  
 
 
 
