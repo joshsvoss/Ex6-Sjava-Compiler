@@ -5,8 +5,8 @@ package oop.ex6.types;
 
 import oop.ex6.main.SJavacException;
 
-/**
- * @author Shana M
+/**This exception is thrown when a final variable is declared without initialization.
+ * @author Shana M, Joshsvoss
  *
  */
 public class UninitializedFinalVariableException extends SJavacException {
@@ -15,15 +15,16 @@ public class UninitializedFinalVariableException extends SJavacException {
 	
 	private static final String defaultMsg = "Final variables must be initialized at declaration.";
 
-	/**
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public UninitializedFinalVariableException() {
 		super(defaultMsg);
 	}
 
-	/**
-	 * @param msg
+	/** Creates an exception with a custom message.
+	 * 
+	 * @param msg message to be passed up with exception.
 	 */
 	public UninitializedFinalVariableException(String msg) {
 		super(msg);

@@ -129,9 +129,6 @@ public class Parser {
 	// Scope depth counter.
 	private int depth = 0;
 	
-	// A type factory.
-	private TypeFactory typeFactory = new TypeFactory();
-	
 	// A list of symbol tables:
 	// NOTE: for expandibility, if you want to run multiple parsers instances at once, 
 	// NOTE: You'll need to make this and the getter non-static, as well as other places 
@@ -242,7 +239,7 @@ public class Parser {
 											.group(FIRST_GROUP_INDEX);
 									String value = nameAndValueMatch
 											.group(SIXTH_GROUP_INDEX);
-									Type variable = typeFactory.generateType(
+									Type variable = TypeFactory.generateType(
 											finalStr, type, name, value,
 											this.depth);
 									// Now put it into the correct symbol table
@@ -264,7 +261,7 @@ public class Parser {
 							
 						}
 						// Otherwise, even though we're not building the variable we found a syntax match
-						// So it's kosher, continue to next line. (no need for conintue because they're all
+						// So it's kosher, continue to next line. (no need for continue because they're all
 						// "else if"
 
 					} 

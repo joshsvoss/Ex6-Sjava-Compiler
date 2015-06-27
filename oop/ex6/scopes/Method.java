@@ -36,9 +36,6 @@ public class Method {
 	private static final Pattern METH_PARAM = Pattern.compile("\\s*+((final{1})+\\s+)?+"
 			+ "((int|boolean|char|double|String){1})+"
 			+ "\\s*+("+Parser.POSSIBLE_VAR_NAMES+"+)\\s*");
-	
-	// A type factory.
-	TypeFactory typeFactory = new TypeFactory();
 
 	/** Constructor method.  
 	 * @param name the name of the method.
@@ -66,7 +63,7 @@ public class Method {
 					String type = methParamMatch.group(Parser.THIRD_GROUP_INDEX);
 					String paramName = methParamMatch.group(Parser.FIFTH_GROUP_INDEX);
 					// create a type object of this argument, and add it to the the paramTypes list
-					Type paramType = typeFactory.generateMethodParamType(finalStr, type, paramName);
+					Type paramType = TypeFactory.generateMethodParamType(finalStr, type, paramName);
 					this.paramTypesList[i] = paramType;
 				} else {
 					throw new InvalidParameterSyntaxException();
