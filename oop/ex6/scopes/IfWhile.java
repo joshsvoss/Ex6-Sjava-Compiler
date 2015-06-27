@@ -19,25 +19,25 @@ public class IfWhile {
 	private static final Pattern LEGAL_VAR_NAMES = Pattern.compile("\\s*("+Parser.POSSIBLE_VAR_NAMES+")"
 			+ "\\s*");
 	private static final String BOOLEAN_OPERATOR_SEPARATOR = "\\s*([|][|]){1}\\s*|\\s*([&][&]){1}\\s*";
-	private String[] conditions;
 
-	public IfWhile(String name, String conditions, int depth) throws InvalidValueException,
+
+	public static void checkLogic(String name, String conditions, int depth) throws InvalidValueException,
 	ParameterNotInitializedException {
 		
-		this.conditions = separateConditions(conditions);
-		for(int i = 0; i < this.conditions.length; i++){
-			checkParamLogic(this.conditions[i], depth);
+		String[] sepConditions = separateConditions(conditions);
+		for(int i = 0; i < sepConditions.length; i++){
+			checkParamLogic(sepConditions[i], depth);
 		}
 		
 	}
 	
-	private String[] separateConditions(String conditions){
+	private static String[] separateConditions(String conditions){
 		return conditions.split(BOOLEAN_OPERATOR_SEPARATOR);
 	}
 
 	
 
-	public boolean checkParamLogic(String condition, int depth) throws InvalidValueException,
+	public static boolean checkParamLogic(String condition, int depth) throws InvalidValueException,
 	ParameterNotInitializedException {
 		Matcher boolenaIntOrDoubleMatch = BOOLEAN_INT_DOUBLE.matcher(condition);
 		Matcher legalVarNameMatch = LEGAL_VAR_NAMES.matcher(condition);
