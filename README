@@ -10,7 +10,8 @@ joshsvoss
 
 PACKAGE: oop.ex6.main :  This package contains the main method and its class, Sjavac.java. It also
 contains the parser and all of the exceptions that are thrown in the parser and not in the 
-deeper methods that it calls.  
+deeper methods that it calls.  It also contains the SymbolTableList class which wraps a Vector
+of HashMaps for storing the variables at different scopes.  
 
 DoubleDeclarationInScopeException.java - This Exception is to be thrown when two variable of the same 
 name are declared in the same scope.
@@ -158,7 +159,7 @@ by type Type, like we do when we create the symbol table HashMaps of type <Strin
 =============================
 =    Answers to questions   =
 =============================
-
+********************
 ADDING FLOAT VARIABLE:
 Adding a float variable to the spec of Sjava and therefore to our syntax verifier would fit
 well with our design.  We already have a separate class for each type of variable, so we would just create
@@ -169,6 +170,35 @@ etc.
 In addition, we'd have to change the regexes in the parser that deal with variable declarations
 (as well as those in the parameter list of a method), by adding the option of having the substring "float" 
 at the beginning of the variable declaration line.  
+
+*********************
+ADDING ARRAYS TO SJAVA:
+
+Syntax issues for arrays:
+• Negative size declaration
+• Size variable has to be an int
+• The type of the array must be resolved to one or our Type subclasses, since objects don't exist in
+SJava
+• The type must be the same on both sides of the assignment statement: String[] arr = int[x]; is illegal.
+• Statements like "arrayName[i]" would be legal only if arrayName pointed to an array type, and not
+one of the other Type subclasses.  
+
+We would add a class Array.java to the types package, and it would extend the Type class.  
+This way we can keep track of a variable that references an array just like the other types 
+in out SymbolTableList.  We need to keep track of declared arrays, because if a reference to an
+array such as "arr[i]" or "arr.length" is referring to an array that hasn't been declared, that is 
+illegal.  
+The inherited abstract method "doesValueMatchType" would be implemented to throw an exception
+if the assigned type of the array didn't match the declared type of the array, as well as 
+ensuring that it is indeed assigned the value of an array. 
+
+
+
+
+**********************
+ADDING SWITCH STATEMENT:
+
+
 
 
 
