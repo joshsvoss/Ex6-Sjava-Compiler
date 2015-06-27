@@ -6,14 +6,20 @@ import java.util.Vector;
 
 import oop.ex6.types.Type;
 
-/**
- * @author Shana M
+/**This is the class for the  SybolTableList, a data structure that holds our variables.
+ * 
+ * @author Shana M, Joshsvoss
  *
  */
 public class SymbolTableList{
 
-	Vector<HashMap<String, Type>> symbolTableList;
+	// A vector of hashmaps holding our variables.
+	private Vector<HashMap<String, Type>> symbolTableList;
 	
+	
+	/**
+	 * The constructor for creating a new SymbolTableList.
+	 */
 	public SymbolTableList(){
 
 		this.symbolTableList = new Vector<HashMap<String, Type>>();
