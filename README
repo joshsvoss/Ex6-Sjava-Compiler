@@ -12,36 +12,61 @@ PACKAGE: oop.ex6.main :
 
 DoubleDeclarationInScopeException.java - This Exception is to be thrown when two variable of the same 
 name are declared in the same scope.
+
 GlobalClosingBracketException.java - This exception is thrown when the parser encounters a closing bracket 
 in the global scope.
+
 GlobalIfWhileException.java - This exception is thrown when the parser encounters an if or while block in 
 the global scope. 
+
 GlobalMethodCallException.java - This exception is thrown when a method is called in the global scope.
+
 GlobalReturnException.java - This exception is thrown when a return statement is encountered 
 in the global scope.
+
 IncorrectVariableSyntaxException - This exception is thrown when a variable is declared with 
 incorrect syntax.  
+
 MissingMethodReturnException.java -  This exception is thrown when a method is missing its return 
 statement.  
+
 NestedMethodDeclarationException.java - This exception is thrown when a method is declared inside another.  
-Parser.java - 
-Sjavac.java - 
-SJavacException.java
-UndeclaredAssignmentException.java -
-UnmatchedSyntaxException.java - 
-WrongMethodNameException.java -
+
+Parser.java - This class handles reading in the Sjava file and parsing through it.
+
+Sjavac.java - This class is the driver class of the Sjava code legality verifier. 
+
+SJavacException.java - This is the parent exception for all exceptions of Sjava syntax nature.  All 
+exceptions that are thrown because of a problem with the Sjava program specified in the cmd lin argument
+extend this exception.  
+
+UndeclaredAssignmentException.java - This exception is thrown when the sjava program attempts to assign 
+a value to a variable that hasn't been declared.  
+
+UnmatchedSyntaxException.java - This exception is thrown when the line parsed doesn't 
+match any of our regex formulas, and therefore must be incorrect.
+
+WrongMethodNameException.java - This exception is thrown when a method is called with a name that 
+doesn't exist.  
 
 *****************************
 
 PACKAGE: oop.ex6.scopes - 
 
-Global.java - 
 IfWhile.java - 
-IncorrectNumArgsException.java - 
-InvalidParameterSyntaxException.java - 
+
+IncorrectNumArgsException.java - This exception is thrown when a method is called with the incorrect number 
+of args.  
+
+InvalidParameterSyntaxException.java - This exception is thrown when the parameter declaration of a 
+method is invalid.  
+
 Method.java - 
+
 MethodNamespaceCollision.java - 
+
 ParameterNotInitializedException - 
+
 Scope.java - 
 
 *****************************
@@ -49,18 +74,31 @@ Scope.java -
 PACKAGE: oop.ex6.types - 
 
 AssignmentFromUninitializedVarException.java - 
+
 AssignmentMismatchException.java - 
+
 Boolean.java - 
+
 Char.java - 
+
 Double.java - 
+
 FinalVariableException.java - 
+
 Int.java -
+
 InvalidTypeException.java -
+
 InvalidValueException.java - 
+
 StringType.java - 
+
 Type.java - The parent class for all the type objects (Int, Char, etc).
+
 TypeAssignmentMismatch.java - 
+
 TypeFactory.java - 
+
 UninitializedFinalVariableException.java - 
 
 ******************************

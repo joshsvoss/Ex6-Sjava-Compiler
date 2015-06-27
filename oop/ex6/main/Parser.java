@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.sql.PooledConnection;
 
 import oop.ex6.scopes.IfWhile;
 import oop.ex6.scopes.Method;

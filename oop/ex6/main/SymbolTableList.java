@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import oop.ex6.types.Type;
+//TODO shana add comments :))
 
 /** 
  * @author Shana M
