@@ -68,7 +68,6 @@ MethodNamespaceCollision.java - This exception is thrown when two methods have t
 ParameterNotInitializedException - This exception is thrown when a method is called with passing arguments 
 that haven't yet been initialized.
 
-Scope.java - 
 
 *****************************
 
