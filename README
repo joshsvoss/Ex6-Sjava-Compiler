@@ -154,7 +154,7 @@ by type Type, like we do when we create the symbol table HashMaps of type <Strin
 =============================
 =    Answers to questions   =
 =============================
-
+********************
 ADDING FLOAT VARIABLE:
 Adding a float variable to the spec of Sjava and therefore to our syntax verifier would fit
 well with our design.  We already have a separate class for each type of variable, so we would just create
@@ -165,6 +165,11 @@ etc.
 In addition, we'd have to change the regexes in the parser that deal with variable declarations
 (as well as those in the parameter list of a method), by adding the option of having the substring "float" 
 at the beginning of the variable declaration line.  
+
+*********************
+ADDING ARRAYS TO SJAVA:
+
+
 
 
 
