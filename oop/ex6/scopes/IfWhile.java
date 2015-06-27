@@ -10,7 +10,7 @@ import oop.ex6.types.Type;
 import oop.ex6.types.Double;
 import oop.ex6.types.Boolean;
 
-public class IfWhile extends Scope{
+public class IfWhile {
 	
 	//TODO We don't need to have an ifWhile object do we, so maybe we should just have a static 
 	// TODO "checkIFWhile()" method
@@ -23,11 +23,11 @@ public class IfWhile extends Scope{
 	private String[] conditions;
 
 	public IfWhile(String name, String conditions, int depth) throws InvalidValueException,
-	UninitializedVariableUsedException {
-		super(name, conditions, depth);
+	ParameterNotInitializedException {
+		
 		this.conditions = separateConditions(conditions);
 		for(int i = 0; i < this.conditions.length; i++){
-			checkParamLogic(this.conditions[i], this.depth);
+			checkParamLogic(this.conditions[i], depth);
 		}
 		
 	}
@@ -36,19 +36,10 @@ public class IfWhile extends Scope{
 		return conditions.split(BOOLEAN_OPERATOR_SEPARATOR);
 	}
 
-	// TODO is this necessary?
-	public void updateLogic() {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	public int getDepth(){
-		return this.depth;
-	}
 
-	@Override
 	public boolean checkParamLogic(String condition, int depth) throws InvalidValueException,
-	UninitializedVariableUsedException {
+	ParameterNotInitializedException {
 		Matcher boolenaIntOrDoubleMatch = BOOLEAN_INT_DOUBLE.matcher(condition);
 		Matcher legalVarNameMatch = LEGAL_VAR_NAMES.matcher(condition);
 		if(boolenaIntOrDoubleMatch.matches()){
@@ -61,7 +52,7 @@ public class IfWhile extends Scope{
 					if((conditionVar instanceof Int) || (conditionVar instanceof Double) || 
 							(conditionVar instanceof Boolean)){
 						if(!conditionVar.isInitialized()){
-							throw new UninitializedVariableUsedException();
+							throw new ParameterNotInitializedException();
 						}
 						return true;
 						

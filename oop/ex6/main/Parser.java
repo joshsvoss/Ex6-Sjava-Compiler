@@ -285,7 +285,7 @@ public class Parser {
 						if (i == GLOBAL_ITERATION) {
 							// Create new method.
 							String params = methDecMatch.group(THIRD_GROUP_INDEX);
-							curMethod = new Method(methodName, params, this.depth);
+							curMethod = new Method(methodName, params);
 							// Add the created method to list:
 							Method previousValue = methodMap.put(methodName, curMethod);
 							if (previousValue != null) {

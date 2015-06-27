@@ -9,7 +9,16 @@ import oop.ex6.types.InvalidTypeException;
 import oop.ex6.types.Type;
 import oop.ex6.types.TypeFactory;
 
-public class Method extends Scope{
+/** This class implements the Method object, which houses all details of the method declared.
+ * in the sjava file.
+ * @author Joshua Voss, shanam
+ *
+ */
+public class Method {
+	
+
+
+	private String params;
 	
 	// An array of the parameter types expected to be passed through the method.
 	private Type[] paramTypesList;
@@ -31,9 +40,19 @@ public class Method extends Scope{
 	// A type factory.
 	TypeFactory typeFactory = new TypeFactory();
 
-	public Method(String name, String params, int depth) throws InvalidTypeException,
-	InvalidParameterSyntaxException {
-		super(name, params, depth); //TODO Scope is only Method's parent.  Dissolve it and move functionality here?
+	/** Constructor method.  
+	 * @param name the name of the method.
+	 * @param params a String that specifies the parameters the method expects.
+	 * @param depth the depth in the stack of activation frames.  
+	 * @throws InvalidTypeException - this exception is thrown when the type of one of the params is 
+	 * invalid.
+	 * @throws InvalidParameterSyntaxException this is thrown when the syntax of one of the params 
+	 * is invalid. 
+	 */
+	public Method(String name, String params) throws InvalidTypeException,
+																InvalidParameterSyntaxException {
+		this.name = name;
+		this.params = params;
 		this.doesMethodClose = false;
 		if (this.params != null) {
 			this.paramsList = separateParams(this.params);
@@ -84,7 +103,7 @@ public class Method extends Scope{
 		return name;
 	}
 
-	@Override
+
 	public boolean checkParamLogic(String params, int depth) throws SJavacException {
 		
 		// If no params assign it as null so as to avoid differences in number of parameters.

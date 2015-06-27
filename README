@@ -61,11 +61,12 @@ of args.
 InvalidParameterSyntaxException.java - This exception is thrown when the parameter declaration of a 
 method is invalid.  
 
-Method.java - 
+Method.java - This class implements the Method object, which houses all details of the method declared.
 
-MethodNamespaceCollision.java - 
+MethodNamespaceCollision.java - This exception is thrown when two methods have the same name.  
 
-ParameterNotInitializedException - 
+ParameterNotInitializedException - This exception is thrown when a method is called with passing arguments 
+that haven't yet been initialized.
 
 Scope.java - 
 
