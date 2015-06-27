@@ -10,6 +10,12 @@ import oop.ex6.types.Type;
 import oop.ex6.types.Double;
 import oop.ex6.types.Boolean;
 
+/** This class performs static syntax validation checks on an if or while statement in Sjava document.  
+ * 
+ * If an error is found, the appropriate SJavacException will be thrown.  
+ * @author Joshua Voss, shanam.
+ *
+ */
 public class IfWhile {
 	
 

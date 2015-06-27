@@ -8,7 +8,9 @@ joshsvoss
 
 ************************
 
-PACKAGE: oop.ex6.main :
+PACKAGE: oop.ex6.main :  This package contains the main method and its class, Sjavac.java. It also
+contains the parser and all of the exceptions that are thrown in the parser and not in the 
+deeper methods that it calls.  
 
 DoubleDeclarationInScopeException.java - This Exception is to be thrown when two variable of the same 
 name are declared in the same scope.
@@ -53,9 +55,12 @@ doesn't exist.
 
 *****************************
 
-PACKAGE: oop.ex6.scopes - 
+PACKAGE: oop.ex6.scopes: This package contains the files that relate to checking the syntax
+of code blocks and scopes: such as if statements, while loops and methods. It also contains the e
+exceptions that they throw.  
 
-IfWhile.java - 
+IfWhile.java - This class performs static syntax validation checks on an if or while statement in 
+Sjava document.  
 
 IncorrectNumArgsException.java - This exception is thrown when a method is called with the incorrect number 
 of args.  
@@ -73,7 +78,8 @@ that haven't yet been initialized.
 
 *****************************
 
-PACKAGE: oop.ex6.types - 
+PACKAGE: oop.ex6.types: This package contains the different Type objects and their superclass
+Type.java and  the exceptions that they throw. 
 
 AssignmentFromUninitializedVarException.java - This exception is thrown when one variable was assigned the 
 value of another which wasn't initialized. 
