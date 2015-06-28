@@ -236,15 +236,28 @@ ADDING SWITCH STATEMENT:
 
 In order to support the switch statement feature, we would implement a new class in the scopes package
 called switch. Like the ifWhile class, it would not have a name, however, closer in functionality to the
-method class, it would keep track of the argument passed through the switch. We can keep track of this by 
+method class, it would keep track of the condition passed through the switch. We can keep track of this by 
 creating a field in the switch class that keeps track of the argument type. This is necessary to ensure 
-that the cases following match the type of the argument. Other fields it would need are a declaration depth
-variable to keep track of the opening and closing of the switch statement, as well as a boolean field
-keeping track of whether or not we are under a switch case/default, say "inCase".
+that the cases following match the type of the argument. It will thus also need a method to check the case 
+condition. Other fields it would need are a declaration depth variable to keep track of the opening and 
+closing of the switch statement, as well as a boolean field keeping track of whether or not we are under a 
+switch case/default, say "inCase". The associate exception classes would also be implemented both in the
+scopes class and the main class.
+
 In our parser class, we would have to add regexes to account for all lines associated with the switch 
 statement, "switch(..){", "case..:", default:", etc. We would also implement a stack data structure, to keep
-track of open switch statementsAdditionally, we would add an else if block in out 
-readCode() method to account for the opening of the switch statement. Upon entrance to this block,  
+track of open switch statements, and allow us to easily call the switch statement's fields.
+Additionally, we would add an else if block in out readCode() method to account for the opening of the 
+switch statement, as well as the other switch block lines. Upon entrance to the block for the opening of the 
+switch statement, during the first reading, a new switch object would be created and pushed into the stack, 
+and then the readCode function would continue. The "inCase" field of each switch statement will remain false
+until the regex for a case if found in an if else block of the readCode() method at which point it will be 
+switched to true until a break of closing curly bracket line are found. Also, upon entering the if else 
+block for cases using the regex it extracts the case condition, peaks at the switch stack to find the 
+current switch statement and uses the switches method to check if the condition is legal. When a scope close
+match is found the switch stack is peaked and if it is not null and the peaked switch's declaration depth 
+is the same as this.depth we pop it from the stack. Additionally, if one of the lines associated with a
+switch statement are called when the switch stack is empty, a exception is thrown. 
 
 
 
