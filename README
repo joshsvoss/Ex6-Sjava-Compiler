@@ -246,27 +246,40 @@ ADDING SWITCH STATEMENT:
 In order to support the switch statement feature, we would implement a new class in the scopes package
 called switch. Like the ifWhile class, it would not have a name, however, closer in functionality to the
 method class, it would keep track of the condition passed through the switch. We can keep track of this by 
-creating a field in the switch class that keeps track of the argument type. This is necessary to ensure 
-that the cases following match the type of the argument. It will thus also need a method to check the case 
-condition. Other fields it would need are a declaration depth variable to keep track of the opening and 
+creating a field in the switch class that keeps track of the condition variable type. This is necessary to 
+ensure that the cases following, match the type of the condition. It will thus also need a method to check 
+the case condition similar to the checkParamLogic() method of the Method class, using the 
+doesValueMatchType() method of the Type class.
+
+Other fields it would need are a declaration depth variable to keep track of the opening and 
 closing of the switch statement, as well as a boolean field keeping track of whether or not we are under a 
-switch case/default, say "inCase". The associate exception classes would also be implemented both in the
-scopes class and the main class.
+switch case/default, say "inCase". This would be used to determine if the lines following the switch are 
+legal. The associated exception classes would also be implemented both in the scopes class and the main 
+class.
 
 In our parser class, we would have to add regexes to account for all lines associated with the switch 
-statement, "switch(..){", "case..:", default:", etc. We would also implement a stack data structure, to keep
-track of open switch statements, and allow us to easily call the switch statement's fields.
-Additionally, we would add an else if block in out readCode() method to account for the opening of the 
-switch statement, as well as the other switch block lines. Upon entrance to the block for the opening of the 
-switch statement, during the first reading, a new switch object would be created and pushed into the stack, 
-and then the readCode function would continue. The "inCase" field of each switch statement will remain false
-until the regex for a case if found in an if else block of the readCode() method at which point it will be 
-switched to true until a break of closing curly bracket line are found. Also, upon entering the if else 
-block for cases using the regex it extracts the case condition, peaks at the switch stack to find the 
-current switch statement and uses the switches method to check if the condition is legal. When a scope close
-match is found the switch stack is peaked and if it is not null and the peaked switch's declaration depth 
-is the same as this.depth we pop it from the stack. Additionally, if one of the lines associated with a
-switch statement are called when the switch stack is empty, a exception is thrown. 
+statement, for example, "switch(..){", "case..:", default:", etc. with capture groups to allow for 
+extraction of conditions. Additionally, we would implement a stack data structure in the parser, to keep
+track of open switch statements, and allow us to easily call the current switch statement's methods to check
+conditions and such.
+
+Like with the other features supported by SJava, would add an else if block in our readCode() method to 
+account for the opening of the switch statement, as well as the other switch block lines. Upon entrance to 
+the if else block for the opening of the switch statement, during the second reading, a new switch object 
+would be created with its condition type and pushed into the switch stack, the readCode() method would then 
+continue. The "inCase" field of each switch statement would remain false until the regex for a case is found 
+in an if else block of the readCode() method, at which point it would be switched to true until a break or 
+closing curly bracket line are found. Any none opening case lines found while a switch statement is open, 
+but the inCase is false, will result in an error. Furthermore, if a case line is found and the switch stack
+peaks null, an exception is thrown.
+
+Upon entering the if else block for cases, using the regex capture group, the case condition is 
+extracted and checked against the condition type for the peaked switch statement from the stack. If the
+condition type is illegal an exception is thrown.
+
+When a scope close match is found the switch stack is peaked and if it is not null and the peaked switch's 
+declaration depth is the same as this.depth we pop it from the stack. Like with the case line, if one of the 
+other lines associated with a switch block is called when the switch stack is empty, a exception is thrown. 
 
 
 
