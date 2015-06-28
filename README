@@ -1,4 +1,5 @@
 joshsvoss
+shanam
 
 
 
@@ -37,13 +38,19 @@ NestedMethodDeclarationException.java - This exception is thrown when a method i
 
 Parser.java - This class handles reading in the Sjava file and parsing through it.
 
-Sjavac.java - This class is the driver class of the Sjava code legality verifier. 
+Sjavac.java - This class is the driver class of the Sjava code legality verifier. It invokes the 
+parser of Parser.java, and also catches all of the various SJavacExceptions, prints the correct
+number (0, 1, 2) to std out, and prints the exception's specific error message + line number to std err.
 
 SJavacException.java - This is the parent exception for all exceptions of Sjava syntax nature.  All 
-exceptions that are thrown because of a problem with the Sjava program specified in the cmd lin argument
+exceptions that are thrown because of a problem with the Sjava program specified in the cmd line argument
 extend this exception.
 
 SymbolTableList.java - This is the class for the  SybolTableList, a data structure that holds our variables.
+It wraps a Vector of HashMaps of type <String, Type>.  All of this classes functionality was originally
+just in Parser.java, but we decided to delegate it to it's own separate class for modularity and
+expandibility: to make it easier to use a new underlying data structure if we so choose, and to be 
+able to use this data structure for other purposes in the future.  
 
 UndeclaredAssignmentException.java - This exception is thrown when the sjava program attempts to assign 
 a value to a variable that hasn't been declared.  
@@ -85,8 +92,6 @@ Type.java and  the exceptions that they throw.
 AssignmentFromUninitializedVarException.java - This exception is thrown when one variable was assigned the 
 value of another which wasn't initialized. 
 
-AssignmentMismatchException.java - 
-
 Boolean.java - This is the class for the Boolean Type variable.
 
 Char.java - This is the class for the Char Type variable.
@@ -108,7 +113,8 @@ Java class String.
 Type.java - The parent class for all the type objects (Int, Char, etc).
 
 TypeFactory.java - This class has the job of received a string that defines what type to create, and trying 
-to create an instance of the corresponding type.
+to create an instance of the corresponding type.  If the string passed in does not match any of our 
+patterns, we throw an exception.  
 
 UninitializedFinalVariableException.java - This exception is thrown when a final variable is declared 
 without initialization.
