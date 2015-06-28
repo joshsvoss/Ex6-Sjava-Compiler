@@ -1,7 +1,7 @@
 package oop.ex6.main;
 
 /** This exception is thrown when a method is declared inside another.  
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class NestedMethodDeclarationException extends SJavacException {

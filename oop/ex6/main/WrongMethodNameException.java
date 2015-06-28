@@ -1,7 +1,7 @@
 package oop.ex6.main;
 
 /** This exception is thrown when a method is called with a name that doesn't exist.  
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class WrongMethodNameException extends SJavacException {
@@ -10,15 +10,16 @@ public class WrongMethodNameException extends SJavacException {
 
 	private static final long serialVersionUID = 1L;
 
-	/**Identical behavior to super's methods.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public WrongMethodNameException() {
 		super(defaultMsg);
 	}
 
-	/** Identical behavior to super's methods.
-	 * @param msg
+	/** Creates an exception with a custom message.
+	 * 
+	 * @param msg message to be passed up with exception.
 	 */
 	public WrongMethodNameException(String msg) {
 		super(msg);

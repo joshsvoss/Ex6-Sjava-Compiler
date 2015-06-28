@@ -11,15 +11,16 @@ public class GlobalIfWhileException extends SJavacException {
 	private static final String defaultMsg = "An if/ while block was in the global scope, "
 			+ "this is not allowed.";
 	
-	/** Identical to parent's constructor.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public GlobalIfWhileException() {
 		super(defaultMsg);
 	}
 	
-	/** This method passes a message up the stack.
-	 * @param msg the message to be passed.  
+	/** Creates an exception with a custom message.
+	 * 
+	 * @param msg message to be passed up.
 	 */
 	public GlobalIfWhileException(String msg) {
 		super(msg);

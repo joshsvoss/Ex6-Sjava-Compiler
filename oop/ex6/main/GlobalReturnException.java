@@ -1,7 +1,7 @@
 package oop.ex6.main;
 
 /** This exception is thrown when a return statement is encountered in the global scope.
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class GlobalReturnException extends SJavacException {
@@ -10,14 +10,15 @@ public class GlobalReturnException extends SJavacException {
 
 	private static final long serialVersionUID = 1L;
 
-	/** Identical to super's constructor.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public GlobalReturnException() {
 		super(defaultMsg);
 	}
 
-	/** Identical to super's constructor.
+	/** Creates an exception with a custom message.
+	 * 
 	 * @param msg message to be passed up.
 	 */
 	public GlobalReturnException(String msg) {

@@ -13,15 +13,16 @@ public class GlobalClosingBracketException extends SJavacException {
 			+ "This cannot happen since Sjava doesn't support classes.  All closing brackets"
 			+" must either be closing a method or closing something inside a method.";
 
-	/** Identical to parent's constructor.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public GlobalClosingBracketException() {
 		super(defaultMsg);
 	}
 
-	/** This constructor passes the method up the stack.
-	 * @param message the string to be passed up.
+	/** Creates an exception with a custom message.
+	 * 
+	 * @param msg message to be passed up.
 	 */
 	public GlobalClosingBracketException(String message) {
 		super(message);

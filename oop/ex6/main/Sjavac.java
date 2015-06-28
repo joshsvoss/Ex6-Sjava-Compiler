@@ -5,14 +5,17 @@ import java.io.FileNotFoundException;
 
 /** This class is the driver class of the Sjava code legality verifier. 
  *  
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class Sjavac {
 	
+	// Output fields:
 	private static final int IO_FAILURE_NUM = 2;
 	private static final int ILLEGAL_CODE_NUM = 1;
 	private static final int KOSHER_CODE_NUM = 0;
+	
+	// The source file idx in the args array.
 	private static final int SRC_FILE_INDEX = 0;
 
 	/** The main method.  The program expects one command line argument, the path to the Sjava file 
@@ -24,7 +27,7 @@ public class Sjavac {
 	public static void main(String[] args) {
 		
 		// Make sure we received the necessary arguments:
-		if (args.length < 1) {
+		if (args.length < SRC_FILE_INDEX) {
 			System.out.println(IO_FAILURE_NUM);
 			System.err.println("ERROR: no command line arg provided.");
 			System.err.println("USAGE: please provide source file path as cmd line argument.");

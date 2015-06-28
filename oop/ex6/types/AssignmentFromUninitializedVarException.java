@@ -5,7 +5,7 @@ import oop.ex6.main.SJavacException;
 
 /** This exception is thrown when one variable was assigned the value of another which wasn't
  * initialized.  
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class AssignmentFromUninitializedVarException extends SJavacException {

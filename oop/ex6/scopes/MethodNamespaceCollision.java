@@ -14,15 +14,16 @@ public class MethodNamespaceCollision extends SJavacException {
 	private static final String defaultMsg = "ERROR: The names of two different methods were identical.";
 	
 	
-	/**
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public MethodNamespaceCollision() {
 		super(defaultMsg); 
 	}
 	
-	/**
-	 * @param msg
+	/** Creates an exception with a custom message.
+	 * 
+	 * @param msg message to be passed up with exception.
 	 */
 	public MethodNamespaceCollision(String msg) {
 		super(msg);

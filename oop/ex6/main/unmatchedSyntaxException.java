@@ -2,7 +2,7 @@ package oop.ex6.main;
 
 /** This exception is thrown when the line parsed doesn't 
  * match any of our regex formulas, and therefore must be incorrect.
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class UnmatchedSyntaxException extends SJavacException {

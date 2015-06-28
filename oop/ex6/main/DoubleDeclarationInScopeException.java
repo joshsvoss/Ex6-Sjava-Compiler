@@ -12,16 +12,17 @@ public class DoubleDeclarationInScopeException extends SJavacException {
 	private final static String defaultMessage = "You tried to declare a variable or method in a scope "
 			+ "where it was already declared.";
 	
-	/** Identical to the parent's constructor.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public DoubleDeclarationInScopeException() {
 		super(defaultMessage);
 	}
 	
 	
-	/** Passes the message string up the stack.  
-	 * @param msg the message to be passed up.  
+	/** Creates an exception with a custom message.
+	 * 
+	 * @param msg message to be passed up.
 	 */
 	public DoubleDeclarationInScopeException(String msg) {
 		super(msg);

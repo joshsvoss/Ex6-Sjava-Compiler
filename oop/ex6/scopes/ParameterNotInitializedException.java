@@ -4,7 +4,7 @@ import oop.ex6.main.SJavacException;
 
 /** This exception is thrown when a method is called with passing arguments that haven't yet been 
  * initialized.
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class ParameterNotInitializedException extends SJavacException {

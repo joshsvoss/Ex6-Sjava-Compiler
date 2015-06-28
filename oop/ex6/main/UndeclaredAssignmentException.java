@@ -2,7 +2,7 @@ package oop.ex6.main;
 
 /** This exception is thrown when the sjava program attempts to assign a value to a variable
  * that hasn't been declared.  
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class UndeclaredAssignmentException extends SJavacException {

@@ -10,8 +10,8 @@ public class MissingMethodReturnException extends SJavacException {
 	
 	private static final String defaultMsg = "Missing the method return statement.";
 
-	/** Identical to that of Exception.
-	 * 
+	/** 
+	 * Creates an exception with a default message.
 	 */
 	public MissingMethodReturnException() {
 		super(defaultMsg);
