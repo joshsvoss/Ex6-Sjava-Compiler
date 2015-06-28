@@ -168,7 +168,7 @@ public class Parser {
 		
 		try {
 			for (int i = 0; i < NUM_READ_ITERATIONS; i++) {
-				
+				lineCtr = 0;
 				while (scanner.hasNext()) {
 					currLn = scanner.nextLine();
 					lineCtr++;
