@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+
 import oop.ex6.scopes.IfWhile;
 import oop.ex6.scopes.Method;
 import oop.ex6.scopes.MethodNamespaceCollision;
@@ -18,6 +19,7 @@ import oop.ex6.types.TypeFactory;
  *
  */
 public class Parser {
+	
 	
 	// Indices for the different capture groups.
 	// These have been made public because they are useful to classes in the Method package.
@@ -117,8 +119,11 @@ public class Parser {
 	// The regex for a method return.
 	private static final Pattern METH_END = Pattern.compile("^\\s*+return{1}+\\s*+;{1}+\\s*$");
 	
+	// The regex string for a closing curly bracket.
+	private static final String CLOSING_CURLY_BRACKET = "\\s*\\}{1}\\s*";
+	
 	// The regex for closing a scope.
-	private static final Pattern SCOPE_CLOSER = Pattern.compile("^\\s*+\\}{1}+\\s*$");
+	private static final Pattern SCOPE_CLOSER = Pattern.compile("^"+CLOSING_CURLY_BRACKET+"$");
 	
 	// Scope depth counter.
 	private int depth = 0;
@@ -319,7 +324,7 @@ public class Parser {
 						}
 						
 						if ((this.depth == METHOD_DEPTH)
-								&& (scanner.hasNext("\\s*\\}{1}\\s*"))) {
+								&& (scanner.hasNext(CLOSING_CURLY_BRACKET))) {
 							// The a method is being closed
 							curMethod.closeMethod();
 						}
