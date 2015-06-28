@@ -227,8 +227,8 @@ would be constructed and placed into the correct level in the SymbolTableList ju
 After creation, a static method called "checkDeclarationSyntax" belonging to the Array class
 could be called to throw an exception in the case of a violation.  Alternatively, the regex
 match that decides whether to enter the if else block would also be checking the syntax, 
-making this uneccessary.  Any reference to this array variable would cause a lookup to be performed in the SymbolTableList using
-its search() method just like a variable of any other type.  
+making this uneccessary.  Any reference to this array variable would cause a lookup to be performed in the 
+SymbolTableList using its search() method just like a variable of any other type.  
 
 
 

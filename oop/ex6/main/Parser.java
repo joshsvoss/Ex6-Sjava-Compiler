@@ -14,7 +14,7 @@ import oop.ex6.types.Type;
 import oop.ex6.types.TypeFactory;
 
 /** This class handles reading in the Sjava file and parsing through it.
- * @author Joshua Voss
+ * @author Joshua Voss, shanam
  *
  */
 public class Parser {
@@ -26,13 +26,8 @@ public class Parser {
 	public static final int FIRST_GROUP_INDEX = 1;
 	public static final int SECOND_GROUP_INDEX = 2;
 	public static final int THIRD_GROUP_INDEX = 3;
-	public static final int FOURTH_GROUP_INDEX = 4;
 	public static final int FIFTH_GROUP_INDEX = 5;
-	public static final int SIXTH_GROUP_INDEX = 6;	
-	public static final int SEVENTH_GROUP_INDEX = 7;
-	public static final int EIGHTH_GROUP_INDEX = 8;
-	public static final int NINTH_GROUP_INDEX = 9;
-	public static final int TENTH_GROUP_INDEX = 10;
+	public static final int SIXTH_GROUP_INDEX = 6;
 	
 	private static final int NUM_READ_ITERATIONS = 2;
 	private static final int GLOBAL_ITERATION = 0;
@@ -72,16 +67,16 @@ public class Parser {
 	// NOTE: make this field and its getter non-static.
 	private static int lineCtr = 0;
 	
-	// A regex for finding commas.
+	// A regex string for finding commas.
 	public static final String COMMA_SEPARATOR = "\\s*[,]{1}\\s*";
 	
+	// A regex string for all possible variable values. 
 	private static final String POSSIBLE_VAR_VALUES = "(true|false|(-?[0-9]+(\\.{1}+[0-9]+)?)|"
 			+ "(\'{1}+.{1}+\'{1})|(\"{1}.*\"{1})|([a-zA-Z_]{1}+\\w*+))";
 	
+	// A regex string for all possible variable names.
 	public static final String POSSIBLE_VAR_NAMES = "(([a-zA-Z]{1}+\\w*)|(_{1}\\w+))";
 	
-	//TODO Should we make all of these regex fields private?
-	//TODO should we anchor front and back with whitespace in between and how does this help?
 	// The regex for the a variable declaration. (Deals with cases with/out final, and with/out assignment.)
 	private static final Pattern VAR_DEC = Pattern.compile("^\\s*+((final{1})+\\s{1})?+\\s*+((int|boolean|"
 			+ "char|double|String){1})+\\s*+(("+POSSIBLE_VAR_NAMES+"+)\\s*+(={1}+\\s*+("+POSSIBLE_VAR_VALUES
@@ -101,7 +96,6 @@ public class Parser {
 			+ "\\({1}(\\s*+((final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}+\\s*+"+
 			POSSIBLE_VAR_NAMES+"+\\s*+(,{1}+\\s*+(final{1}+\\s{1})?+\\s*+(int|boolean|char|double|String){1}"
 			+ "+\\s*+"+POSSIBLE_VAR_NAMES+"+\\s*)*))*\\){1}+\\s*+\\{{1}+\\s*$");
-	
 	
 	// The regex for a method call, with params.
 	private static final Pattern METH_CALL = Pattern.compile("^\\s*+([a-zA-Z]{1}+\\w*)+\\s*\\({1}\\s*(("+
@@ -133,16 +127,10 @@ public class Parser {
 	// NOTE: for expandibility, if you want to run multiple parsers instances at once, 
 	// NOTE: You'll need to make this and the getter non-static, as well as other places 
 	// NOTE: where the NOTE comment appears.
-//	private static Vector<HashMap<String, Type>> symbolTableListA; //TODO remove and all associated with it.
-	
 	public static SymbolTableList symbolTableList;
 	
 	// List of methods:
 	private HashMap<String, Method> methodMap;
-	
-	HashMap<String, String> map;// TODO do we need this?
-	
-	// Scope list 
 	
 	/**
 	 * Construct a parser for the given file.
@@ -157,13 +145,9 @@ public class Parser {
 		this.scanner = new Scanner(this.srcFile);
 		
 		// Initilize the data structures to hold the symbol and method tables.
-//		symbolTableList = new Vector<HashMap<String, Type>>();
-		// And add the global table in the first spot:
-//		symbolTableList.add(new HashMap<String, Type>());
-		//symbolTableListA = new Vector<HashMap<String, Type>>(); //TODO remove?
 		symbolTableList = new SymbolTableList();
-		// And add a table in the first spot:
-//		symbolTableListA.add(new HashMap<String, Type>());
+		
+		// Initialize the method map.
 		this.methodMap = new HashMap<String, Method>();
 	}
 	
@@ -217,7 +201,6 @@ public class Parser {
 					Matcher methCallMatch = METH_CALL.matcher(currLn);
 
 					// If the currLn is documentation, a blank line, method call, or method return, continue.
-					// TODO move methEndMatch to it's own else if block? - if depth is 1 and followed by close scope, this is the closing of a method.
 					if (docMatch.matches() || whiteSpaceMatch.matches()) {
 						this.previousLnType = DOC_OR_BLANK;
 						// This will continue automatically because every other if clause is else if.
@@ -243,9 +226,6 @@ public class Parser {
 											finalStr, type, name, value,
 											this.depth);
 									// Now put it into the correct symbol table
-//									Type previousType = symbolTableListA
-//											.elementAt(this.depth).put(name,
-//													variable);
 									Type previousType = symbolTableList.addTypeToALevel(name,
 													variable, this.depth);
 									if (previousType != null) {
@@ -305,16 +285,11 @@ public class Parser {
 											paramType, this.depth);
 									// If our insertion replaced another Type, then their names overlap:
 									if (addReturn != null) {
-										// TODO delte message below, debug
-										throw new DoubleDeclarationInScopeException( 
-												"ThiS error shouldn't be happenign here!Cuz this scope symbol table should be empty since we just entered method.");
+										throw new DoubleDeclarationInScopeException();
 									}
 								}
-							}
-							
+							}	
 						}
-
-						
 					} 
 					
 					else if ((ifWhileMatch.matches())) {
@@ -332,7 +307,7 @@ public class Parser {
 							String name = ifWhileMatch.group(FIRST_GROUP_INDEX); 
 							String conditions = ifWhileMatch
 									.group(THIRD_GROUP_INDEX);
-							IfWhile.checkLogic(name, conditions, depth); //TODO warning here for not doing anything with new object
+							IfWhile.checkLogic(name, conditions, depth);
 						}
 
 					}
@@ -361,7 +336,6 @@ public class Parser {
 							throw new MissingMethodReturnException();
 						}
 						// Delete the table for the scope that is closing, and decrement depth
-//						symbolTableListA.remove(this.depth);
 						symbolTableList.decreaseLevel(this.depth);
 						this.depth--;
 						
@@ -407,7 +381,7 @@ public class Parser {
 
 				}
 				
-				// At the end of for loop, reset scanner to beginign
+				// At the end of for loop, reset scanner to beginning
 				try {
 					scanner = new Scanner(this.srcFile);
 					lineCtr = BEG_OF_FILE;
@@ -530,7 +504,7 @@ public class Parser {
 	 * make this method non-static and call it on a reference to the Parser instance.  
 	 * @return int current line in parser.
 	 */
-	public static int getLineCounter() { //TODO make this non static and instead return a reference to the parser object to the maiin.
+	public static int getLineCounter() { 
 		return Parser.lineCtr;
 	}
 
