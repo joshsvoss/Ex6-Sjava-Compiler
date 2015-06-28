@@ -21,8 +21,6 @@ public class Parser {
 	
 	// Indices for the different capture groups.
 	// These have been made public because they are useful to classes in the Method package.
-	//TODO this is akward that we need to make these public instead of just package, because things outside
-	// TODO the package use them.  Should all things using common resources be inside one package then?
 	public static final int FIRST_GROUP_INDEX = 1;
 	public static final int SECOND_GROUP_INDEX = 2;
 	public static final int THIRD_GROUP_INDEX = 3;
@@ -40,7 +38,7 @@ public class Parser {
 	
 	
 	// The possible line types.
-	private static final int DOC_OR_BLANK = 0; //TODO README use as example for enum
+	private static final int DOC_OR_BLANK = 0; 
 	private static final int VAR_DECLARATION = 1;
 	private static final int VAR_ASSIGNMENT = 2;
 	private static final int METHOD_DECLARATION = 3;
